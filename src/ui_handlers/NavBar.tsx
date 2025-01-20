@@ -12,13 +12,31 @@ import MenuItem from '@mui/material/MenuItem';
 
 export default function NavBar() {
     const [anchorGraph, setAnchorGraph] = React.useState<null | HTMLElement>(null);
-    const open = Boolean(anchorGraph);
+    const openGraph = Boolean(anchorGraph);
     const handleGraphClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-        console.log("fred");
         setAnchorGraph(event.currentTarget);
     };
-    const handleGraphClose = () => {
+    const handleGraphClose = (buttonId: string) => {
+        // switch(buttonId) {
+        //     case "Save":
+                
+        // }
+        console.log(buttonId);
+                
         setAnchorGraph(null);
+    };
+    const [anchorAlgrorithm, setAnchorAlgrorithm] = React.useState<null | HTMLElement>(null);
+    const openAlgorithm = Boolean(anchorAlgrorithm);
+    const handleAlgrorithmClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+        setAnchorAlgrorithm(event.currentTarget);
+    };
+    const handleAlgrorithmClose = (buttonId: string) => {
+        // switch(buttonId) {
+        //     case "Kruskal":
+                
+        // }
+        console.log(buttonId);
+        setAnchorAlgrorithm(null);
     };
   return (
 
@@ -42,32 +60,32 @@ export default function NavBar() {
                 <Menu
                     id="basic-menu"
                     anchorEl={anchorGraph}
-                    open={open}
+                    open={openGraph}
                     onClose={handleGraphClose}
                     MenuListProps={{
                     'aria-labelledby': 'basic-button',
                     }}
                 >
-                    <MenuItem onClick={handleGraphClose}>Save</MenuItem>
-                    <MenuItem onClick={handleGraphClose}>Open</MenuItem>
-                    <MenuItem onClick={handleGraphClose}>Bookmark</MenuItem>
-                    <MenuItem onClick={handleGraphClose}>Generate</MenuItem>
+                    <MenuItem onClick={() => {handleGraphClose("Save")}}>Save</MenuItem>
+                    <MenuItem onClick={() => {handleGraphClose("Open")}}>Open</MenuItem>
+                    <MenuItem onClick={() => {handleGraphClose("Bookmark")}}>Bookmark</MenuItem>
+                    <MenuItem onClick={() => {handleGraphClose("Generate")}}>Generate</MenuItem>
                 </Menu>
-                <Button color="inherit" onClick={handleGraphClick} >Algorithms</Button>
+                <Button color="inherit" onClick={handleAlgrorithmClick} >Algorithms</Button>
                 <Menu
                     id="basic-menu"
-                    anchorEl={anchorGraph}
-                    open={open}
-                    onClose={handleGraphClose}
+                    anchorEl={anchorAlgrorithm}
+                    open={openAlgorithm}
+                    onClose={handleAlgrorithmClose}
                     MenuListProps={{
                     'aria-labelledby': 'basic-button',
                     }}
                 >
-                    <MenuItem onClick={handleGraphClose}>Kruskal's Minimum Spanning Tree</MenuItem>
-                    <MenuItem onClick={handleGraphClose}>Prim's Minimum Spanning Tree</MenuItem>
-                    <MenuItem onClick={handleGraphClose}>Breadth First Search</MenuItem>
-                    <MenuItem onClick={handleGraphClose}>Depth First Search</MenuItem>
-                    <MenuItem onClick={handleGraphClose}>Dijkstra's Shortest Path</MenuItem>
+                    <MenuItem onClick={() => {handleAlgrorithmClose("Kruskal")}}>Kruskal's Minimum Spanning Tree</MenuItem>
+                    <MenuItem onClick={() => {handleAlgrorithmClose("Prim")}}>Prim's Minimum Spanning Tree</MenuItem>
+                    <MenuItem onClick={() => {handleAlgrorithmClose("BFS")}}>Breadth First Search</MenuItem>
+                    <MenuItem onClick={() => {handleAlgrorithmClose("DFS")}}>Depth First Search</MenuItem>
+                    <MenuItem onClick={() => {handleAlgrorithmClose("Dijkstra")}}>Dijkstra's Shortest Path</MenuItem>
                 </Menu>
             </Toolbar>
         </AppBar>

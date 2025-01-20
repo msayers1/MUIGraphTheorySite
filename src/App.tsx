@@ -1,47 +1,55 @@
 import * as React from 'react';
 import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
-import Box from '@mui/material/Box';
 import Link from '@mui/material/Link';
-import ProTip from './ProTip';
-import NavBar from './NavBar';
-import LeftSide from './LeftSide';
-import RightSide from './RightSide';
+import NavBar from './ui_handlers/NavBar';
+import LeftSide from './ui_handlers/LeftSide';
+import RightSide from './ui_handlers/RightSide';
 import Grid from '@mui/material/Grid2';
+import { GraphHolder } from './graph_core/graph';
+import GraphTabs from './ui_handlers/GraphTabs';
 
-function Copyright() {
-  return (
-    <Typography
-      variant="body2"
-      align="center"
-      sx={{
-        color: 'text.secondary',
-      }}
-    >
-      {'Copyright © '}
-      <Link color="inherit" href="https://mui.com/">
-        Your Website
-      </Link>{' '}
-      {new Date().getFullYear()}.
-    </Typography>
-  );
-}
+
+
 
 export default function App() {
-  return (
-    <React.Fragment >
-      <NavBar />
-      <Grid container>
-        <Grid >
-          <LeftSide />
-        </Grid>
-        <Grid >
+  
+  const [nextGraphId, setGraphId] = React.useState(1);
+  const [graph, setGraph] = React.useState<GraphHolder>();
+  const addGraph = (newGraph: GraphHolder) => {
+    setGraph(newGraph); // Create a new array with existing graphs and the new graph
+  };
 
+
+
+
+  return (
+    <React.Fragment>
+      <NavBar />
+      <Grid container spacing={1} >
+        <Grid size={{md: 2}}>
+          <LeftSide
+            addGraph={addGraph}
+            nextGraphId={nextGraphId}
+            setGraphId={setGraphId}
+             />
         </Grid>
-        <Grid >
+        <Grid size={{md: 8}}>
+          {graphs.length === 0 ? (
+              <Typography variant="body1" color="text.secondary">
+                No graphs open. Please click New Graphs to the left to see options to create a graph.
+              </Typography>
+            ) : (
+              <GraphTabs 
+                graphs={graphs}
+              />
+            )}
+        </Grid>
+        <Grid size={{md: 2}}>
           <RightSide />
         </Grid>
       </Grid>
+
     </React.Fragment>
   );
 }
