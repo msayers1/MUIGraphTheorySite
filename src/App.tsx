@@ -15,9 +15,9 @@ import GraphTabs from './ui_handlers/GraphTabs';
 export default function App() {
   
   const [nextGraphId, setGraphId] = React.useState(1);
-  const [graph, setGraph] = React.useState<GraphHolder>();
+  const [graphs, setGraphs] = React.useState<GraphHolder[]>([]);
   const addGraph = (newGraph: GraphHolder) => {
-    setGraph(newGraph); // Create a new array with existing graphs and the new graph
+    setGraphs([...graphs, newGraph]); // Create a new array with existing graphs and the new graph
   };
 
 
