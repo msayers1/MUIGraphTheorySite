@@ -1,0 +1,15 @@
+# Graph Theory Pedagogic Tool 
+
+Graph Theory Pedagogic Tool  is an under-construction tool to enable visualization and teaching
+of graph theory concepts and algorithms.
+
+This is a work that furthers the work by NEERAJ ADHIKARI and you can see the code @  https://github.com/nradk/gtpg or app @ [neerajadh.gitlab.io/graph-playground](https://neerajadh.gitlab.io/graph-playground/#).
+
+Please be warned that the project is still very much in it's infancy and there
+are a lot of things missing and things that do not work.
+
+
+### Implemented Features
+- Undirected and directed graph creation
+- Weighted graphs
+- Tool-based design with tools to delete objects, add/edit and move objects
