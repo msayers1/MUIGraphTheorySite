@@ -127,23 +127,6 @@ export class GraphDrawing {
         }
     }
 
-    clickAddVertex(e: Konva.KonvaEventObject<MouseEvent>): void {
-        if (!this.vertexSelectMode && e.target === this.stage
-            && this.tools.getCurrentTool() == "default") {
-            console.log("Pass");
-            this.addVertexToCurrentGraph(e);
-        }
-        this.addVertexToCurrentGraph(e);
-
-    }
-
-    // dragendRememberPOS(e: Konva.KonvaEventObject<MouseEvent>): void {
-    //     if (!this.vertexSelectMode && e.target === this.stage
-    //         && this.tools.getCurrentTool() == "default") {
-    //         this.addVertexToCurrentGraph(e);
-    //     }
-    // }
-
     attachStage(stage: Konva.Stage, tools: Tools): void {
         this.stage = stage;
         this.tools = tools;
@@ -339,11 +322,11 @@ export class GraphDrawing {
     }
 
     protected addVertexToCurrentGraph(e: Konva.KonvaEventObject<MouseEvent>): VertexDrawing {
-        // // TODO:::::
-        // // WARNING: BAD HACK! We check to see if the stage has it's 'draggable'
-        // // property disabled, because EditableText disables stage dragging when
-        // // editing is active and we want to cancel the edit without adding a
-        // // new vertex when the user clicks outside the EditableText.
+        // TODO:::::
+        // WARNING: BAD HACK! We check to see if the stage has it's 'draggable'
+        // property disabled, because EditableText disables stage dragging when
+        // editing is active and we want to cancel the edit without adding a
+        // new vertex when the user clicks outside the EditableText.
         if (!this.stage.draggable()) {
             return;
         }

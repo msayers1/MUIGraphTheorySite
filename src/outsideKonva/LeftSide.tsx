@@ -12,7 +12,10 @@ import AccordionDetails from '@mui/material/AccordionDetails';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid2';
-import { GraphHolder, createNewGraph } from '../graph_core/graph';
+import * as TabBar from '../components/tabbar';
+import ColorLensIcon from '@mui/icons-material/ColorLens';
+
+
 const drawerWidth = 240;
 
 const DrawerHeader = styled('div')(({ theme }) => ({
@@ -26,23 +29,17 @@ const DrawerHeader = styled('div')(({ theme }) => ({
 
 // Props for the TabPanel component
 interface LeftSideProps {
-  addGraph: (newGraph: GraphHolder) => void;
-  nextGraphId: number;
-  setGraphId: (newID: number) => void;
+  addGraph: (tabType: TabBar.TabType) => void;
+  updateTool: (tool: string) => void;
 }
 
 // export default function LeftSide(addGraph) {
-const LeftSide: React.FC<LeftSideProps> = ({ addGraph, nextGraphId, setGraphId }) => {
+const LeftSide: React.FC<LeftSideProps> = ({ addGraph, updateTool }) => {
   const theme = useTheme();
   const [open, setOpen] = React.useState(true);
 
   const handleDrawerOpen = () => {
     setOpen(true);
-  };
-  const newGraph = (graphType:string) => {
-    const newGraphObject = createNewGraph(graphType,nextGraphId);
-    setGraphId(nextGraphId + 1)
-    addGraph(newGraphObject);
   };
   const handleDrawerClose = () => {
     setOpen(false);
@@ -59,32 +56,32 @@ const LeftSide: React.FC<LeftSideProps> = ({ addGraph, nextGraphId, setGraphId }
             <AccordionDetails>
               <Grid container spacing={1} >
                 <Grid size={{md: 12}}>
-                  <Button onClick={() => {newGraph("empty-undirected-weighted")}}>
+                  <Button onClick={() => {addGraph("empty-undirected-weighted")}}>
                     Undirected Weighted
                   </Button>
                 </Grid>
                 <Grid size={{md: 12}}>
-                  <Button onClick={() => {newGraph("empty-directed-weighted")}}>
+                  <Button onClick={() => {addGraph("empty-directed-weighted")}}>
                     Directed Weighted
                   </Button>
                 </Grid>
                 <Grid size={{md: 12}}>
-                  <Button onClick={() => {newGraph("empty-undirected")}}>
+                  <Button onClick={() => {addGraph("empty-undirected")}}>
                     Undirected Unweighted
                   </Button>
                 </Grid>
                 <Grid size={{md: 12}}>
-                  <Button onClick={() => {newGraph("empty-directed")}}>
+                  <Button onClick={() => {addGraph("empty-directed")}}>
                     Directed Unweighted
                   </Button>
                 </Grid>
                 <Grid size={{md: 12}}>
-                  <Button onClick={() => {newGraph("empty-euclidean")}}>
+                  <Button onClick={() => {addGraph("empty-euclidean")}}>
                     Euclidean
                   </Button>
                 </Grid>
                 <Grid size={{md: 12}}>
-                  <Button onClick={() => {newGraph("empty-directed")}}>
+                  <Button onClick={() => {addGraph("empty-directed")}}>
                     Open Graph
                   </Button>
                 </Grid>
@@ -100,18 +97,23 @@ const LeftSide: React.FC<LeftSideProps> = ({ addGraph, nextGraphId, setGraphId }
             <AccordionDetails>
               <Grid container spacing={1} >
                 <Grid size={{md: 12}}>
-                  <Button>
+                  <Button onClick={() => {updateTool("default")}}>
                     <NearMe /> Add/Move
                   </Button>
                 </Grid>
                 <Grid size={{md: 12}}>
-                  <Button>
+                  <Button onClick={() => {updateTool("delete")}}>
                     <Clear /> Delete
                   </Button>
                 </Grid>
                 <Grid size={{md: 12}}>
-                  <Button>
+                  <Button onClick={() => {updateTool("text")}}>
                     <Keyboard /> Text
+                  </Button>
+                </Grid>
+                <Grid size={{md: 12}}>
+                  <Button onClick={() => {updateTool("color")}}>
+                    <ColorLensIcon /> Color
                   </Button>
                 </Grid>
               </Grid>

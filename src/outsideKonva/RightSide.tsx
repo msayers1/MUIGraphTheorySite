@@ -9,9 +9,9 @@ import AccordionSummary from '@mui/material/AccordionSummary';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import Button from '@mui/material/Button';
-
-const drawerWidth = 240;
-
+import AutoLabelOptions from './AutolabelOptions';
+import { AutoLabelScheme } from '../drawing/graphdrawing';
+import GraphDisplayOptions from './GraphDisplayOptions';
 const DrawerHeader = styled('div')(({ theme }) => ({
   display: 'flex',
   alignItems: 'center',
@@ -21,7 +21,14 @@ const DrawerHeader = styled('div')(({ theme }) => ({
   justifyContent: 'flex-end',
 }));
 
-export default function LeftSide() {
+// Props for the TabPanel component
+interface RightSideProps {
+  updateAutoLabelOptions: (option: AutoLabelScheme) => void;
+  updateGraphDisplayOptions: (vertexSize:number, weightFontSize:number) => void;
+}
+
+// export default function LeftSide(addGraph) {
+const RightSide: React.FC<RightSideProps> = ({ updateAutoLabelOptions, updateGraphDisplayOptions}) => {
   const theme = useTheme();
   const [open, setOpen] = React.useState(true);
 
@@ -54,7 +61,9 @@ export default function LeftSide() {
             <Typography component="span">Graph Display Options</Typography>
             </AccordionSummary>
             <AccordionDetails>
-            No Bookmarked Graphs
+              <GraphDisplayOptions
+                updateGraphDisplayOptions={updateGraphDisplayOptions}
+              />
             </AccordionDetails>
         </Accordion>
         <Accordion>
@@ -64,9 +73,13 @@ export default function LeftSide() {
             <Typography component="span">Vertex Auto-Label Type</Typography>
             </AccordionSummary>
             <AccordionDetails>
-            No Bookmarked Graphs
+              <AutoLabelOptions 
+                updateAutoLabelOptions={updateAutoLabelOptions}
+              />
             </AccordionDetails>
         </Accordion>
     </div>
  );
 }
+
+export default RightSide;

@@ -1,58 +1,10 @@
-
-export interface GraphHolder {
-  id: number;
-  name: string;
-  description: string;
-  graph: Graph;
-}
-
-
-export const createNewGraph = (graphType:string, nextGraphId:number): GraphHolder => {
-    let graph: Graph;
-    switch (graphType) {
-        case "empty-directed":
-            graph = new UnweightedGraph(true);
-            break;
-        case "empty-undirected":
-            graph = new UnweightedGraph(false);
-            break;
-        case "empty-directed-weighted":
-            graph = new WeightedGraph(true);
-            break;
-        case "empty-undirected-weighted":
-            graph = new WeightedGraph(false);
-            break;
-        case "empty-euclidean":
-            graph = new EuclideanGraph();
-            break;
-        default:
-            graph = new UnweightedGraph(true);
-    }
-    return {
-        id: nextGraphId,
-        name: graphType,
-        description: graphType,
-        graph: graph
-    }
-    // if (graph instanceof EuclideanGraph) {
-    //     this.tabDrawings[id] = new EuclideanGraphDrawing(graph);
-    // } else {
-    //     this.tabDrawings[id] = GraphDrawing.create(graph);
-    // }
-    // if (Object.keys(this.tabDrawings).length == 1) {
-    //     $("#noGraphText").hide();
-    // }
-}
-
-
 import { EuclideanGraph } from "./euclidean_graph";
 
 type EmptyEdgeData = { };
-interface EdgeData extends EmptyEdgeData {};
 interface WeightedEdgeData extends EmptyEdgeData { weight: number };
 interface MultiEdgeData extends EmptyEdgeData { count: number };
 
-type GraphAdjacencies<EdgeData extends EmptyEdgeData> = Map<number, Map<number, EdgeData>>;
+type GraphAdjacencies<EdgeData extends EmptyEdgeData> = Map<number, Map<number, EdgeData>>;;
 type UnweightedAdjacencies = GraphAdjacencies<EmptyEdgeData>;
 type WeightedAdjacencies = GraphAdjacencies<WeightedEdgeData>;
 type MultiAdjacencies = GraphAdjacencies<MultiEdgeData>;
@@ -139,7 +91,7 @@ export function fromJsonObject(jsonObject: any): Graph {
     }
 }
 
-abstract class DefaultGraph<EdgeData extends EmptyEdgeData> implements Graph {
+abstract class DefaultGraph<EdgeData> implements Graph {
     protected adjacencies: GraphAdjacencies<EdgeData>;
     protected readonly directed: boolean;
     protected vertexLabels: Map<number, string>;

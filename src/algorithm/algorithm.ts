@@ -12,12 +12,6 @@ export interface AlgorithmOutput {
     message: Message;
 }
 
-// export interface AlgorithmOutput {
-//     graph: Graph;
-//     name: string;
-// }
-
-
 export interface Algorithm<I> {
     run(input: I): Generator<void, AlgorithmOutput, void>;
     getFullName(): string;
