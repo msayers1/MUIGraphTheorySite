@@ -1,5 +1,5 @@
 {
-  "name": "GraphTheorySite",
+  "name": "graph_theory_site_mui",
   "version": "0.0.1",
   "private": true,
   "dependencies": {
@@ -9,8 +9,10 @@
     "@mui/material": "latest",
     "@types/react": "latest",
     "@types/react-dom": "latest",
+    "heap-js": "^2.6.0",
     "react": "latest",
     "react-dom": "latest",
+    "react-konva": "^19.0.2",
     "typescript": "latest"
   },
   "scripts": {
