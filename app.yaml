@@ -1,0 +1,18 @@
+runtime: nodejs22 # Use the appropriate Node.js runtime version
+# instance_class: F1 # Optional: Defines the instance class for scaling
+
+env: standard
+
+handlers:
+  # Serve static files from the dist/ directory
+  - url: /
+    static_files: dist/index.html
+    upload: dist/index.html
+
+  - url: /
+    static_dir: dist
+
+automatic_scaling: # Optional: Configure scaling behavior
+  target_cpu_utilization: 0.65
+  target_throughput_utilization: 0.75
+  max_instances: 10 # Limits the number of instances
