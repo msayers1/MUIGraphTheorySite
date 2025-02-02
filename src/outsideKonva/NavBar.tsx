@@ -21,7 +21,7 @@ export default function NavBar() {
         //     case "Save":
                 
         // }
-        console.log(buttonId);
+        // console.log(buttonId);
                 
         setAnchorGraph(null);
     };
@@ -35,7 +35,7 @@ export default function NavBar() {
         //     case "Kruskal":
                 
         // }
-        console.log(buttonId);
+        // console.log(buttonId);
         setAnchorAlgrorithm(null);
     };
   return (

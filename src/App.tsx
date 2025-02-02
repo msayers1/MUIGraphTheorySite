@@ -52,7 +52,7 @@ export default function App() {
     graphTabs.getActiveGraphDrawing()?.setAutoLabelScheme(option as AutoLabelScheme);
   }
   const updateGraphDisplayOptions = (vertexSize:number, weightFontSize:number) => {
-    console.log(`The vertex Size or Vertex Radius value is ${vertexSize}, and the weight font size is ${weightFontSize}.`);
+    // console.log(`The vertex Size or Vertex Radius value is ${vertexSize}, and the weight font size is ${weightFontSize}.`);
     graphTabs.displayCustomizer.updateGraphDisplayOptions(vertexSize, weightFontSize);
   }
 
@@ -119,7 +119,7 @@ export default function App() {
     const newTabArray = graphTabs.tabBar.changeTab(newValue);
     setTabArray(newTabArray);
     setTabIndex(newValue);
-    console.log(graphTabs);
+    // console.log(graphTabs);
   };
 
   return (

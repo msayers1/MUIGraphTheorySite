@@ -81,7 +81,7 @@ export default class GraphTabs {
             }
         });
         this.tabBar.setTabActivatedCallback((id: number) => {
-            console.log(`Set Tab Active in GraphTabs ${id}`);
+            // console.log(`Set Tab Active in GraphTabs ${id}`);
             this.stage.removeChildren();
             this.stage.clear();
             this.tabDrawings[id].attachStage(this.stage, this.tools);
