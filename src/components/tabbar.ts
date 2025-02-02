@@ -138,7 +138,6 @@ export class TabBar {
         // a.removeClass("bg-secondary");
         this.makeTitleEditable(id);
         this.tabActivatedCallback?.(id);
-        this.tabDeactivatedCallback?.(this.prevActiveId);
         return(this.tabArray);
     }
 
