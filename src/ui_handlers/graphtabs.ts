@@ -8,8 +8,12 @@ import { EuclideanGraph } from "../graph_core/euclidean_graph";
 import { Size } from "../commontypes";
 import { AlgorithmControls } from "../components/algorithm_controls";
 import { Tools } from "./tools";
+import AutoLayout from "../ui_handlers/autolayout";
+import DisplayCustomizer from './display_customizer';
 
 export default class GraphTabs {
+    autoLayout: AutoLayout;
+    displayCustomizer: DisplayCustomizer;
     tabBar: TabBar;
     tabDrawings: {[id: number]: GraphDrawing} = {};
     controlPanels: {[id: number]: AlgorithmControls } = {};
@@ -21,11 +25,13 @@ export default class GraphTabs {
     private clickToAddUpdater: () => void;
 
     constructor(private stage: Konva.Stage, callbackClickToAddText:((state:boolean)=>void), callbackNoGraphText: ((state:boolean)=>void), setCorrectControlPanel: ((id:number)=>void)) {
+        this.tabSwitchCallbacks = [];
         this.callbackClickToAddText = callbackClickToAddText;
         this.callbackNoGraphText = callbackNoGraphText;
         this.setCorrectControlPanel = setCorrectControlPanel;
         this.tabBar = new TabBar();
-        this.tabSwitchCallbacks = [];
+        this.autoLayout = new AutoLayout(this);
+        this.displayCustomizer = new DisplayCustomizer(this);
         // $("#clickToAddText").hide();
         this.callbackClickToAddText(false);
         this.clickToAddUpdater = () => {
@@ -75,12 +81,12 @@ export default class GraphTabs {
             }
         });
         this.tabBar.setTabActivatedCallback((id: number) => {
-            console.log(`Set Tab Active in GraphTabs${id}`);
+            console.log(`Set Tab Active in GraphTabs ${id}`);
             this.stage.removeChildren();
             this.stage.clear();
             this.tabDrawings[id].attachStage(this.stage, this.tools);
             this.tabDrawings[id].renderGraph();
-            this.setCorrectControlPanel(id);
+            // this.setCorrectControlPanel(id);
             this.tabSwitchCallbacks.forEach(cb => cb());
             this.clickToAddUpdater();
             this.tabDrawings[id].setGraphEditCallback(this.clickToAddUpdater);

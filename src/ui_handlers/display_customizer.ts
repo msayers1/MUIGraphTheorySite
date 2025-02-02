@@ -10,25 +10,29 @@ export default class DisplayCustomizer {
         this.graphTabs.registerTabSwitchCallback(() => {
             const graphDrawing = this.graphTabs.getActiveGraphDrawing();
             if (graphDrawing != null) {
-                this.setVertexSizeSliderPosition(graphDrawing.getVertexRadius());
-                this.setWeightFontSizeSelectValue(graphDrawing.getWeightFontSize());
+                this.updateGraphDisplayOptions(graphDrawing.getVertexRadius(), graphDrawing.getWeightFontSize());
             }
         });
-        $("#vertex-size").on("change", (e) => {
-            const target = e.target as HTMLInputElement;
-            this.setVertexSize(parseInt(target.value));
-        });
-        $("#vertex-size").on("input", () => $("#vertex-size").trigger('change'));
-        $("#weight-size").on("change", (e) => {
-            const target = e.target as HTMLInputElement;
-            const value = parseInt(target.value);
-            if (isNaN(value)) {
-                console.error(`Could not interpret ${target.value} as a number`);
-                return;
-            }
-            this.setWeightFontSize(value);
-        });
+        // $("#vertex-size").on("change", (e) => {
+        //     const target = e.target as HTMLInputElement;
+        //     this.setVertexSize(parseInt(target.value));
+        // });
+        // $("#vertex-size").on("input", () => $("#vertex-size").trigger('change'));
+        // $("#weight-size").on("change", (e) => {
+        //     const target = e.target as HTMLInputElement;
+        //     const value = parseInt(target.value);
+        //     if (isNaN(value)) {
+        //         console.error(`Could not interpret ${target.value} as a number`);
+        //         return;
+        //     }
+        //     this.setWeightFontSize(value);
+        // });
 
+    }
+
+    public updateGraphDisplayOptions(vertexSize: number, weightFontSize: number) {
+        this.setVertexSize(vertexSize);
+        this.setWeightFontSize(weightFontSize);
     }
 
     private setVertexSize(vertexSize: number) {
@@ -39,9 +43,9 @@ export default class DisplayCustomizer {
         drawing.setVertexRadius(2 + vertexSize);
     }
 
-    private setVertexSizeSliderPosition(vertexSize: number) {
-         $("#vertex-size").prop("value", vertexSize - 2);
-    }
+    // private setVertexSizeSliderPosition(vertexSize: number) {
+    //      $("#vertex-size").prop("value", vertexSize - 2);
+    // }
 
     private setWeightFontSize(fontSize: number) {
         const drawing = this.graphTabs.getActiveGraphDrawing();
@@ -51,7 +55,7 @@ export default class DisplayCustomizer {
         drawing.setWeightFontSize(fontSize);
     }
 
-    private setWeightFontSizeSelectValue(fontSize: number) {
-         $("#weight-size").prop("value", fontSize);
-    }
+    // private setWeightFontSizeSelectValue(fontSize: number) {
+    //      $("#weight-size").prop("value", fontSize);
+    // }
 }

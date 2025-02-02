@@ -33,13 +33,16 @@ const GraphDisplayOptions: React.FC<GraphDisplayOptionsProps> = ({ updateGraphDi
     const [weightFontSize, setWeightFontSize] = React.useState<number>(7);
     return (
         <React.Fragment>
+            <InputLabel id="demo-simple-select-label">Vertex Size</InputLabel>
             <Slider value={vertexSize} onChange={handleChangeSize} aria-label="Disabled slider" />
-            <InputLabel id="demo-simple-select-label">Age</InputLabel>
+            {/* 
+            This option is wired but has no effect with the current wiring. 
+            <InputLabel id="demo-simple-select-label">Weight Font Size</InputLabel>
             <Select
                 labelId="demo-simple-select-label"
                 id="demo-simple-select"
                 value={weightFontSize}
-                label="Age"
+                label="Weight Font Size"
                 onChange={handleChangeWeight}
             >
                 {vertexWeights.map((number) => (
@@ -47,7 +50,7 @@ const GraphDisplayOptions: React.FC<GraphDisplayOptionsProps> = ({ updateGraphDi
                       {number}
                     </MenuItem>
                   ))}
-            </Select>
+            </Select> */}
         </React.Fragment>
   );
 }

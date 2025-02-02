@@ -8,11 +8,6 @@ export default class AutoLayout {
 
     constructor(graphTabs: GraphTabs) {
         this.graphTabs = graphTabs;
-        $("#layout-buttons-container").find("button").on("click", e => {
-            const layoutName = $(e.target).closest("[data-layout]")
-                .attr("data-layout") as Layout.LayoutName;
-            this.setLayout(layoutName);
-        });
     }
 
     setLayout(layoutName: Layout.LayoutName) {
