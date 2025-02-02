@@ -45,7 +45,8 @@ export class Tools {
         } else if (this.currentTool == "text") {
             this.stage.container().style.cursor = "text";
         } else if (this.currentTool == "color") {
-            this.stage.container().style.cursor = "url(img/colorlens.svg) 8 8, auto";
+            // this.stage.container().style.cursor = "grab";
+            this.stage.container().style.cursor = "url(img/palette.cur), auto";
         } else {
             throw new Error(`Tool ${this.currentTool} has no associated cursor!`);
         }
