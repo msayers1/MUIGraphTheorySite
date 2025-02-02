@@ -9,8 +9,8 @@ import LeftSide from './outsideKonva/LeftSide';
 import RightSide from './outsideKonva/RightSide';
 import Grid from '@mui/material/Grid2';
 import GraphTabs from "./ui_handlers/graphtabs";
-import AutoLabelOptions from "./ui_handlers/autolabel_options";
-import AutoLayout from "./ui_handlers/autolayout";
+// import AutoLabelOptions from "./ui_handlers/autolabel_options";
+// import AutoLayout from "./ui_handlers/autolayout";
 import ImportExport from "./ui_handlers/importexport";
 import GraphGenerate from './ui_handlers/graphgenerate';
 import DisplayCustomizer from './ui_handlers/display_customizer';
@@ -21,6 +21,7 @@ import { Tools } from './ui_handlers/tools';
 import './components/tabbar';   // Executes the module, to register custom element
 import * as TabBar from './components/tabbar';  // Actually does the import
 import './components/algorithm_controls';
+import { LayoutName } from "./drawing/layouts";
 import { AutoLabelScheme } from './drawing/graphdrawing';
 import HighlightOff from '@mui/icons-material/HighlightOff';
 import { IconButton, Box } from '@mui/material';
@@ -44,11 +45,15 @@ export default function App() {
     graphTabs.tools.clickTool(tool);
   };
 
+  const updateAutoLayoutOption = (option: LayoutName) => {
+    graphTabs.autoLayout.setLayout(option);
+  }
   const updateAutoLabelOptions = (option: AutoLabelScheme) => {
     graphTabs.getActiveGraphDrawing()?.setAutoLabelScheme(option as AutoLabelScheme);
   }
   const updateGraphDisplayOptions = (vertexSize:number, weightFontSize:number) => {
     console.log(`The vertex Size or Vertex Radius value is ${vertexSize}, and the weight font size is ${weightFontSize}.`);
+    graphTabs.displayCustomizer.updateGraphDisplayOptions(vertexSize, weightFontSize);
   }
 
   const addGraph = (tabType: TabBar.TabType) => {
@@ -125,6 +130,9 @@ export default function App() {
           <LeftSide
             addGraph={addGraph}
             updateTool={updateTool}
+            updateAutoLayoutOption={updateAutoLayoutOption}
+            updateAutoLabelOptions={updateAutoLabelOptions}
+            updateGraphDisplayOptions={updateGraphDisplayOptions}
              />
         </Grid>
         <Grid size={{md: 8}}>
@@ -221,12 +229,13 @@ export default function App() {
             
           </Stage>
         </Grid>
-        <Grid size={{md: 2}}>
+        {/* <Grid size={{md: 2}}>
           <RightSide 
+            updateAutoLayoutOption={updateAutoLayoutOption}
             updateAutoLabelOptions={updateAutoLabelOptions}
             updateGraphDisplayOptions={updateGraphDisplayOptions}
           />
-        </Grid>
+        </Grid> */}
       </Grid>
 
     </React.Fragment>

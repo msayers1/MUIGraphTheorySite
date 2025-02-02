@@ -14,12 +14,7 @@ import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid2';
 import * as TabBar from '../components/tabbar';
 import ColorLensIcon from '@mui/icons-material/ColorLens';
-import AutoLabelOptions from './AutolabelOptions';
-import { LayoutName } from '../drawing/layouts';
-import { AutoLabelScheme } from '../drawing/graphdrawing';
-import GraphDisplayOptions from './GraphDisplayOptions';
-import { CheckBoxOutlineBlankOutlined, MoreVert, ZoomOutMap } from '@mui/icons-material';
-import CircleOutlined from '@mui/icons-material/CircleOutlined';
+
 
 const drawerWidth = 240;
 
@@ -36,13 +31,10 @@ const DrawerHeader = styled('div')(({ theme }) => ({
 interface LeftSideProps {
   addGraph: (tabType: TabBar.TabType) => void;
   updateTool: (tool: string) => void;
-  updateAutoLayoutOption: (option: LayoutName) => void;
-  updateAutoLabelOptions: (option: AutoLabelScheme) => void;
-  updateGraphDisplayOptions: (vertexSize:number, weightFontSize:number) => void;
 }
 
 // export default function LeftSide(addGraph) {
-const LeftSide: React.FC<LeftSideProps> = ({ addGraph, updateTool, updateAutoLayoutOption, updateAutoLabelOptions, updateGraphDisplayOptions }) => {
+const LeftSide: React.FC<LeftSideProps> = ({ addGraph, updateTool }) => {
   const theme = useTheme();
   const [open, setOpen] = React.useState(true);
 
@@ -127,62 +119,6 @@ const LeftSide: React.FC<LeftSideProps> = ({ addGraph, updateTool, updateAutoLay
               </Grid>
             </AccordionDetails>
         </Accordion>
-        <Accordion>
-        <AccordionSummary
-            expandIcon={<ExpandMoreIcon />}
-            >
-            <Typography component="span">Auto Layout</Typography>
-            </AccordionSummary>
-            <AccordionDetails>
-            <Grid container spacing={1} >
-              <Grid size={{md: 12}}>
-                <Button onClick={()=>{updateAutoLayoutOption("circular" as LayoutName)}}>
-                  <CircleOutlined/> &nbsp; &nbsp; Circular
-                </Button>
-              </Grid>
-              <Grid>   
-                <Button onClick={()=>{updateAutoLayoutOption("bipartite" as LayoutName)}}>
-                  <MoreVert /><MoreVert /> &nbsp; Bipartite
-                </Button>
-              </Grid>
-              <Grid size={{md: 12}}>
-                <Button onClick={()=>{updateAutoLayoutOption("grid" as LayoutName)}}>
-                  <CheckBoxOutlineBlankOutlined/> &nbsp; &nbsp; Grid
-                </Button>
-              </Grid>
-              <Grid>   
-                <Button onClick={()=>{updateAutoLayoutOption("forcebased" as LayoutName)}}>
-                  <ZoomOutMap /> &nbsp; Force
-                </Button>
-              </Grid>
-            </Grid>
-              
-            </AccordionDetails>
-        </Accordion>
-        <Accordion>
-            <AccordionSummary
-            expandIcon={<ExpandMoreIcon />}
-            >
-            <Typography component="span">Graph Display Options</Typography>
-            </AccordionSummary>
-            <AccordionDetails>
-              <GraphDisplayOptions
-                updateGraphDisplayOptions={updateGraphDisplayOptions}
-              />
-            </AccordionDetails>
-        </Accordion>
-        <Accordion>
-            <AccordionSummary
-            expandIcon={<ExpandMoreIcon />}
-            >
-            <Typography component="span">Vertex Auto-Label Type</Typography>
-            </AccordionSummary>
-            <AccordionDetails>
-              <AutoLabelOptions 
-                updateAutoLabelOptions={updateAutoLabelOptions}
-              />
-            </AccordionDetails>
-          </Accordion>
         <Accordion>
             <AccordionSummary
             expandIcon={<ExpandMoreIcon />}
