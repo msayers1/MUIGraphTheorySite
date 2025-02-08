@@ -26,8 +26,8 @@ export class TabBar {
         // this.appendChild(templateFrag);
         // Sortable.create(this.querySelector("ul"));
         this.nextId = 0;
-        this.prevActiveId = 0;
-        this.activeId = 0;
+        this.prevActiveId = undefined;
+        this.activeId = undefined;
         this.tabArray = [];
 
     }
@@ -112,10 +112,11 @@ export class TabBar {
 
     setActiveById(id: number) {
         this.prevActiveId = this.getActiveTabId();
-        // if (this.prevActiveId != undefined) {
-        //     this.makeTitleNonEditable(this.prevActiveId);
-        //     this.tabDeactivatedCallback?.(this.prevActiveId);
-        // }
+        if (this.prevActiveId != undefined) {
+            // this.makeTitleNonEditable(this.prevActiveId);
+            console.log(this.prevActiveId);
+            this.tabDeactivatedCallback?.(this.prevActiveId);
+        }
         // $("#tabbar").children().children("a").removeClass("active");
         // $("#tabbar").children().children("a").addClass("bg-secondary");
         // const a = $("#tabbar").children(`li[data-id=${id}]`).children("a");
@@ -123,6 +124,7 @@ export class TabBar {
         // a.removeClass("bg-secondary");
         this.makeTitleEditable(id);
         this.tabActivatedCallback?.(id);
+        this.activeId = id;
     }
 
     changeTab(id: number) {
@@ -154,7 +156,8 @@ export class TabBar {
     }
 
     getActiveTabTitle(): string {
-        return $("#tabbar").find("a.active").children("span").html();
+        // return $("#tabbar").find("a.active").children("span").html();
+        return this.tabArray[this.activeId].name;
     }
 
     removeById(id: number) {
@@ -162,6 +165,7 @@ export class TabBar {
         const tabIndexToRemove = this.tabArray.findIndex((tab:tabObject) => tab.id === id);
         if (tabIndexToRemove === -1) return; // If the tab is not found
         // Remove the tab from the array
+        this.tabDeactivatedCallback(id);
         const updatedTabs = this.tabArray.filter((tab:tabObject) => tab.id !== id);
         this.tabArray = updatedTabs;
         if (id === this.activeId) {
