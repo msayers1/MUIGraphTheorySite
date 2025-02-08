@@ -35,6 +35,7 @@ export default function App() {
   const [tabName, setTabName] = React.useState("");
   const [tabEdit, setTabEdit] = React.useState(false);
   const [graphTabs, setGraphTabs] = React.useState<GraphTabs>();
+  const [bookmarks, setBookmarks] = React.useState<StoredDrawingInfo[]>();
   const [tabArray, setTabArray] = React.useState<[tabObject]>();
   const [noGraph, setNoGraph] = React.useState(true);
   const [clickToAddText, setClickToAddText] = React.useState(false);
@@ -68,7 +69,6 @@ export default function App() {
   function displayNewGraph(tabType: TabBar.TabType) {
     // const tabbar: TabBar.TabBar = document.querySelector("tab-bar");
     const newId = graphTabs.tabBar.addTabElement("New Graph", tabType);
-    console.log(newId);
     graphTabs.tabBar.setActiveById(newId);
     setTabIndex(newId);
     // console.log(graphTabs);
@@ -76,7 +76,10 @@ export default function App() {
   React.useEffect(() => {
     const tools = new Tools(stage.current);
     const graphTabs = new GraphTabs(stage.current, setClickToAddText, setNoGraph, setCorrectControlPanel);
+    const bookmarks = graphTabs.bookmarkedGraphs.getBookmarks();
+    graphTabs.bookmarkedGraphs.setBookmarkActionCallback((newBookmarks)=>{setBookmarks(newBookmarks);});
     setGraphTabs(graphTabs);
+    setBookmarks(bookmarks);
     // console.log(graphTabs);
   }, [stage.current]);
 
@@ -86,7 +89,6 @@ export default function App() {
 
   const handleRemoveTab = (tabId: number) => {
     const newTabArray = graphTabs.tabBar.removeById(tabId);
-    console.log(newTabArray);
     setTabArray(newTabArray);
     // graphTabs.tabBar.setTabs((prevTabs) => prevTabs.filter((tab) => tab.id !== tabId));
     // if (selectedTab === tabId && tabs.length > 1) {
@@ -127,7 +129,7 @@ export default function App() {
             case "Open":
             break;
             case "Bookmark":
-              graphTabs.bookmarkedGraphs.bookmark(graphTabs);
+              const bookmarks = graphTabs.bookmarkedGraphs.bookmark(graphTabs);
             break;
             case "Generate":
             break;
@@ -163,7 +165,7 @@ export default function App() {
             updateAutoLayoutOption={updateAutoLayoutOption}
             updateAutoLabelOptions={updateAutoLabelOptions}
             updateGraphDisplayOptions={updateGraphDisplayOptions}
-            bookmarks={(typeof(graphTabs) != "undefined")?graphTabs.bookmarkedGraphs.getBookmarks():undefined}
+            bookmarks={bookmarks}
             openBookmark={openBookmark}
             handleRemoveBookmark={handleRemoveBookmark}
              />

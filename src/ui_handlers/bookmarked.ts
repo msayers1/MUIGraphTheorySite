@@ -4,18 +4,19 @@ import { GraphDrawingStore, LocalGraphDrawingStore, StoredDrawingInfo } from "..
 import { GraphDrawing } from "../drawing/graphdrawing";
 import { TabEventCallback, TabCreatedCallback, TabType } from "../components/tabbar";
 
+
 export type BookmarkRetrievalCallback = (drawing: GraphDrawing, title: string) => number;
-// export type BookmarkActionCallback = () => void;
+export type BookmarkActionCallback = (newBookmarks: StoredDrawingInfo[]) => void;
 
 export default class BookmarkedGraphs {
     private store: GraphDrawingStore;
     private bookmarkRetrievalCallback: BookmarkRetrievalCallback;
-    // private bookmarkActionCallback: BookmarkActionCallback;
+    private bookmarkActionCallback: BookmarkActionCallback;
 
     constructor(private graphTabs: GraphTabs) {
         this.store = LocalGraphDrawingStore.getInstance();
-        // this.store.listenForChanges(this.update.bind(this));
-        // this.update();
+        this.store.listenForChanges(this.update.bind(this));
+        this.update();
         // $("#btn-bookmark").on('click', _ => {
         //     const drawing = graphTabs.getActiveGraphDrawing();
         //     if (drawing == undefined) {
@@ -34,18 +35,21 @@ export default class BookmarkedGraphs {
     setBookmarkRetrievalCallback(retrievalBookmarkCallback: BookmarkRetrievalCallback) {
         this.bookmarkRetrievalCallback = retrievalBookmarkCallback;
     }
-    // setBookmarkActionCallback(bookmarkActionCallback: BookmarkActionCallback) {
-    //     this.bookmarkActionCallback = bookmarkActionCallback;
-    // }
+    setBookmarkActionCallback(bookmarkActionCallback: BookmarkActionCallback) {
+        this.bookmarkActionCallback = bookmarkActionCallback;
+    }
 
     public retrieveBookmark(item: StoredDrawingInfo) {
         // const newId = this.createTab(this.store.getGraphDrawingById(item.id),item.name);
         const newId = this.bookmarkRetrievalCallback(this.store.getGraphDrawingById(item.id),item.name);
+        const bookmarks = this.store.getAllStoredInfo();
         return newId;
     }
 
     public removeBookmark(id: number) {
         this.store.deleteGraphDrawing(id);
+        const newBookmarks = this.store.getAllStoredInfo();
+        this.bookmarkActionCallback?.(newBookmarks);
     }
     public bookmark(graphTabs: GraphTabs) {
         const drawing = graphTabs.getActiveGraphDrawing();
@@ -61,7 +65,8 @@ export default class BookmarkedGraphs {
         }
         const name = graphTabs.tabBar.getActiveTabTitle();
         this.store.storeGraphDrawing(drawing, name);
-        // this.bookmarkActionCallback?.();
+        const newBookmarks = this.store.getAllStoredInfo();
+        this.bookmarkActionCallback?.(newBookmarks);
     }
 
     public getBookmarks(): StoredDrawingInfo[] {
@@ -70,19 +75,20 @@ export default class BookmarkedGraphs {
     }
     
 
-    // private update() {
-    //     this.bookmarkActionCallback?.();
-    //     // const items = this.st    ore.getAllStoredInfo();
-    //     // for (const item of items) {
-    //     //     console.log(`Update is being called and items: ${item.id} ${item.name}`);
-    //     // }
-    //     // $("#bookmarkedContainer").html('');
-    //     // if (items.length > 0) {
-    //     //     $("#bookmarkedContainer").append(this.getBookmarksList(items));
-    //     // } else {
-    //     //     $("#bookmarkedContainer").append(this.getNoBookmarks());
-    //     // }
-    // }
+    private update() {
+        const newBookmarks = this.store.getAllStoredInfo();
+        this.bookmarkActionCallback?.(newBookmarks);
+        // const items = this.store.getAllStoredInfo();
+        // for (const item of items) {
+        //     console.log(`Update is being called and items: ${item.id} ${item.name}`);
+        // }
+        // $("#bookmarkedContainer").html('');
+        // if (items.length > 0) {
+        //     $("#bookmarkedContainer").append(this.getBookmarksList(items));
+        // } else {
+        //     $("#bookmarkedContainer").append(this.getNoBookmarks());
+        // }
+    }
 
     // Moved to setBookmarkRetrievalCallback defined in graphtabs and stored within this class. 
     // private createTab(drawing: GraphDrawing, title: string) {

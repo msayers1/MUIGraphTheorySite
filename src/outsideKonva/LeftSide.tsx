@@ -57,7 +57,7 @@ const LeftSide: React.FC<LeftSideProps> = ({ addGraph, updateTool, updateAutoLay
   const handleDrawerClose = () => {
     setOpen(false);
   };
-
+  console.log(bookmarks);
   return (
     <div>
         <Accordion>
