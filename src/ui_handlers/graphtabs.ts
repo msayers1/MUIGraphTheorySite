@@ -10,11 +10,13 @@ import { AlgorithmControls } from "../components/algorithm_controls";
 import { Tools } from "./tools";
 import AutoLayout from "../ui_handlers/autolayout";
 import DisplayCustomizer from './display_customizer';
+import BookmarkedGraphs from './bookmarked';
 
 export default class GraphTabs {
     autoLayout: AutoLayout;
     displayCustomizer: DisplayCustomizer;
     tabBar: TabBar;
+    bookmarkedGraphs: BookmarkedGraphs;
     tabDrawings: {[id: number]: GraphDrawing} = {};
     controlPanels: {[id: number]: AlgorithmControls } = {};
     tabSwitchCallbacks: (() => void)[];
@@ -22,9 +24,13 @@ export default class GraphTabs {
     callbackNoGraphText: ((state:boolean)=>void);
     setCorrectControlPanel: ((id:number)=>void);
     tools: Tools;
+    // Possible direction to update
+    // update: boolean;
     private clickToAddUpdater: () => void;
 
     constructor(private stage: Konva.Stage, callbackClickToAddText:((state:boolean)=>void), callbackNoGraphText: ((state:boolean)=>void), setCorrectControlPanel: ((id:number)=>void)) {
+        // Possible direction to update
+        // this.update = false;
         this.tabSwitchCallbacks = [];
         this.callbackClickToAddText = callbackClickToAddText;
         this.callbackNoGraphText = callbackNoGraphText;
@@ -32,6 +38,7 @@ export default class GraphTabs {
         this.tabBar = new TabBar();
         this.autoLayout = new AutoLayout(this);
         this.displayCustomizer = new DisplayCustomizer(this);
+        this.bookmarkedGraphs = new BookmarkedGraphs(this);
         // $("#clickToAddText").hide();
         this.callbackClickToAddText(false);
         this.clickToAddUpdater = () => {
@@ -111,8 +118,22 @@ export default class GraphTabs {
                 this.callbackNoGraphText(true);
             }
         });
+        this.bookmarkedGraphs.setBookmarkRetrievalCallback((drawing: GraphDrawing, title: string) => {
+            const newId = this.tabBar.addTabElement(title, "loaded");
+            console.log(`new ID in graphTabs:${newId}`);
+            this.tabBar.setActiveById(newId);
+            this.updateGraphDrawing(newId, drawing);
+            return newId;
+        });
+        // Possible direction to update
+        // this.bookmarkedGraphs.setBookmarkActionCallback(()=>{
+            // this.update = true;
+        // })
     }
-
+    // Resetting the update
+    // resetUpdateFlag() {
+        // this.update = false;
+    // }
     // updateGraphDrawing(id: number, graphDrawing: GraphDrawing) {
     //     const active = this.tabBar.getActiveTabId();
     //     if (active == id) {
@@ -127,10 +148,13 @@ export default class GraphTabs {
     //         this.tabDrawings[id] = graphDrawing;
     //     }
     // }
+    
     updateGraphDrawing(id: number, graphDrawing: GraphDrawing) {
-        // const active = this.getActiveTabId();
-        const active = this.tabBar.getActiveTabId();
-        if (active == id) {
+        // console.log(`Id:${id}, active ${this.tabBar.getActiveTabId()}`);
+        // // const active = this.getActiveTabId();
+        // const active = this.tabBar.getActiveTabId();
+        // if (active == id || bookmarkFlag) {
+            console.log(`Id for active:${id}`);
             this.tabDrawings[id].detachStage();
             this.stage.destroyChildren();
             this.stage.clear();
@@ -138,9 +162,9 @@ export default class GraphTabs {
             this.tabDrawings[id].attachStage(this.stage, this.tools);
             this.tabDrawings[id].renderGraph();
             this.clickToAddUpdater();
-        } else {
-            this.tabDrawings[id] = graphDrawing;
-        }
+        // } else {
+        //     this.tabDrawings[id] = graphDrawing;
+        // }
     }
 
 

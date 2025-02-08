@@ -13,7 +13,7 @@ export interface GraphDrawingStore {
     getGraphDrawingById(id: number): GraphDrawing;
     storeGraphDrawing(graphDrawing: GraphDrawing, name: string): number;
     deleteGraphDrawing(id: number): boolean;
-    listenForChanges(callback: () => void): void;
+    // listenForChanges(callback: () => void): void;
 }
 
 function isInteger(s: string): boolean {
@@ -22,7 +22,7 @@ function isInteger(s: string): boolean {
 
 export class LocalGraphDrawingStore implements GraphDrawingStore {
     private static instance: LocalGraphDrawingStore;
-    private changeCallback: () => void;
+    // private changeCallback: () => void;
 
     private constructor() {
     }
@@ -60,7 +60,7 @@ export class LocalGraphDrawingStore implements GraphDrawingStore {
         }
         const storedDrawing: StoredDrawing = [ name, graphDrawing.toJsonString()];
         localStorage.setItem(nextId.toString(), JSON.stringify(storedDrawing));
-        this.changeCallback();
+        // this.changeCallback();
         return nextId;
     }
 
@@ -68,13 +68,13 @@ export class LocalGraphDrawingStore implements GraphDrawingStore {
         const ids = this.getAllStoredInfo().map(i => i.id);
         if (ids.includes(id)) {
             localStorage.removeItem(id.toString());
-            this.changeCallback();
+            // this.changeCallback();
             return true;
         }
         return false;
     }
 
-    listenForChanges(callback: () => void) {
-        this.changeCallback = callback;
-    }
+    // listenForChanges(callback: () => void) {
+    //     this.changeCallback = callback;
+    // }
 }
