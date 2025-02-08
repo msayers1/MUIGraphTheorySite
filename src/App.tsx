@@ -27,6 +27,7 @@ import HighlightOff from '@mui/icons-material/HighlightOff';
 import { IconButton, Box } from '@mui/material';
 import {tabObject} from './components/tabbar';
 import SaveAs from '@mui/icons-material/SaveAs';
+import { StoredDrawingInfo } from './store/graphstore';
 
 export default function App() {
   const stage = React.useRef(null);
@@ -67,6 +68,7 @@ export default function App() {
   function displayNewGraph(tabType: TabBar.TabType) {
     // const tabbar: TabBar.TabBar = document.querySelector("tab-bar");
     const newId = graphTabs.tabBar.addTabElement("New Graph", tabType);
+    console.log(newId);
     graphTabs.tabBar.setActiveById(newId);
     setTabIndex(newId);
     // console.log(graphTabs);
@@ -77,8 +79,14 @@ export default function App() {
     setGraphTabs(graphTabs);
     // console.log(graphTabs);
   }, [stage.current]);
+
+  const handleRemoveBookmark = (id: number) => {
+    graphTabs.bookmarkedGraphs.removeBookmark(id);
+  }
+
   const handleRemoveTab = (tabId: number) => {
     const newTabArray = graphTabs.tabBar.removeById(tabId);
+    console.log(newTabArray);
     setTabArray(newTabArray);
     // graphTabs.tabBar.setTabs((prevTabs) => prevTabs.filter((tab) => tab.id !== tabId));
     // if (selectedTab === tabId && tabs.length > 1) {
@@ -112,7 +120,27 @@ export default function App() {
   }
     
   
+  const handleNavBarAction = (buttonId: string) => {
+        switch(buttonId) {
+            case "Save":
+            break;
+            case "Open":
+            break;
+            case "Bookmark":
+              graphTabs.bookmarkedGraphs.bookmark(graphTabs);
+            break;
+            case "Generate":
+            break;
+        }
+        // console.log(buttonId);
+  }
 
+  const openBookmark = (item: StoredDrawingInfo) => {
+    const newId = graphTabs.bookmarkedGraphs.retrieveBookmark(item);
+    setTabArray(graphTabs.tabBar.tabArray);
+    setTabIndex(newId);
+    //GraphTabs.bookmarkedGraphs.retrieveBookmark(item);
+  }
 
 
   const handleTabChange = (newValue: number) => {
@@ -124,7 +152,9 @@ export default function App() {
 
   return (
     <React.Fragment>
-      <NavBar />
+      <NavBar 
+        handleNavBarAction={handleNavBarAction}
+      />
       <Grid container spacing={1} >
         <Grid size={{md: 2}}>
           <LeftSide
@@ -133,12 +163,15 @@ export default function App() {
             updateAutoLayoutOption={updateAutoLayoutOption}
             updateAutoLabelOptions={updateAutoLabelOptions}
             updateGraphDisplayOptions={updateGraphDisplayOptions}
+            bookmarks={(typeof(graphTabs) != "undefined")?graphTabs.bookmarkedGraphs.getBookmarks():undefined}
+            openBookmark={openBookmark}
+            handleRemoveBookmark={handleRemoveBookmark}
              />
         </Grid>
         <Grid size={{md: 8}}>
           {(typeof(graphTabs) != "undefined")?
           <React.Fragment>
-            {graphTabs.tabBar.tabArray.map((tab, index) => (
+            {graphTabs.tabBar.tabArray.map((tab) => (
               (tabEdit && tabIndex == tab.id)?
                 <Button
                           variant="contained"

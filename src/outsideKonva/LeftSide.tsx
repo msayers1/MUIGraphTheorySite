@@ -20,6 +20,8 @@ import { AutoLabelScheme } from '../drawing/graphdrawing';
 import GraphDisplayOptions from './GraphDisplayOptions';
 import { CheckBoxOutlineBlankOutlined, MoreVert, ZoomOutMap } from '@mui/icons-material';
 import CircleOutlined from '@mui/icons-material/CircleOutlined';
+import { StoredDrawingInfo } from '../store/graphstore';
+import HighlightOff from '@mui/icons-material/HighlightOff';
 
 const drawerWidth = 240;
 
@@ -39,10 +41,13 @@ interface LeftSideProps {
   updateAutoLayoutOption: (option: LayoutName) => void;
   updateAutoLabelOptions: (option: AutoLabelScheme) => void;
   updateGraphDisplayOptions: (vertexSize:number, weightFontSize:number) => void;
+  openBookmark: (item:StoredDrawingInfo) => void;
+  bookmarks: StoredDrawingInfo[];
+  handleRemoveBookmark: (id:number) => void;
 }
 
 // export default function LeftSide(addGraph) {
-const LeftSide: React.FC<LeftSideProps> = ({ addGraph, updateTool, updateAutoLayoutOption, updateAutoLabelOptions, updateGraphDisplayOptions }) => {
+const LeftSide: React.FC<LeftSideProps> = ({ addGraph, updateTool, updateAutoLayoutOption, updateAutoLabelOptions, updateGraphDisplayOptions, bookmarks, openBookmark, handleRemoveBookmark }) => {
   const theme = useTheme();
   const [open, setOpen] = React.useState(true);
 
@@ -190,7 +195,30 @@ const LeftSide: React.FC<LeftSideProps> = ({ addGraph, updateTool, updateAutoLay
             <Typography component="span">Bookmarked Graphs</Typography>
             </AccordionSummary>
             <AccordionDetails>
-            No Bookmarked Graphs
+            <Grid container spacing={1} >
+              {(typeof(bookmarks) != "undefined")?
+              <React.Fragment>
+                {bookmarks.map((item) => {
+                  return(<Grid key={item.id} size={{md: 12}}>
+                    <Button  
+                      onClick={()=>{openBookmark(item)}}
+                      endIcon={<div
+                        onClick={(event) => {
+                          event.stopPropagation(); // Prevent triggering the tab change
+                          handleRemoveBookmark(item.id);
+                        }}
+                        >
+                            <HighlightOff fontSize="small" />
+                          </div>}
+                      >
+                      {item.id} - {item.name}
+                    </Button>
+                  </Grid>)
+                })}
+              </React.Fragment>:
+              <Typography>No Bookmarks</Typography>
+            }
+            </Grid>
             </AccordionDetails>
         </Accordion>
     </div>
