@@ -8,18 +8,38 @@ import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
+import { useThemeMode } from "../ThemeContent";
+
+// Props for the TabPanel component
+interface NavBarProps {
+  handleNavBarAction: (buttonId: string) => void;
+}
 
 
-export default function NavBar() {
+// export default function NavBar() {
+const NavBar: React.FC<NavBarProps> = ({ handleNavBarAction }) => {
+    const { mode, toggleTheme } = useThemeMode();
     const [anchorGraph, setAnchorGraph] = React.useState<null | HTMLElement>(null);
     const openGraph = Boolean(anchorGraph);
     const handleGraphClick = (event: React.MouseEvent<HTMLButtonElement>) => {
         setAnchorGraph(event.currentTarget);
     };
     const handleGraphClose = (buttonId: string) => {
+        if (buttonId == undefined){
+            return;
+        }
+
+        handleNavBarAction(buttonId);
         // switch(buttonId) {
         //     case "Save":
-                
+        //     break;
+        //     case "Open":
+        //     break;
+        //     case "Bookmark":
+
+        //     break;
+        //     case "Generate":
+        //     break;
         // }
         // console.log(buttonId);
                 
@@ -51,7 +71,7 @@ export default function NavBar() {
                 >
                 <MenuIcon />
                 </IconButton> */}
-                <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+                <Typography variant="h6" component="div" sx={{ flexGrow: 1 }} onClick={toggleTheme}>
                 Graph Theory Site
                 </Typography>
                 <Button color="inherit" onClick={handleGraphClick} >
@@ -92,6 +112,7 @@ export default function NavBar() {
   );
 }
 
+export default NavBar;
 
 // static readonly algorithms: MenuEntry<any>[][] = [
 //     [
