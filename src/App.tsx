@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { useContext } from 'react';
 import {Stage, Layer } from 'react-konva';
 import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
@@ -28,17 +29,17 @@ import { IconButton, Box } from '@mui/material';
 import {tabObject} from './components/tabbar';
 import SaveAs from '@mui/icons-material/SaveAs';
 import { StoredDrawingInfo } from './store/graphstore';
+import {GraphContext} from './GraphContext';
 
 export default function App() {
-  const stage = React.useRef(null);
+  // const stage = React.useRef(null);
   const [tabIndex, setTabIndex] = React.useState(0);
   const [tabName, setTabName] = React.useState("");
   const [tabEdit, setTabEdit] = React.useState(false);
-  const [graphTabs, setGraphTabs] = React.useState<GraphTabs>();
+  // const [graphTabs, setGraphTabs] = React.useState<GraphTabs>();
   const [tabArray, setTabArray] = React.useState<[tabObject]>();
-  const [noGraph, setNoGraph] = React.useState(true);
-  const [clickToAddText, setClickToAddText] = React.useState(false);
-  const [correctControlPanel, setCorrectControlPanel] = React.useState(0);
+  const graphTabs = useContext(GraphContext).graphTabs;
+  // const graphTabs = graphTabsContext.graphTabs;
 
   
   const updateTool = (tool: string) => {
@@ -59,8 +60,8 @@ export default function App() {
 
   const addGraph = (tabType: TabBar.TabType) => {
     displayNewGraph(tabType);
-    setNoGraph(false);
-    setClickToAddText(true);
+    graphTabs.callbackNoGraphText(false);
+    graphTabs.callbackClickToAddText(true);
     setTabArray(graphTabs.tabBar.tabArray);
     // console.log(tabArray);
     // setGraphs([...graphs, newGraph]); // Create a new array with existing graphs and the new graph
@@ -73,12 +74,12 @@ export default function App() {
     setTabIndex(newId);
     // console.log(graphTabs);
   }
-  React.useEffect(() => {
-    const tools = new Tools(stage.current);
-    const graphTabs = new GraphTabs(stage.current, setClickToAddText, setNoGraph, setCorrectControlPanel);
-    setGraphTabs(graphTabs);
-    // console.log(graphTabs);
-  }, [stage.current]);
+  // React.useEffect(() => {
+  //   const tools = new Tools(stage.current);
+  //   const graphTabs = new GraphTabs(stage.current, setClickToAddText, setNoGraph, setCorrectControlPanel);
+  //   setGraphTabs(graphTabs);
+  //   // console.log(graphTabs);
+  // }, [stage.current]);
 
   const handleRemoveBookmark = (id: number) => {
     graphTabs.bookmarkedGraphs.removeBookmark(id);
@@ -250,17 +251,6 @@ export default function App() {
           </React.Fragment>
           :<div/>
           }
-            <Stage 
-                    width={window.innerWidth} 
-                    height={window.innerHeight}
-                    draggable={true}
-                    ref={stage}
-                    >
-            <Layer> 
-            
-            </Layer>
-            
-          </Stage>
         </Grid>
         {/* <Grid size={{md: 2}}>
           <RightSide 
