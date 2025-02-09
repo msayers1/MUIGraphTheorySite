@@ -22,6 +22,7 @@ import { CheckBoxOutlineBlankOutlined, MoreVert, ZoomOutMap } from '@mui/icons-m
 import CircleOutlined from '@mui/icons-material/CircleOutlined';
 import { StoredDrawingInfo } from '../store/graphstore';
 import HighlightOff from '@mui/icons-material/HighlightOff';
+import InputFileUpload from './importExport/importInput';
 
 const drawerWidth = 240;
 
@@ -44,10 +45,11 @@ interface LeftSideProps {
   openBookmark: (item:StoredDrawingInfo) => void;
   bookmarks: StoredDrawingInfo[];
   handleRemoveBookmark: (id:number) => void;
+  importGraph: (filelist: FileList) => void;
 }
 
 // export default function LeftSide(addGraph) {
-const LeftSide: React.FC<LeftSideProps> = ({ addGraph, updateTool, updateAutoLayoutOption, updateAutoLabelOptions, updateGraphDisplayOptions, bookmarks, openBookmark, handleRemoveBookmark }) => {
+const LeftSide: React.FC<LeftSideProps> = ({ addGraph, updateTool, updateAutoLayoutOption, updateAutoLabelOptions, updateGraphDisplayOptions, bookmarks, openBookmark, handleRemoveBookmark, importGraph }) => {
   const theme = useTheme();
   const [open, setOpen] = React.useState(true);
 
@@ -57,7 +59,7 @@ const LeftSide: React.FC<LeftSideProps> = ({ addGraph, updateTool, updateAutoLay
   const handleDrawerClose = () => {
     setOpen(false);
   };
-  console.log(bookmarks);
+
   return (
     <div>
         <Accordion>
@@ -94,8 +96,9 @@ const LeftSide: React.FC<LeftSideProps> = ({ addGraph, updateTool, updateAutoLay
                   </Button>
                 </Grid>
                 <Grid size={{md: 12}}>
-                  <Button onClick={() => {addGraph("empty-directed")}}>
+                  <Button component="label" tabIndex={-1}>
                     Open Graph
+                    <InputFileUpload openGraph={(filelist) => {importGraph(filelist);}} />
                   </Button>
                 </Grid>
               </Grid>

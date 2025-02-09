@@ -9,15 +9,16 @@ import MenuIcon from '@mui/icons-material/Menu';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import { useThemeMode } from "../ThemeContent";
-
+import InputFileUpload from './importExport/importInput';
 // Props for the TabPanel component
 interface NavBarProps {
   handleNavBarAction: (buttonId: string) => void;
+  importGraph: (filelist: FileList) => void;
 }
 
 
 // export default function NavBar() {
-const NavBar: React.FC<NavBarProps> = ({ handleNavBarAction }) => {
+const NavBar: React.FC<NavBarProps> = ({ handleNavBarAction, importGraph}) => {
     const { mode, toggleTheme } = useThemeMode();
     const [anchorGraph, setAnchorGraph] = React.useState<null | HTMLElement>(null);
     const openGraph = Boolean(anchorGraph);
@@ -87,7 +88,9 @@ const NavBar: React.FC<NavBarProps> = ({ handleNavBarAction }) => {
                     }}
                 >
                     <MenuItem onClick={() => {handleGraphClose("Save")}}>Save</MenuItem>
-                    <MenuItem onClick={() => {handleGraphClose("Open")}}>Open</MenuItem>
+                    <MenuItem component="label" tabIndex={-1}>Open
+                        <InputFileUpload openGraph={(filelist) => {handleGraphClose("Open");importGraph(filelist);}} />
+                    </MenuItem>
                     <MenuItem onClick={() => {handleGraphClose("Bookmark")}}>Bookmark</MenuItem>
                     <MenuItem onClick={() => {handleGraphClose("Generate")}}>Generate</MenuItem>
                 </Menu>

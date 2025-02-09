@@ -11,10 +11,12 @@ import { Tools } from "./tools";
 import AutoLayout from "../ui_handlers/autolayout";
 import DisplayCustomizer from './display_customizer';
 import BookmarkedGraphs from './bookmarked';
+import ImportExport from './importexport';
 
 export default class GraphTabs {
     autoLayout: AutoLayout;
     displayCustomizer: DisplayCustomizer;
+    importExport: ImportExport;
     tabBar: TabBar;
     bookmarkedGraphs: BookmarkedGraphs;
     tabDrawings: {[id: number]: GraphDrawing} = {};
@@ -35,6 +37,7 @@ export default class GraphTabs {
         this.callbackClickToAddText = callbackClickToAddText;
         this.callbackNoGraphText = callbackNoGraphText;
         this.setCorrectControlPanel = setCorrectControlPanel;
+        this.importExport = new ImportExport(this);
         this.tabBar = new TabBar();
         this.autoLayout = new AutoLayout(this);
         this.displayCustomizer = new DisplayCustomizer(this);
@@ -120,11 +123,17 @@ export default class GraphTabs {
         });
         this.bookmarkedGraphs.setBookmarkRetrievalCallback((drawing: GraphDrawing, title: string) => {
             const newId = this.tabBar.addTabElement(title, "loaded");
-            console.log(`new ID in graphTabs:${newId}`);
             this.tabBar.setActiveById(newId);
             this.updateGraphDrawing(newId, drawing);
             return newId;
         });
+        this.importExport.setImportGraphCallBack((drawing: GraphDrawing, title: string) => {
+            const newId = this.tabBar.addTabElement(title, "loaded");
+            this.tabBar.setActiveById(newId);
+            this.updateGraphDrawing(newId, drawing);
+            return newId;
+        })
+
         // Possible direction to update
         // this.bookmarkedGraphs.setBookmarkActionCallback(()=>{
             // this.update = true;
@@ -154,7 +163,6 @@ export default class GraphTabs {
         // // const active = this.getActiveTabId();
         // const active = this.tabBar.getActiveTabId();
         // if (active == id || bookmarkFlag) {
-            console.log(`Id for active:${id}`);
             this.tabDrawings[id].detachStage();
             this.stage.destroyChildren();
             this.stage.clear();

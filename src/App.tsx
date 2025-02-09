@@ -28,7 +28,7 @@ import { IconButton, Box } from '@mui/material';
 import {tabObject} from './components/tabbar';
 import SaveAs from '@mui/icons-material/SaveAs';
 import { StoredDrawingInfo } from './store/graphstore';
-
+import SaveModal from './outsideKonva/importExport/saveModal';
 export default function App() {
   const stage = React.useRef(null);
   const [tabIndex, setTabIndex] = React.useState(0);
@@ -40,8 +40,8 @@ export default function App() {
   const [noGraph, setNoGraph] = React.useState(true);
   const [clickToAddText, setClickToAddText] = React.useState(false);
   const [correctControlPanel, setCorrectControlPanel] = React.useState(0);
-
-  
+  const [saveModal, setSaveModal] = React.useState(false);
+  const [saveModalDefaultName, setSaveModalDefault] = React.useState('');
   const updateTool = (tool: string) => {
     // console.log(tool);
     graphTabs.tools.clickTool(tool);
@@ -104,7 +104,6 @@ export default function App() {
     newTabArray[tabIndex] = updatedTabObject;
     setTabArray(newTabArray);
     setTabEdit(false);
-    
     // setTabArray(([prevTabs]) => prevTabs.map((tab) => {
     //   if (tab.id === tabId) {
     //     return { ...tab, name: tabName };
@@ -125,6 +124,9 @@ export default function App() {
   const handleNavBarAction = (buttonId: string) => {
         switch(buttonId) {
             case "Save":
+              const saveModalDefaultName = graphTabs.importExport.exportCurrent();
+              setSaveModalDefault(saveModalDefaultName);
+              setSaveModal(true);
             break;
             case "Open":
             break;
@@ -144,7 +146,11 @@ export default function App() {
     //GraphTabs.bookmarkedGraphs.retrieveBookmark(item);
   }
 
-
+  const importGraph = (fileList: FileList) => {
+    const newId = graphTabs.importExport.importNew(fileList);
+    setTabArray(graphTabs.tabBar.tabArray);
+    if(typeof(newId) == 'number') setTabIndex(newId);
+  }
   const handleTabChange = (newValue: number) => {
     const newTabArray = graphTabs.tabBar.changeTab(newValue);
     setTabArray(newTabArray);
@@ -152,10 +158,15 @@ export default function App() {
     // console.log(graphTabs);
   };
 
+  const saveGraph = (fileName: string) => {
+    graphTabs.importExport.saveGraph(fileName);
+  }
+
   return (
     <React.Fragment>
       <NavBar 
         handleNavBarAction={handleNavBarAction}
+        importGraph={importGraph}
       />
       <Grid container spacing={1} >
         <Grid size={{md: 2}}>
@@ -168,6 +179,7 @@ export default function App() {
             bookmarks={bookmarks}
             openBookmark={openBookmark}
             handleRemoveBookmark={handleRemoveBookmark}
+            importGraph={importGraph}
              />
         </Grid>
         <Grid size={{md: 8}}>
@@ -264,13 +276,13 @@ export default function App() {
             
           </Stage>
         </Grid>
-        {/* <Grid size={{md: 2}}>
-          <RightSide 
-            updateAutoLayoutOption={updateAutoLayoutOption}
-            updateAutoLabelOptions={updateAutoLabelOptions}
-            updateGraphDisplayOptions={updateGraphDisplayOptions}
+          <SaveModal
+            onClose={()=>{setSaveModal(false)}}
+            saveModalDefaultName={saveModalDefaultName}
+            open={saveModal}
+            onSave={saveGraph}
+
           />
-        </Grid> */}
       </Grid>
 
     </React.Fragment>
