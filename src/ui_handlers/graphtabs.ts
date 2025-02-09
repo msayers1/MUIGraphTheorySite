@@ -12,10 +12,13 @@ import AutoLayout from "../ui_handlers/autolayout";
 import DisplayCustomizer from './display_customizer';
 import BookmarkedGraphs from './bookmarked';
 import ImportExport from './importexport';
+import GraphGenerate from './graphgenerate';
+import { BipartiteLayout } from '../drawing/layouts';
 
 export default class GraphTabs {
     autoLayout: AutoLayout;
     displayCustomizer: DisplayCustomizer;
+    graphGenerate:GraphGenerate; 
     importExport: ImportExport;
     tabBar: TabBar;
     bookmarkedGraphs: BookmarkedGraphs;
@@ -41,6 +44,7 @@ export default class GraphTabs {
         this.tabBar = new TabBar();
         this.autoLayout = new AutoLayout(this);
         this.displayCustomizer = new DisplayCustomizer(this);
+        this.graphGenerate = new GraphGenerate(this);
         this.bookmarkedGraphs = new BookmarkedGraphs(this);
         // $("#clickToAddText").hide();
         this.callbackClickToAddText(false);
@@ -108,8 +112,8 @@ export default class GraphTabs {
                 this.callbackClickToAddText(false);
                 this.tabDrawings[id].setGraphEditCallback(undefined);
                 this.controlPanels[id]?.onDetach();
-                this.stage.removeChildren();
-                this.stage.clear();
+                // this.stage.removeChildren();
+                // this.stage.clear();
             }
         });
         this.tabBar.setTabClosedCallback((id: number) => {
@@ -134,6 +138,12 @@ export default class GraphTabs {
             return newId;
         })
 
+        this.graphGenerate.setGenerateCallback((title: string, type: TabType, drawing: GraphDrawing)=>{
+            const newId = this.tabBar.addTabElement(title, type);
+            this.tabBar.setActiveById(newId);
+            this.updateGraphDrawing(newId, drawing);
+            return newId;
+        })
         // Possible direction to update
         // this.bookmarkedGraphs.setBookmarkActionCallback(()=>{
             // this.update = true;

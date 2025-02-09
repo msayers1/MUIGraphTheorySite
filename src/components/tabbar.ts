@@ -192,6 +192,7 @@ export class TabBar {
             } else {
             // No more tabs available, reset active ID to an empty string or handle as needed
             this.prevActiveId = undefined;
+            console.log(`I think I was here, ${this.activeId}`);
             }
         }
         return(updatedTabs);

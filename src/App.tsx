@@ -29,6 +29,9 @@ import {tabObject} from './components/tabbar';
 import SaveAs from '@mui/icons-material/SaveAs';
 import { StoredDrawingInfo } from './store/graphstore';
 import SaveModal from './outsideKonva/importExport/saveModal';
+import GenerateGraphModal from './outsideKonva/GenerateModal';
+import {GenerateGraphPackage} from './ui_handlers/graphgenerate';
+
 export default function App() {
   const stage = React.useRef(null);
   const [tabIndex, setTabIndex] = React.useState(0);
@@ -42,6 +45,7 @@ export default function App() {
   const [correctControlPanel, setCorrectControlPanel] = React.useState(0);
   const [saveModal, setSaveModal] = React.useState(false);
   const [saveModalDefaultName, setSaveModalDefault] = React.useState('');
+  const [generateModal, setGenerateModal] = React.useState(false);
   const updateTool = (tool: string) => {
     // console.log(tool);
     graphTabs.tools.clickTool(tool);
@@ -129,11 +133,13 @@ export default function App() {
               setSaveModal(true);
             break;
             case "Open":
+              //Handled by a InputFileUpload (VisuallyHiddenInput) in importExport/importinput.tsx
             break;
             case "Bookmark":
               const bookmarks = graphTabs.bookmarkedGraphs.bookmark(graphTabs);
             break;
             case "Generate":
+              setGenerateModal(true);
             break;
         }
         // console.log(buttonId);
@@ -160,6 +166,15 @@ export default function App() {
 
   const saveGraph = (fileName: string) => {
     graphTabs.importExport.saveGraph(fileName);
+  }
+
+  const generateGraph = (formSubmission: GenerateGraphPackage) => {
+    // console.log(formSubmission);
+    const newId = graphTabs.graphGenerate.GraphGenerate(formSubmission);
+    // const newTabArray = graphTabs.tabBar.changeTab(newId);
+    setTabArray(graphTabs.tabBar.tabArray);
+    setTabIndex(newId);
+    setGenerateModal(false);
   }
 
   return (
@@ -282,7 +297,13 @@ export default function App() {
             open={saveModal}
             onSave={saveGraph}
 
-          />
+          /> 
+          <GenerateGraphModal
+          onClose={()=>{setGenerateModal(false)}}
+          open={generateModal}
+          onGenerate={generateGraph}
+
+        />
       </Grid>
 
     </React.Fragment>

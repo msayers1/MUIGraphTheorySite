@@ -40,11 +40,11 @@ export function createGraphFromPath(path: number[], labelsFrom: Graph): Graph {
     return outGraph;
 }
 
-export function completeGraph(numVertices: number, weighted: boolean): Graph {
+export function completeGraph(numVertices: number, weighted: boolean, directed: boolean): Graph {
     if (numVertices <= 0) {
         throw new Error("Need at least one vertex!");
     }
-    const graph = weighted ? new WeightedGraph(false) : new UnweightedGraph(false);
+    const graph = weighted ? new WeightedGraph(directed) : new UnweightedGraph(directed);
     for (let i = 1; i <= numVertices; i++) {
         graph.addVertex(i, i.toString());
     }
