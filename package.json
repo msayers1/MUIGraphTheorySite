@@ -13,7 +13,8 @@
     "react": "latest",
     "react-dom": "latest",
     "react-konva": "^19.0.2",
-    "typescript": "latest"
+    "typescript": "latest",
+    "uuid": "^11.0.5"
   },
   "scripts": {
     "start": "NODE_ENV=development webpack serve --open",
