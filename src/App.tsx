@@ -31,6 +31,8 @@ import { StoredDrawingInfo } from './store/graphstore';
 import SaveModal from './outsideKonva/importExport/saveModal';
 import GenerateGraphModal from './outsideKonva/GenerateModal';
 import {GenerateGraphPackage} from './ui_handlers/graphgenerate';
+import ErrorSnackbar, {ErrorPackage} from './outsideKonva/ErrorSnackbar';
+import { algorithms } from './ui_handlers/algorithm_control';
 
 export default function App() {
   const stage = React.useRef(null);
@@ -46,6 +48,9 @@ export default function App() {
   const [saveModal, setSaveModal] = React.useState(false);
   const [saveModalDefaultName, setSaveModalDefault] = React.useState('');
   const [generateModal, setGenerateModal] = React.useState(false);
+  const [errorSnackbarOpen, setErrorSnackbarOpen] = React.useState(false);
+  const [errorPackage, setErrorPackage] = React.useState<ErrorPackage>({id:0, message:"No message yet", level: "success"});
+
   const updateTool = (tool: string) => {
     // console.log(tool);
     graphTabs.tools.clickTool(tool);
@@ -77,9 +82,14 @@ export default function App() {
     setTabIndex(newId);
     // console.log(graphTabs);
   }
+  function errorHandler (errorPackage: ErrorPackage) {
+    setErrorPackage(errorPackage);
+    setErrorSnackbarOpen(true);
+  }
+
   React.useEffect(() => {
     const tools = new Tools(stage.current);
-    const graphTabs = new GraphTabs(stage.current, setClickToAddText, setNoGraph, setCorrectControlPanel);
+    const graphTabs = new GraphTabs(stage.current, setClickToAddText, setNoGraph, setCorrectControlPanel, errorHandler);
     const bookmarks = graphTabs.bookmarkedGraphs.getBookmarks();
     graphTabs.bookmarkedGraphs.setBookmarkActionCallback((newBookmarks)=>{setBookmarks(newBookmarks);});
     setGraphTabs(graphTabs);
@@ -141,6 +151,9 @@ export default function App() {
             case "Generate":
               setGenerateModal(true);
             break;
+            case "Kruskal": 
+              const algorithm = algorithms['Kruskal'];
+              graphTabs.algortihmControl.setAlgorithm(algorithm);
         }
         // console.log(buttonId);
   }
@@ -175,6 +188,10 @@ export default function App() {
     setTabArray(graphTabs.tabBar.tabArray);
     setTabIndex(newId);
     setGenerateModal(false);
+  }
+
+  const CloseErrorSnackbar = () => {
+    setErrorSnackbarOpen(false);
   }
 
   return (
@@ -302,8 +319,12 @@ export default function App() {
           onClose={()=>{setGenerateModal(false)}}
           open={generateModal}
           onGenerate={generateGraph}
-
-        />
+          />
+          <ErrorSnackbar
+            onClose={CloseErrorSnackbar}
+            open={errorSnackbarOpen}
+            errorPackage={errorPackage}
+            />
       </Grid>
 
     </React.Fragment>

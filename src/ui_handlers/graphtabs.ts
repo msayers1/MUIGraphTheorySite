@@ -14,6 +14,9 @@ import BookmarkedGraphs from './bookmarked';
 import ImportExport from './importexport';
 import GraphGenerate from './graphgenerate';
 import { BipartiteLayout } from '../drawing/layouts';
+import { ErrorPackage } from '../outsideKonva/ErrorSnackbar';
+// import AlgorithmControl from './algorithm_control';
+export type ErrorHandler = (ErrorPackage) => void;
 
 export default class GraphTabs {
     autoLayout: AutoLayout;
@@ -24,16 +27,18 @@ export default class GraphTabs {
     bookmarkedGraphs: BookmarkedGraphs;
     tabDrawings: {[id: number]: GraphDrawing} = {};
     controlPanels: {[id: number]: AlgorithmControls } = {};
+    // algortihmControl: AlgorithmControl;
     tabSwitchCallbacks: (() => void)[];
     callbackClickToAddText: ((state:boolean)=>void);
     callbackNoGraphText: ((state:boolean)=>void);
     setCorrectControlPanel: ((id:number)=>void);
     tools: Tools;
+    errorHandler: ErrorHandler
     // Possible direction to update
     // update: boolean;
     private clickToAddUpdater: () => void;
 
-    constructor(private stage: Konva.Stage, callbackClickToAddText:((state:boolean)=>void), callbackNoGraphText: ((state:boolean)=>void), setCorrectControlPanel: ((id:number)=>void)) {
+    constructor(private stage: Konva.Stage, callbackClickToAddText:((state:boolean)=>void), callbackNoGraphText: ((state:boolean)=>void), setCorrectControlPanel: ((id:number)=>void), errorHandler: ErrorHandler) {
         // Possible direction to update
         // this.update = false;
         this.tabSwitchCallbacks = [];
@@ -46,6 +51,7 @@ export default class GraphTabs {
         this.displayCustomizer = new DisplayCustomizer(this);
         this.graphGenerate = new GraphGenerate(this);
         this.bookmarkedGraphs = new BookmarkedGraphs(this);
+        this.errorHandler = errorHandler;
         // $("#clickToAddText").hide();
         this.callbackClickToAddText(false);
         this.clickToAddUpdater = () => {
