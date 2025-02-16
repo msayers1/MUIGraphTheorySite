@@ -16,7 +16,7 @@ interface SaveGraphModalProps {
   onSave: (fileName: string) => void;
 }
 
-const SaveGraphModal: React.FC<SaveGraphModalProps> = ({ onClose, saveModalDefaultName, open,onSave }) => {
+const SaveGraphModal: React.FC<SaveGraphModalProps> = ({ onClose, saveModalDefaultName = "", open,onSave }) => {
   const [fileName, setFileName] = useState<string>(saveModalDefaultName);
 
   // Handle save action
