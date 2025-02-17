@@ -103,6 +103,7 @@ export class TabBar {
         // container.appendChild(tabFrag);
         this.tabArray = [... this.tabArray, {id:id, name:`${title}-${id}`, editable:true}]
         this.tabCreatedCallback(id, tabType);
+        console.log('Here');
         return id;
     }
 
@@ -114,7 +115,7 @@ export class TabBar {
         this.prevActiveId = this.getActiveTabId();
         if (this.prevActiveId != undefined) {
             // this.makeTitleNonEditable(this.prevActiveId);
-            console.log(this.prevActiveId);
+            // console.log(this.prevActiveId);
             this.tabDeactivatedCallback?.(this.prevActiveId);
         }
         // $("#tabbar").children().children("a").removeClass("active");

@@ -10,9 +10,10 @@ import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import { useThemeMode } from "../ThemeContent";
 import InputFileUpload from './importExport/importInput';
+import { algorithms, MenuEntry } from '../ui_handlers/algorithm_control';
 // Props for the TabPanel component
 interface NavBarProps {
-  handleNavBarAction: (buttonId: string) => void;
+  handleNavBarAction: (buttonId: string, algorithm: MenuEntry<any>) => void;
   importGraph: (filelist: FileList) => void;
 }
 
@@ -30,7 +31,7 @@ const NavBar: React.FC<NavBarProps> = ({ handleNavBarAction, importGraph}) => {
             return;
         }
 
-        handleNavBarAction(buttonId);
+        handleNavBarAction(buttonId, null);
         // switch(buttonId) {
         //     case "Save":
         //     break;
@@ -46,18 +47,14 @@ const NavBar: React.FC<NavBarProps> = ({ handleNavBarAction, importGraph}) => {
                 
         setAnchorGraph(null);
     };
-    const [anchorAlgrorithm, setAnchorAlgrorithm] = React.useState<null | HTMLElement>(null);
-    const openAlgorithm = Boolean(anchorAlgrorithm);
-    const handleAlgrorithmClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-        setAnchorAlgrorithm(event.currentTarget);
+    const [anchorAlgorithm, setAnchorAlgorithm] = React.useState<null | HTMLElement>(null);
+    const openAlgorithm = Boolean(anchorAlgorithm);
+    const handleAlgorithmClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+        setAnchorAlgorithm(event.currentTarget);
     };
-    const handleAlgrorithmClose = (buttonId: string) => {
-        // switch(buttonId) {
-        //     case "Kruskal":
-                
-        // }
-        // console.log(buttonId);
-        setAnchorAlgrorithm(null);
+    const handleAlgorithmClose = (buttonId: string, algorithm: MenuEntry<any>) => {
+        handleNavBarAction(buttonId, algorithm);
+        setAnchorAlgorithm(null);
     };
   return (
 
@@ -94,21 +91,40 @@ const NavBar: React.FC<NavBarProps> = ({ handleNavBarAction, importGraph}) => {
                     <MenuItem onClick={() => {handleGraphClose("Bookmark")}}>Bookmark</MenuItem>
                     <MenuItem onClick={() => {handleGraphClose("Generate")}}>Generate</MenuItem>
                 </Menu>
-                <Button color="inherit" onClick={handleAlgrorithmClick} >Algorithms</Button>
+                <Button color="inherit" onClick={handleAlgorithmClick} >Algorithms</Button>
                 <Menu
                     id="basic-menu"
-                    anchorEl={anchorAlgrorithm}
+                    anchorEl={anchorAlgorithm}
                     open={openAlgorithm}
-                    onClose={handleAlgrorithmClose}
+                    onClose={() => setAnchorAlgorithm(null)}
                     MenuListProps={{
                     'aria-labelledby': 'basic-button',
                     }}
                 >
-                    <MenuItem onClick={() => {handleAlgrorithmClose("Kruskal")}}>Kruskal's Minimum Spanning Tree</MenuItem>
-                    <MenuItem onClick={() => {handleAlgrorithmClose("Prim")}}>Prim's Minimum Spanning Tree</MenuItem>
-                    <MenuItem onClick={() => {handleAlgrorithmClose("BFS")}}>Breadth First Search</MenuItem>
-                    <MenuItem onClick={() => {handleAlgrorithmClose("DFS")}}>Depth First Search</MenuItem>
-                    <MenuItem onClick={() => {handleAlgrorithmClose("Dijkstra")}}>Dijkstra's Shortest Path</MenuItem>
+                    {algorithms.map((category, index) => ( category.map((entry) => (
+                                <MenuItem 
+                                    key={entry.menuText} 
+                                    onClick={() => handleAlgorithmClose(entry.menuText, entry)}
+                                >
+                                    {entry.menuText}
+                                </MenuItem>
+                            ))
+                    ))}
+                    {/* <MenuItem onClick={() => {handleAlgorithmClose("Kruskal")}}>Kruskal's Minimum Spanning Tree</MenuItem>
+                    <MenuItem onClick={() => {handleAlgorithmClose("Prim")}}>Prim's Minimum Spanning Tree</MenuItem>
+                    <MenuItem onClick={() => {handleAlgorithmClose("BFS")}}>Breadth First Search</MenuItem>
+                    <MenuItem onClick={() => {handleAlgorithmClose("DFS")}}>Depth First Search</MenuItem>
+                    <MenuItem onClick={() => {handleAlgorithmClose("Dijkstra")}}>Dijkstra's Shortest Path</MenuItem>
+                    <MenuItem onClick={() => { handleAlgorithmClose("Fleury") }}>Fleury's Euler Trail</MenuItem>
+                    <MenuItem onClick={() => { handleAlgorithmClose("Hamilton") }}>Bellman-Held-Karp Hamilton Path</MenuItem>
+                    <MenuItem onClick={() => { handleAlgorithmClose("Articulation") }}>Articulation Points</MenuItem>
+                    <MenuItem onClick={() => { handleAlgorithmClose("BHK_TSP") }}>Bellman-Held-Karp TSP</MenuItem>
+                    <MenuItem onClick={() => { handleAlgorithmClose("TSP_NearestNeighbor") }}>Nearest Neighbor TSP (Approximation)</MenuItem>
+                    <MenuItem onClick={() => { handleAlgorithmClose("TSP_NearestInsert") }}>Nearest Insert TSP (Approximation)</MenuItem>
+                    <MenuItem onClick={() => { handleAlgorithmClose("TSP_CheapestInsert") }}>Cheapest Insert TSP (Approximation)</MenuItem>
+                    <MenuItem onClick={() => { handleAlgorithmClose("TSP_MSTBased") }}>MST-Based TSP (Approximation)</MenuItem>
+                    <MenuItem onClick={() => { handleAlgorithmClose("TSP_Christofides") }}>Christofides TSP (Approximation)</MenuItem>
+                    <MenuItem onClick={() => { handleAlgorithmClose("EdmondsKarp") }}>Edmonds-Karp Network Flow</MenuItem> */}
                 </Menu>
             </Toolbar>
         </AppBar>

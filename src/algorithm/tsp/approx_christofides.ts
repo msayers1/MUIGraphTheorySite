@@ -1,4 +1,6 @@
-import Blossom from "edmonds-blossom";
+// import Blossom from "edmonds-blossom";
+
+declare function blossom(edges: number[][], maxCardinality?: boolean): number[];
 
 import { Decorator, DecorationState } from "../../decoration/decorator";
 import { MultiGraph } from "../../graph_core/graph";
@@ -90,7 +92,7 @@ export class TSPApproxChristofides implements Algorithm<void> {
         // Get the mininum weight matching
         this.decorator.setStatusLine("Finding minimum-weight matching between odd-degree vertices");
         yield;
-        const matching = Blossom(oddDegreeEdges, true);
+        const matching = blossom(oddDegreeEdges, true);
 
         // Translate the matchings to an edge pair format
         const minMatching: number[][] = [];

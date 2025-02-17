@@ -32,7 +32,9 @@ import SaveModal from './outsideKonva/importExport/saveModal';
 import GenerateGraphModal from './outsideKonva/GenerateModal';
 import {GenerateGraphPackage} from './ui_handlers/graphgenerate';
 import ErrorSnackbar, {ErrorPackage} from './outsideKonva/ErrorSnackbar';
-import { algorithms } from './ui_handlers/algorithm_control';
+import { algorithms, MenuEntry } from './ui_handlers/algorithm_control';
+import AlgorithmControlPanel from './outsideKonva/AlgorithmControlPanel';
+import { AlgorithmControlState } from './components/algorithm_controls';
 
 export default function App() {
   const stage = React.useRef(null);
@@ -45,6 +47,8 @@ export default function App() {
   const [noGraph, setNoGraph] = React.useState(true);
   const [clickToAddText, setClickToAddText] = React.useState(false);
   const [correctControlPanel, setCorrectControlPanel] = React.useState(0);
+  const [algorithmEnabled, setAlgorithmEnabled] = React.useState(true);
+  const [algorithmControlState, setAlgorithmControlState] = React.useState<AlgorithmControlState>();
   const [saveModal, setSaveModal] = React.useState(false);
   const [saveModalDefaultName, setSaveModalDefault] = React.useState('');
   const [generateModal, setGenerateModal] = React.useState(false);
@@ -94,6 +98,11 @@ export default function App() {
     graphTabs.bookmarkedGraphs.setBookmarkActionCallback((newBookmarks)=>{setBookmarks(newBookmarks);});
     setGraphTabs(graphTabs);
     setBookmarks(bookmarks);
+    if(algorithmControlState != undefined){
+      const algorithmControlState = graphTabs.algortihmControl.controls.getAlgorithmControlState();
+      setAlgorithmControlState(algorithmControlState);
+    }
+    
     // console.log(graphTabs);
   }, [stage.current]);
 
@@ -133,9 +142,47 @@ export default function App() {
       setTabName(name);
     }
   }
+
+  const adjustSpeed = (speed: number) => {
+    graphTabs.algortihmControl.controls.setSpeed(speed);
+  }
     
+  const handleControlClick = (buttonId: string) => {
+      switch(buttonId) {
+        case "tab":
+          graphTabs.algortihmControl.controls.newTab(graphTabs.tabDrawings[tabIndex]);
+          break;
+        case "save":
+          const saveModalDefaultName = graphTabs.importExport.exportCurrent();
+          setSaveModalDefault(saveModalDefaultName);
+          setSaveModal(true);
+        case "play":
+          graphTabs.algortihmControl.controls.playAlgorithm();
+          break;
+        case "pause":
+          graphTabs.algortihmControl.controls.pauseAlgorithm();
+          break;
+        case "next":
+          graphTabs.algortihmControl.controls.nextStepOfAlgorithm();
+          break;
+        case "stop":
+          graphTabs.algortihmControl.controls.stopAlgorithm();
+          break;
+        case "clear":
+          graphTabs.algortihmControl.controls.clearAlgorithm();
+          break;
+      }           
+  }
   
-  const handleNavBarAction = (buttonId: string) => {
+  const handleNavBarAction = (buttonId: string, algorithm: MenuEntry<any> = null) => {
+    if(algorithm != null){      
+      graphTabs.algortihmControl.setAlgorithm(algorithm);
+      const algorithmControlState = graphTabs.algortihmControl.controls.getAlgorithmControlState();
+      graphTabs.algortihmControl.controls.setControlStateChangeCallback(setAlgorithmControlState);
+      setAlgorithmControlState(algorithmControlState);
+      setAlgorithmEnabled(true);
+      return;
+    }
         switch(buttonId) {
             case "Save":
               const saveModalDefaultName = graphTabs.importExport.exportCurrent();
@@ -151,9 +198,6 @@ export default function App() {
             case "Generate":
               setGenerateModal(true);
             break;
-            case "Kruskal": 
-              const algorithm = algorithms['Kruskal'];
-              graphTabs.algortihmControl.setAlgorithm(algorithm);
         }
         // console.log(buttonId);
   }
@@ -298,7 +342,7 @@ export default function App() {
           }
             <Stage 
                     width={window.innerWidth} 
-                    height={window.innerHeight}
+                    height={(window.innerHeight - 320)}
                     draggable={true}
                     ref={stage}
                     >
@@ -307,6 +351,7 @@ export default function App() {
             </Layer>
             
           </Stage>
+          
         </Grid>
           <SaveModal
             onClose={()=>{setSaveModal(false)}}
@@ -326,6 +371,13 @@ export default function App() {
             errorPackage={errorPackage}
             />
       </Grid>
+      {algorithmEnabled && <AlgorithmControlPanel 
+                                      algorithmControlState={algorithmControlState}
+                                      handleControlClick={handleControlClick}
+                                      adjustSpeed={adjustSpeed}
+                                      />
+        }
+      
 
     </React.Fragment>
   );
