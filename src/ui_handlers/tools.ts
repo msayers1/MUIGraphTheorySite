@@ -3,7 +3,7 @@ import Konva from 'konva';
 
 import GraphTabs from "./graphtabs";
 
-export type ToolName = "delete" | "default" | "text";
+export type ToolName = "delete" | "default" | "text" | "color";
 
 export class Tools {
     private currentTool: ToolName = "default";

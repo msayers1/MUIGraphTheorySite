@@ -380,11 +380,13 @@ export class GraphDrawing {
 
     protected vertexClickHandler(vertexDrawing: VertexDrawing) {
         if (this.vertexSelectMode) {
+            console.log(`Exiting out of vertex click handler and the value (probabaly a boolean) ${this.vertexSelectMode}`);
             // TODO this should be made into a tool
             // If we are in 'vertex select mode', vertex click is handled
             // elsewhere. We do nothing here.
             return;
         }
+
         if (this.tools.getCurrentTool() == "delete") {
             this.deleteVertex(vertexDrawing);
         } else if (this.tools.getCurrentTool() == "default") {

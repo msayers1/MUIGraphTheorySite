@@ -150,7 +150,8 @@ export default function App() {
   const handleControlClick = (buttonId: string) => {
       switch(buttonId) {
         case "tab":
-          graphTabs.algortihmControl.controls.newTab(graphTabs.tabDrawings[tabIndex]);
+          const tabId = graphTabs.algortihmControl.controls.newTab();
+          handleTabChange(tabId);
           break;
         case "save":
           const saveModalDefaultName = graphTabs.importExport.exportCurrent();

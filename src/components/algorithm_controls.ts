@@ -112,9 +112,16 @@ export abstract class AlgorithmControls implements StatusSink {
     setControlStateChangeCallback(controlStateChangeCallback: ControlStateChangeCallback) {
         this.controlStateChangeCallback = controlStateChangeCallback;
     }
-    public newTab(graphDrawing: GraphDrawing) {
-        Util.createTabWithGraphDrawing(this.graphTabs, graphDrawing,
+    public newTab() {
+        const graph = this.output.graph;
+        if (graph == null) {
+            alert("The algorithm did not generate any output!");
+            return;
+        }
+        const graphDrawing = this.getGraphDrawingForOutput(graph);
+        const tabId = Util.createTabWithGraphDrawing(this.graphTabs, graphDrawing,
             this.output.name);
+        return tabId
     }
 
     public setSpeed(speed: number) {

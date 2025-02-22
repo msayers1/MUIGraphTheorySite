@@ -7,6 +7,7 @@ import { getMouseEventXY } from "./util";
 import { DecorationState, DefaultDecorator } from "../decoration/decorator";
 import { EditableText } from "../drawing/editabletext";
 import { ToolName } from "../ui_handlers/tools";
+import { generateRandomColor } from "../util";
 
 type LabelEditCallback = (edgeDrawing: EdgeDrawing, label: string) => boolean;
 
@@ -16,6 +17,8 @@ const DISABLED_COLOR = '#d0d0d0';
 
 export default class EdgeDrawing extends Konva.Group {
     private arrow: Konva.Arrow;
+    private color: string;    
+    private fillColor: string;
     private curvePoint: Konva.Circle;
     private label?: EditableText;
     private labelOffset?: Vector2;
@@ -33,10 +36,11 @@ export default class EdgeDrawing extends Konva.Group {
                 private labelText?: string,
                 private labelEditCallback?: LabelEditCallback) {
         super();
+        this.color = 'black';
         this.arrow = new Konva.Arrow({
             points: [this.start.x(), this.start.y(),
                 this.end.x(), this.end.y()],
-            stroke: 'black',
+            stroke: this.color,
             strokeWidth: 2,
             hitStrokeWidth: 12,
             lineCap: 'round',
@@ -136,6 +140,10 @@ export default class EdgeDrawing extends Konva.Group {
             this.updateLabelPosition();
         } else if (currentTool == "delete") {
             this.graphDrawing.removeEdge(this.start, this.end);
+        } else if (currentTool == "color") {
+            const nextColor = generateRandomColor();
+            this.color = nextColor;
+            this.arrow.stroke(nextColor);
         }
         evt.cancelBubble = true;
     }
@@ -151,7 +159,7 @@ export default class EdgeDrawing extends Konva.Group {
             y: y,
             radius: 5,
             fill: 'white',
-            stroke: 'black',
+            stroke: this.color,
             strokeWidth: 1,
             draggable: true
         });
@@ -257,8 +265,8 @@ export default class EdgeDrawing extends Konva.Group {
         this.decorationState = state;
         switch (state)  {
             case DecorationState.DEFAULT:
-                this.arrow.stroke('black');
-                this.label && this.label.fill('black');
+                this.arrow.stroke(this.color);
+                this.label && this.label.fill(this.fillColor);
                 break;
             case DecorationState.SELECTED:
                 this.arrow.stroke(SELECTED_COLOR);

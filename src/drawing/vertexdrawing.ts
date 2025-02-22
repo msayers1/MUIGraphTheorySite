@@ -7,6 +7,7 @@ import { Util, Vector2 } from "../commontypes";
 import { getBestGapVector } from "../math";
 import { EditableText } from "./editabletext";
 import { ToolName } from "../ui_handlers/tools";
+import { generateRandomColor } from "../util";
 
 type VertexDrawingEventCallback = (v: VertexDrawing) => void;
 type ExternalLabelPlacement = "anti-centroid" | "best-gap";
@@ -19,6 +20,8 @@ export default class VertexDrawing extends Konva.Group {
 
     private decorationState: DecorationState;
     private label: EditableText;
+    private color: string;    
+    private fillColor: string;
     private circle: Konva.Circle;
     private moveCallbacks: Map<number, VertexDrawingEventCallback>;
     private clickCallbacks: Map<number, VertexDrawingEventCallback>;
@@ -30,10 +33,12 @@ export default class VertexDrawing extends Konva.Group {
     constructor(x: number, y: number, radius: number,
             private graphDrawing: GraphDrawing, private vertexId: number) {
         super({ x: x, y: y, draggable: true });
+        this.color = 'black';
+        this.fillColor = 'white';
         this.circle = new Konva.Circle({
             radius: radius,
-            fill: 'white',
-            stroke: 'black',
+            fill: this.fillColor,
+            stroke: this.color,
             strokeWidth: 2
         });
         this.add(this.circle);
@@ -46,7 +51,7 @@ export default class VertexDrawing extends Konva.Group {
         this.label = new EditableText(this.graphDrawing, labelEditOn, {
             text: graph.getVertexLabel(vertexId) ?? "",
             fontSize: radius,
-            fill: 'black'
+            fill: this.color
         });
         this.label.setTextChangeCallback((text: string) => {
             this.graphDrawing.getGraph().setVertexLabel(this.vertexId, text);
@@ -79,6 +84,12 @@ export default class VertexDrawing extends Konva.Group {
         this.on('mouseout', mouseOutHandler);
         this.on('dragmove', dragHandler);
         const clickHandler = () => {
+            const tool = _currentTool();
+            if (tool == "color") {
+                const nextColor = generateRandomColor();
+                this.color = nextColor;
+                this.draw();
+            }
             this.clickCallbacks.forEach(callback => callback(this));
         };
         this.on('click', clickHandler);
@@ -108,9 +119,9 @@ export default class VertexDrawing extends Konva.Group {
         this.decorationState = state;
         switch (state)  {
             case DecorationState.DEFAULT:
-                this.circle.stroke('black');
-                this.circle.fill('white');
-                this.label.fill('black');
+                this.circle.stroke(this.color);
+                this.circle.fill(this.fillColor);
+                this.label.fill(this.color);
                 break;
             case DecorationState.SELECTED:
                 this.circle.stroke(SELECTED_COLOR);
@@ -215,7 +226,7 @@ export default class VertexDrawing extends Konva.Group {
             this.externalLabel = new Konva.Text({
                 text: text,
                 fontSize: 12,
-                fill: 'black'
+                fill: this.color
             });
             this.add(this.externalLabel);
         } else {

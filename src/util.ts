@@ -8,6 +8,7 @@ export function createTabWithGraphDrawing(graphTabs: GraphTabs,
     const newId = tabbar.addTabElement(title, "generated");
     tabbar.setActiveById(newId);
     graphTabs.updateGraphDrawing(newId, graphDrawing);
+    return newId;
 }
 
 export function getPosition(el: HTMLElement): Point {
@@ -71,4 +72,14 @@ export function getTwoLevelKeyList(obj: {[k1: number]: {[k2: number]: any}}): nu
 // point).
 export function getNumStringForLabels(n: number) {
     return Number.isInteger(n) ? n.toString() : n.toFixed(2);
+}
+
+
+export function generateRandomColor(): string {
+    const letters: string = '0123456789ABCDEF';
+    let color: string = '#';
+    for (let i = 0; i < 6; i++) {
+        color += letters[Math.floor(Math.random() * 16)];
+    }
+    return color;
 }
