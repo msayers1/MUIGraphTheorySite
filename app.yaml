@@ -12,6 +12,10 @@ handlers:
   - url: /
     static_dir: dist
 
+  - url: /
+    static_dir: img
+    upload: img
+
 automatic_scaling: # Optional: Configure scaling behavior
   target_cpu_utilization: 0.65
   target_throughput_utilization: 0.75
