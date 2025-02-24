@@ -15,7 +15,9 @@ pages:
     - CI=false npm run build
       #- cp dist/index.html dist/404.html
     - mkdir public
+    - mkdir public/img
     - mv ./dist/* public
+    - mv ./img/* public/img/
     - export
   artifacts:
     paths:
