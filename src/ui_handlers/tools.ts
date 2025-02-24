@@ -5,6 +5,9 @@ import GraphTabs from "./graphtabs";
 
 export type ToolName = "delete" | "default" | "text" | "color";
 
+import palette from "../img/palette.cur";
+import del_svg from "../img/x.svg";
+
 export class Tools {
     private currentTool: ToolName = "default";
     private stage: Konva.Stage;
@@ -41,12 +44,14 @@ export class Tools {
         if (this.currentTool == "default") {
             this.stage.container().style.cursor = "default";
         } else if (this.currentTool == "delete") {
-            this.stage.container().style.cursor = "url(img/x-lg.svg) 8 8, auto";
+            // this.stage.container().style.cursor = "url(img/x-lg.svg) 8 8, auto";
+            this.stage.container().style.cursor = `url(${del_svg}) 8 8, auto`;
         } else if (this.currentTool == "text") {
             this.stage.container().style.cursor = "text";
         } else if (this.currentTool == "color") {
             // this.stage.container().style.cursor = "grab";
-            this.stage.container().style.cursor = "url(img/palette.cur), auto";
+            // this.stage.container().style.cursor = "url(img/palette.cur), auto";
+            this.stage.container().style.cursor = `url(${palette}), auto`;
         } else {
             throw new Error(`Tool ${this.currentTool} has no associated cursor!`);
         }

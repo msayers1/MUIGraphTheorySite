@@ -46,14 +46,10 @@ module.exports = {
                 }
             },
             {
-                test: /\.svg$/,
-                use: {
-                    loader: 'file-loader',
-                    options: {
-                        name: '[name].[ext]',
-                        outputPath: 'img',
-                        publicPath: 'dist/img',
-                    }
+                test: /\.svg$|.cur$/,
+                type: "asset/resource",
+                generator: {
+                    filename: 'img/[name][ext]',
                 }
             }
         ],
