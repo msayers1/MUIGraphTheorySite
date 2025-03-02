@@ -16,10 +16,13 @@ import GraphGenerate from './graphgenerate';
 import { BipartiteLayout } from '../drawing/layouts';
 import { ErrorPackage } from '../outsideKonva/ErrorSnackbar';
 import AlgorithmControl from './algorithm_control';
+import { ColorInformation } from '../decoration/color';
+
 export type ErrorHandler = (ErrorPackage) => void;
 
 export default class GraphTabs {
     autoLayout: AutoLayout;
+    colorInformation: ColorInformation[];
     displayCustomizer: DisplayCustomizer;
     graphGenerate:GraphGenerate; 
     importExport: ImportExport;
@@ -41,6 +44,7 @@ export default class GraphTabs {
     constructor(private stage: Konva.Stage, callbackClickToAddText:((state:boolean)=>void), callbackNoGraphText: ((state:boolean)=>void), setCorrectControlPanel: ((id:number)=>void), errorHandler: ErrorHandler) {
         // Possible direction to update
         // this.update = false;
+        this.colorInformation = [];
         this.tabSwitchCallbacks = [];
         this.callbackClickToAddText = callbackClickToAddText;
         this.callbackNoGraphText = callbackNoGraphText;

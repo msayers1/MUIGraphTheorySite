@@ -23,6 +23,7 @@ import CircleOutlined from '@mui/icons-material/CircleOutlined';
 import { StoredDrawingInfo } from '../store/graphstore';
 import HighlightOff from '@mui/icons-material/HighlightOff';
 import InputFileUpload from './importExport/importInput';
+import { ColorInformation } from '../decoration/color';
 
 const drawerWidth = 240;
 
@@ -46,10 +47,11 @@ interface LeftSideProps {
   bookmarks: StoredDrawingInfo[];
   handleRemoveBookmark: (id:number) => void;
   importGraph: (filelist: FileList) => void;
+  colorInformation: ColorInformation[];
 }
 
 // export default function LeftSide(addGraph) {
-const LeftSide: React.FC<LeftSideProps> = ({ addGraph, updateTool, updateAutoLayoutOption, updateAutoLabelOptions, updateGraphDisplayOptions, bookmarks, openBookmark, handleRemoveBookmark, importGraph }) => {
+const LeftSide: React.FC<LeftSideProps> = ({ addGraph, updateTool, updateAutoLayoutOption, updateAutoLabelOptions, updateGraphDisplayOptions, bookmarks, openBookmark, handleRemoveBookmark, importGraph, colorInformation }) => {
   const theme = useTheme();
   const [open, setOpen] = React.useState(true);
 
@@ -221,6 +223,26 @@ const LeftSide: React.FC<LeftSideProps> = ({ addGraph, updateTool, updateAutoLay
               </React.Fragment>:
               <Typography>No Bookmarks</Typography>
             }
+            </Grid>
+            </AccordionDetails>
+        </Accordion>
+        <Accordion>
+            <AccordionSummary
+            expandIcon={<ExpandMoreIcon />}
+            >
+            <Typography component="span">Color Management</Typography>
+            </AccordionSummary>
+            <AccordionDetails>
+            <Grid container spacing={1} >
+              {(colorInformation.length === 0)?
+              <React.Fragment>
+                {colorInformation.map((color, index, ColorInformation) => {
+                  
+                  return(<Grid key={color.colorId} size={{md: 4}}> 
+                  </Grid>)})}
+              </React.Fragment>
+              :<div/>
+              }
             </Grid>
             </AccordionDetails>
         </Accordion>

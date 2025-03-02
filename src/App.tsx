@@ -35,6 +35,7 @@ import ErrorSnackbar, {ErrorPackage} from './outsideKonva/ErrorSnackbar';
 import { algorithms, MenuEntry } from './ui_handlers/algorithm_control';
 import AlgorithmControlPanel from './outsideKonva/AlgorithmControlPanel';
 import { AlgorithmControlState } from './components/algorithm_controls';
+import { ColorInformation } from './decoration/color';
 
 export default function App() {
   const stage = React.useRef(null);
@@ -257,6 +258,7 @@ export default function App() {
             openBookmark={openBookmark}
             handleRemoveBookmark={handleRemoveBookmark}
             importGraph={importGraph}
+            colorInformation={(typeof(graphTabs) != "undefined")?graphTabs.colorInformation:[]}
              />
         </Grid>
         <Grid size={{md: 8}}>
