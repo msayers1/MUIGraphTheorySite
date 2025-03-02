@@ -19,6 +19,7 @@ import { TSPApproxMSTBased } from "../algorithm/tsp/approx_mst";
 import { ArticulationPoints } from "../algorithm/decompose/articulation";
 import { EdmondsKarpAlgorithm } from "../algorithm/flow/edmonds_karp";
 import { TSPApproxChristofides } from "../algorithm/tsp/approx_christofides";
+import { ColorAlgorithm } from "../algorithm/color/minimumColor";
 import {  AlgorithmControls, InputlessControls, VertexInputControls,
     SourceSinkInputControls } from "../components/algorithm_controls";
     import { Decorator } from "../decoration/decorator";
@@ -123,6 +124,14 @@ export const algorithms: MenuEntry<any>[][] = [
             menuText: "Edmonds-Karp Network Flow",
         },
     ],
+        [
+        {
+            controlsClass: InputlessControls,
+            algorithmClass: ColorAlgorithm,
+            menuText: "Minimum Color Count",
+        },
+
+    ]
     //[
         //{
             //controlsClass: InputlessControls,

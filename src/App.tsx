@@ -46,7 +46,6 @@ export default function App() {
   const [tabArray, setTabArray] = React.useState<[tabObject]>();
   const [noGraph, setNoGraph] = React.useState(true);
   const [clickToAddText, setClickToAddText] = React.useState(false);
-  const [correctControlPanel, setCorrectControlPanel] = React.useState(0);
   const [algorithmEnabled, setAlgorithmEnabled] = React.useState(true);
   const [algorithmControlState, setAlgorithmControlState] = React.useState<AlgorithmControlState>();
   const [saveModal, setSaveModal] = React.useState(false);
@@ -89,6 +88,11 @@ export default function App() {
   function errorHandler (errorPackage: ErrorPackage) {
     setErrorPackage(errorPackage);
     setErrorSnackbarOpen(true);
+  }
+
+  function setCorrectControlPanel(algorithmControlState: AlgorithmControlState) {
+    setAlgorithmControlState(algorithmControlState);
+    setAlgorithmEnabled(true);
   }
 
   React.useEffect(() => {
@@ -207,6 +211,10 @@ export default function App() {
     const newId = graphTabs.bookmarkedGraphs.retrieveBookmark(item);
     setTabArray(graphTabs.tabBar.tabArray);
     setTabIndex(newId);
+    if(algorithmControlState != undefined){
+      const algorithmControlState = graphTabs.algortihmControl.controls.getAlgorithmControlState();
+      setAlgorithmControlState(algorithmControlState);
+    }
     //GraphTabs.bookmarkedGraphs.retrieveBookmark(item);
   }
 
@@ -219,6 +227,10 @@ export default function App() {
     const newTabArray = graphTabs.tabBar.changeTab(newValue);
     setTabArray(newTabArray);
     setTabIndex(newValue);
+    if(algorithmControlState != undefined){
+      const algorithmControlState = graphTabs.algortihmControl.controls.getAlgorithmControlState();
+      setAlgorithmControlState(algorithmControlState);
+    }
     // console.log(graphTabs);
   };
 

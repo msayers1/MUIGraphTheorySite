@@ -6,7 +6,7 @@ import { GraphDrawing, EuclideanGraphDrawing } from "../drawing/graphdrawing";
 import { Graph, UnweightedGraph, WeightedGraph } from "../graph_core/graph";
 import { EuclideanGraph } from "../graph_core/euclidean_graph";
 import { Size } from "../commontypes";
-import { AlgorithmControls } from "../components/algorithm_controls";
+import { AlgorithmControls, AlgorithmControlState } from "../components/algorithm_controls";
 import { Tools } from "./tools";
 import AutoLayout from "../ui_handlers/autolayout";
 import DisplayCustomizer from './display_customizer';
@@ -31,20 +31,20 @@ export default class GraphTabs {
     tabSwitchCallbacks: (() => void)[];
     callbackClickToAddText: ((state:boolean)=>void);
     callbackNoGraphText: ((state:boolean)=>void);
-    setCorrectControlPanel: ((id:number)=>void);
+    correctControlPanelCallback: ((algorithmControlState: AlgorithmControlState)=>void);
     tools: Tools;
     errorHandler: ErrorHandler
     // Possible direction to update
     // update: boolean;
     private clickToAddUpdater: () => void;
 
-    constructor(private stage: Konva.Stage, callbackClickToAddText:((state:boolean)=>void), callbackNoGraphText: ((state:boolean)=>void), setCorrectControlPanel: ((id:number)=>void), errorHandler: ErrorHandler) {
+    constructor(private stage: Konva.Stage, callbackClickToAddText:((state:boolean)=>void), callbackNoGraphText: ((state:boolean)=>void), correctControlPanelCallback: ((algorithmControlState: AlgorithmControlState)=>void), errorHandler: ErrorHandler) {
         // Possible direction to update
         // this.update = false;
         this.tabSwitchCallbacks = [];
         this.callbackClickToAddText = callbackClickToAddText;
         this.callbackNoGraphText = callbackNoGraphText;
-        this.setCorrectControlPanel = setCorrectControlPanel;
+        this.correctControlPanelCallback = correctControlPanelCallback;
         this.importExport = new ImportExport(this);
         this.tabBar = new TabBar();
         this.autoLayout = new AutoLayout(this);
@@ -107,7 +107,7 @@ export default class GraphTabs {
             this.stage.clear();
             this.tabDrawings[id].attachStage(this.stage, this.tools);
             this.tabDrawings[id].renderGraph();
-            // this.setCorrectControlPanel(id);
+            this.setCorrectControlPanel(id);
             this.tabSwitchCallbacks.forEach(cb => cb());
             this.clickToAddUpdater();
             this.tabDrawings[id].setGraphEditCallback(this.clickToAddUpdater);
@@ -201,17 +201,12 @@ export default class GraphTabs {
         this.setCorrectControlPanel(this.tabBar.getActiveTabId());
     }
 
-    // private setCorrectControlPanel() {
-    //     const controls = this.controlPanels[this.tabBar.getActiveTabId()]
-    //     const container = document.querySelector("#algo-control");
-    //     // We do NOT use Jquery remove() here because it gets rid of all the
-    //     // event handlers as well.
-    //     container.innerHTML = '';
-    //     if (controls) {
-    //         container.appendChild(controls);
-    //         controls.onAttach();
-    //     }
-    // }
+    private setCorrectControlPanel(id: number) {
+        const controls = this.controlPanels[id]
+        if(controls != undefined){
+                this.correctControlPanelCallback(controls.getAlgorithmControlState());
+        }
+    }
 
     // getActiveGraphDrawing(): GraphDrawing {
     //     return this.tabDrawings[this.tabBar.getActiveTabId()];
