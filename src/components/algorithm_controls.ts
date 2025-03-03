@@ -225,14 +225,14 @@ export abstract class AlgorithmControls implements StatusSink {
             console.warn("Graphdrawing undefined, creating circular layout");
             layout = new Layout.CircularLayout(
                 this.graphTabs.getStageDims());
-            graphDrawing = GraphDrawing.create(graph);
+            graphDrawing = GraphDrawing.create(this.graphTabs, graph);
         } else {
             const positions: Layout.PositionMap = new Map();
             for (const v of graph.getVertexIds()) {
                 positions.set(v, this.graphDrawing.getVertexPosition(v));
             }
             layout = new Layout.FixedLayout(positions);
-            graphDrawing = GraphDrawing.create(graph);
+            graphDrawing = GraphDrawing.create(this.graphTabs, graph);
         }
         graphDrawing.layoutWithoutRender(layout);
         return graphDrawing;
@@ -362,6 +362,11 @@ export abstract class AlgorithmControls implements StatusSink {
         this.statusText = text;
         this.setMessage(text, 50);
         // showStatus(text, 50);
+    }
+
+    setStatusWithFade(text:string, fadeDelay:number): void {
+        this.statusText = text;
+        this.setMessage(text, fadeDelay);
     }
 
     onAttach() {

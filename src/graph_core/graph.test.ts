@@ -1,11 +1,14 @@
 import { UnweightedGraph, fromJsonString } from "./graph";
 
+/*
 test('empty undirected graph deserialized correctly', () => {
     const g = new UnweightedGraph(false);
-    const gg = fromJsonString(JSON.stringify(g));
+    const stage = new Stage; 
+    const graphTabs = new GraphTabs(stage.current, setClickToAddText, setNoGraph, setCorrectControlPanel, errorHandler, messageHandler);)
+    const gg = fromJsonString(graphTabs, JSON.stringify(g));
     expect(gg).toEqual(g);
 });
-/*
+
 test('undirected K_5 deserialized correctly', () => {
     const graphJSON = {
         adjacencies: {

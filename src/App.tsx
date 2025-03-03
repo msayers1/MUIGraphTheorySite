@@ -32,6 +32,7 @@ import SaveModal from './outsideKonva/importExport/saveModal';
 import GenerateGraphModal from './outsideKonva/GenerateModal';
 import {GenerateGraphPackage} from './ui_handlers/graphgenerate';
 import ErrorSnackbar, {ErrorPackage} from './outsideKonva/ErrorSnackbar';
+import MessageSnackbar, {MessagePackage} from './outsideKonva/MessageSnackbar';
 import { algorithms, MenuEntry } from './ui_handlers/algorithm_control';
 import AlgorithmControlPanel from './outsideKonva/AlgorithmControlPanel';
 import { AlgorithmControlState } from './components/algorithm_controls';
@@ -54,7 +55,9 @@ export default function App() {
   const [generateModal, setGenerateModal] = React.useState(false);
   const [errorSnackbarOpen, setErrorSnackbarOpen] = React.useState(false);
   const [errorPackage, setErrorPackage] = React.useState<ErrorPackage>({id:0, message:"No message yet", level: "success"});
-
+  const [messageSnackbarOpen, setMessageSnackbarOpen] = React.useState(false);
+  const [messagePackage, setMessagePackage] = React.useState<MessagePackage>({id:'N/A', message:"No message yet", level: "success"});
+  
   const updateTool = (tool: string) => {
     // console.log(tool);
     graphTabs.tools.clickTool(tool);
@@ -91,6 +94,11 @@ export default function App() {
     setErrorSnackbarOpen(true);
   }
 
+  function messageHandler (messagePackage: MessagePackage) {
+    setMessagePackage(messagePackage);
+    setMessageSnackbarOpen(true);
+  }
+
   function setCorrectControlPanel(algorithmControlState: AlgorithmControlState) {
     setAlgorithmControlState(algorithmControlState);
     setAlgorithmEnabled(true);
@@ -98,7 +106,7 @@ export default function App() {
 
   React.useEffect(() => {
     const tools = new Tools(stage.current);
-    const graphTabs = new GraphTabs(stage.current, setClickToAddText, setNoGraph, setCorrectControlPanel, errorHandler);
+    const graphTabs = new GraphTabs(stage.current, setClickToAddText, setNoGraph, setCorrectControlPanel, errorHandler, messageHandler);
     const bookmarks = graphTabs.bookmarkedGraphs.getBookmarks();
     graphTabs.bookmarkedGraphs.setBookmarkActionCallback((newBookmarks)=>{setBookmarks(newBookmarks);});
     setGraphTabs(graphTabs);
@@ -223,6 +231,7 @@ export default function App() {
     const newId = graphTabs.importExport.importNew(fileList);
     setTabArray(graphTabs.tabBar.tabArray);
     if(typeof(newId) == 'number') setTabIndex(newId);
+    console.log(newId);
   }
   const handleTabChange = (newValue: number) => {
     const newTabArray = graphTabs.tabBar.changeTab(newValue);
@@ -250,6 +259,10 @@ export default function App() {
 
   const CloseErrorSnackbar = () => {
     setErrorSnackbarOpen(false);
+  }
+  
+  const CloseMessageSnackbar = () => {
+    setMessageSnackbarOpen(false);
   }
 
   return (
@@ -386,6 +399,11 @@ export default function App() {
             onClose={CloseErrorSnackbar}
             open={errorSnackbarOpen}
             errorPackage={errorPackage}
+            />
+          <MessageSnackbar
+            onClose={CloseMessageSnackbar}
+            open={messageSnackbarOpen}
+            messagePackage={messagePackage}
             />
       </Grid>
       {algorithmEnabled && <AlgorithmControlPanel 

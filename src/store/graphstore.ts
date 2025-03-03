@@ -1,4 +1,5 @@
 import { GraphDrawing } from "../drawing/graphdrawing";
+import GraphTabs from "../ui_handlers/graphtabs";
 
 export interface StoredDrawingInfo {
     id: number;
@@ -21,15 +22,17 @@ function isInteger(s: string): boolean {
 }
 
 export class LocalGraphDrawingStore implements GraphDrawingStore {
+    graphTabs: GraphTabs;
     private static instance: LocalGraphDrawingStore;
     private changeCallback: () => void;
 
-    private constructor() {
-    }
+    private constructor(graphTabs: GraphTabs) {
+        this.graphTabs = graphTabs
+    }   
 
-    static getInstance() {
+    static getInstance(graphTabs: GraphTabs) {
         if (LocalGraphDrawingStore.instance == null) {
-            LocalGraphDrawingStore.instance = new LocalGraphDrawingStore();
+            LocalGraphDrawingStore.instance = new LocalGraphDrawingStore(graphTabs);
         }
         return LocalGraphDrawingStore.instance;
     }
@@ -47,7 +50,7 @@ export class LocalGraphDrawingStore implements GraphDrawingStore {
 
     getGraphDrawingById(id: number): GraphDrawing {
         const s = JSON.parse(localStorage.getItem(id.toString())) as StoredDrawing;
-        return GraphDrawing.fromJsonString(s[1]);
+        return GraphDrawing.fromJsonString(this.graphTabs, s[1]);
     }
 
     storeGraphDrawing(graphDrawing: GraphDrawing, name: string): number {

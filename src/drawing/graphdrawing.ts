@@ -12,6 +12,7 @@ import { Decorator, DefaultDecorator, EuclideanDecorator, StatusSink } from "../
 import { Tools } from "../ui_handlers/tools";
 import { showInfo, showWarning } from "../ui_handlers/notificationservice";
 import { getNumStringForLabels } from "../util";
+import GraphTabs from "../ui_handlers/graphtabs";
 
 type CentroidCache = { n: number; xSum: number; ySum: number };
 
@@ -51,6 +52,8 @@ function getAutoLabelerForScheme(scheme: AutoLabelScheme): AutoLabeler {
 }
 
 export class GraphDrawing {
+    // Graph Tabs link
+    graphTabs: GraphTabs;
     // Set true to see vertex centroid. Useful for debugging edge labels.
     private static readonly SHOW_CENTROID = false;
 
@@ -81,7 +84,8 @@ export class GraphDrawing {
 
     protected centroidCache: CentroidCache;
 
-    protected constructor(graph?: Graphs.Graph) {
+    protected constructor(graphTabs: GraphTabs, graph?: Graphs.Graph) {
+        this.graphTabs = graphTabs;
         if (graph === undefined) {
             this.graph = new Graphs.UnweightedGraph(false);
         } else {
@@ -116,14 +120,14 @@ export class GraphDrawing {
         this.centroidDot.y(centroid[1]);
     }
 
-    static create(forGraph?: Graphs.Graph): GraphDrawing {
+    static create(graphTabs: GraphTabs, forGraph?: Graphs.Graph): GraphDrawing {
         if (forGraph == undefined) {
-            return new GraphDrawing();
+            return new GraphDrawing(graphTabs);
         }
         if (forGraph instanceof EuclideanGraph) {
-            return new EuclideanGraphDrawing(forGraph);
+            return new EuclideanGraphDrawing(graphTabs, forGraph);
         } else {
-            return new GraphDrawing(forGraph);
+            return new GraphDrawing(graphTabs, forGraph);
         }
     }
 
@@ -522,7 +526,7 @@ export class GraphDrawing {
         });
     }
 
-    static fromJsonString(jsonStr: string): GraphDrawing {
+    static fromJsonString(graphTabs: GraphTabs, jsonStr: string): GraphDrawing {
         const data: {
             graph: string,
             vertexPositions: Layouts.PositionMap,
@@ -532,7 +536,7 @@ export class GraphDrawing {
         const entries = Object.entries(data.vertexPositions);
         const positions: Layouts.PositionMap =
             new Map(entries.map(([key, value]) => [parseInt(key), value]));
-        const gd = GraphDrawing.create(Graphs.fromJsonObject(data.graph));
+        const gd = GraphDrawing.create(graphTabs, Graphs.fromJsonObject(data.graph));
         const layout = new Layouts.FixedLayout(positions);
         gd.layoutWithoutRender(layout);
         const edgeList = getTwoLevelKeyList(data.curvePointPositions);
@@ -617,7 +621,7 @@ export class GraphDrawing {
 
     enterVertexSelectMode(messageTitle: string, messageBody: string): Promise<number> {
         return new Promise<number>((resolve, reject) => {
-            showInfo(messageTitle, messageBody);
+            this.graphTabs.notificationService.showInfo(messageTitle, messageBody);
             this.vertexSelectMode = true;
             const prevCursor = this.stage.container().style.cursor;
             this.stage.container().style.cursor = 'crosshair';
@@ -633,7 +637,7 @@ export class GraphDrawing {
                     }
                     target = target.parent;
                 }
-                showWarning("No Vertex", "Did not detect a click on any vertex.");
+                this.graphTabs.notificationService.showWarning("No Vertex", "Did not detect a click on any vertex.");
                 reject(new NoVertexClickedError());
             });
         });
@@ -667,8 +671,8 @@ export class GraphDrawing {
 
 export class EuclideanGraphDrawing extends GraphDrawing {
 
-    constructor(graph: EuclideanGraph) {
-        super(graph);
+    constructor(graphTabs: GraphTabs, graph: EuclideanGraph) {
+        super(graphTabs, graph);
         this.positions = graph.getPositions();
     }
 

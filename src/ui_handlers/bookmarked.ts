@@ -14,7 +14,7 @@ export default class BookmarkedGraphs {
     private bookmarkActionCallback: BookmarkActionCallback;
 
     constructor(private graphTabs: GraphTabs) {
-        this.store = LocalGraphDrawingStore.getInstance();
+        this.store = LocalGraphDrawingStore.getInstance(graphTabs);
         this.store.listenForChanges(this.update.bind(this));
         this.update();
         // $("#btn-bookmark").on('click', _ => {

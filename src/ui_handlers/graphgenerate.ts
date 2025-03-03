@@ -62,7 +62,7 @@ export default class GraphGenerate {
         // tabbar.setActiveById(newId);
         const layout = new Layout.CircularLayout(this.graphTabs.getStageDims());
         // const weighted = $("#genWeightedCheck").is(":checked");
-        const graphDrawing = GraphDrawing.create(GraphUtil.completeGraph(n, weighted, directed));
+        const graphDrawing = GraphDrawing.create(this.graphTabs, GraphUtil.completeGraph(n, weighted, directed));
         graphDrawing.layoutWithoutRender(layout);
         const newId = this.generateGraphCallback(`Complete Graph (K_${n})`, "generated", graphDrawing);
         // this.graphTabs.updateGraphDrawing(newId, graphDrawing);
@@ -79,7 +79,7 @@ export default class GraphGenerate {
         const layout = new Layout.BipartiteLayout(this.graphTabs.getStageDims());
         // const weighted = $("#genWeightedCheck").is(":checked");
         // const directed = $("#genDirectedCheck").is(":checked");
-        const graphDrawing = GraphDrawing.create(GraphUtil.completeBipartiteGraph(m, n, weighted, directed));
+        const graphDrawing = GraphDrawing.create(this.graphTabs, GraphUtil.completeBipartiteGraph(m, n, weighted, directed));
         graphDrawing.layoutWithoutRender(layout);
         const newId = this.generateGraphCallback(`K_${m},${n}`, "generated", graphDrawing);
         // this.graphTabs.updateGraphDrawing(newId, graphDrawing);

@@ -15,10 +15,13 @@ import ImportExport from './importexport';
 import GraphGenerate from './graphgenerate';
 import { BipartiteLayout } from '../drawing/layouts';
 import { ErrorPackage } from '../outsideKonva/ErrorSnackbar';
+import { MessagePackage } from '../outsideKonva/MessageSnackbar';
 import AlgorithmControl from './algorithm_control';
 import { ColorInformation } from '../decoration/color';
-
+import NotificationService, { StatusPackage } from './notificationservice';
 export type ErrorHandler = (ErrorPackage) => void;
+export type MessageHandler = (MessagePackage) => void;
+
 
 export default class GraphTabs {
     autoLayout: AutoLayout;
@@ -38,11 +41,14 @@ export default class GraphTabs {
     correctControlPanelCallback: ((algorithmControlState: AlgorithmControlState)=>void);
     tools: Tools;
     errorHandler: ErrorHandler
+    messageHandler: MessageHandler
+    notificationService: NotificationService
+    
     // Possible direction to update
     // update: boolean;
     private clickToAddUpdater: () => void;
 
-    constructor(private stage: Konva.Stage, callbackClickToAddText:((state:boolean)=>void), callbackNoGraphText: ((state:boolean)=>void), correctControlPanelCallback: ((algorithmControlState: AlgorithmControlState)=>void), errorHandler: ErrorHandler) {
+    constructor(private stage: Konva.Stage, callbackClickToAddText:((state:boolean)=>void), callbackNoGraphText: ((state:boolean)=>void), correctControlPanelCallback: ((algorithmControlState: AlgorithmControlState)=>void), errorHandler: ErrorHandler, messageHandler: MessageHandler) {
         // Possible direction to update
         // this.update = false;
         this.colorInformation = this.fillColor();
@@ -57,6 +63,8 @@ export default class GraphTabs {
         this.graphGenerate = new GraphGenerate(this);
         this.bookmarkedGraphs = new BookmarkedGraphs(this);
         this.errorHandler = errorHandler;
+        this.messageHandler = messageHandler;
+        this.notificationService = new NotificationService(this);
         this.algortihmControl = new AlgorithmControl(this);
         // $("#clickToAddText").hide();
         this.callbackClickToAddText(false);
@@ -97,9 +105,9 @@ export default class GraphTabs {
                     graph = new UnweightedGraph(true);
             }
             if (graph instanceof EuclideanGraph) {
-                this.tabDrawings[id] = new EuclideanGraphDrawing(graph);
+                this.tabDrawings[id] = new EuclideanGraphDrawing(this, graph);
             } else {
-                this.tabDrawings[id] = GraphDrawing.create(graph);
+                this.tabDrawings[id] = GraphDrawing.create(this, graph);
             }
             if (Object.keys(this.tabDrawings).length == 1) {
                 // $("#noGraphText").hide();
@@ -156,6 +164,16 @@ export default class GraphTabs {
             this.updateGraphDrawing(newId, drawing);
             return newId;
         })
+        
+        this.notificationService.setNotificationServiceMessageCallback((messagePackage: MessagePackage) => {
+           messageHandler(messagePackage);
+        });
+        
+        this.notificationService.setNotificationServiceStatusCallback((statusPackage: StatusPackage) => {
+            console.log(`Status Package: ${statusPackage.text}`);
+            this.algortihmControl.controls.setStatusWithFade(statusPackage.text, statusPackage.fadeDelay);
+        });
+
         // Possible direction to update
         // this.bookmarkedGraphs.setBookmarkActionCallback(()=>{
             // this.update = true;

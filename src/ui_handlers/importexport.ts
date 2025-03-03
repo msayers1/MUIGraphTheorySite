@@ -72,7 +72,7 @@ export default class ImportExport {
             return;
         }
         const newId = fileList[0].text().then(text => {
-            const drawing = GraphDrawing.fromJsonString(text);
+            const drawing = GraphDrawing.fromJsonString(this.graphTabs, text);
             const newId = this.importGraphCallback(drawing,
                 ImportExport.stripJsonExtension(fileList[0].name));
             return(newId);

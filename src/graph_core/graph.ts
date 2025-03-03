@@ -1,4 +1,5 @@
 import { EuclideanGraph } from "./euclidean_graph";
+import GraphTabs from "../ui_handlers/graphtabs";
 
 type EmptyEdgeData = { };
 interface WeightedEdgeData extends EmptyEdgeData { weight: number };
@@ -37,7 +38,7 @@ export interface Weighted {
     addEdge(startVertex: number, endVertex: number, weight: number): void;
 }
 
-export function fromJsonString(jsonString: string): Graph {
+export function fromJsonString(graphTabs: GraphTabs, jsonString: string): Graph {
     return fromJsonObject(JSON.parse(jsonString));
 }
 
