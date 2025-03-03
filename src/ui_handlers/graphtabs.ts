@@ -22,6 +22,7 @@ export type ErrorHandler = (ErrorPackage) => void;
 
 export default class GraphTabs {
     autoLayout: AutoLayout;
+    activeColor: ColorInformation;
     colorInformation: ColorInformation[];
     displayCustomizer: DisplayCustomizer;
     graphGenerate:GraphGenerate; 
@@ -44,7 +45,7 @@ export default class GraphTabs {
     constructor(private stage: Konva.Stage, callbackClickToAddText:((state:boolean)=>void), callbackNoGraphText: ((state:boolean)=>void), correctControlPanelCallback: ((algorithmControlState: AlgorithmControlState)=>void), errorHandler: ErrorHandler) {
         // Possible direction to update
         // this.update = false;
-        this.colorInformation = [];
+        this.colorInformation = this.fillColor();
         this.tabSwitchCallbacks = [];
         this.callbackClickToAddText = callbackClickToAddText;
         this.callbackNoGraphText = callbackNoGraphText;
@@ -178,7 +179,25 @@ export default class GraphTabs {
     //         this.tabDrawings[id] = graphDrawing;
     //     }
     // }
-    
+    fillColor() {
+        const initialColorLoad = [ '#e6194b', '#3cb44b', '#ffe119',
+            '#4363d8', '#f58231', '#911eb4', '#46f0f0', '#f032e6', '#bcf60c',
+            '#fabebe', '#008080', '#e6beff', '#9a6324', '#fffac8', '#800000',
+            '#aaffc3', '#808000', '#ffd8b1', '#000075', '#808080', '#000000'
+        ];
+        const colorInformation = initialColorLoad.map((color, index) => ({
+            colorId: index, // Assigns a unique ID (1-based index)
+            colorString: color,
+          }));
+        this.activeColor = colorInformation[0];
+        return(colorInformation)
+    }
+
+    updateColor (color: ColorInformation) {
+        // console.log(color);
+        this.activeColor = color;
+    }
+
     updateGraphDrawing(id: number, graphDrawing: GraphDrawing) {
         // console.log(`Id:${id}, active ${this.tabBar.getActiveTabId()}`);
         // // const active = this.getActiveTabId();

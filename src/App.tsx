@@ -271,6 +271,8 @@ export default function App() {
             handleRemoveBookmark={handleRemoveBookmark}
             importGraph={importGraph}
             colorInformation={(typeof(graphTabs) != "undefined")?graphTabs.colorInformation:[]}
+            updateColor={(typeof(graphTabs) != "undefined")?(color)=>graphTabs.updateColor(color):(color)=>null}
+            activeColor={(typeof(graphTabs) != "undefined")?graphTabs.activeColor:{colorId:0,colorString:"#000000"}}
              />
         </Grid>
         <Grid size={{md: 8}}>

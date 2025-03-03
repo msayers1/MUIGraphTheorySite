@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { styled, useTheme } from '@mui/material/styles';
+import { Color, styled, useTheme } from '@mui/material/styles';
 import Typography from '@mui/material/Typography';
 import Divider from '@mui/material/Divider';
 import NearMe from '@mui/icons-material/NearMe';
@@ -23,7 +23,7 @@ import CircleOutlined from '@mui/icons-material/CircleOutlined';
 import { StoredDrawingInfo } from '../store/graphstore';
 import HighlightOff from '@mui/icons-material/HighlightOff';
 import InputFileUpload from './importExport/importInput';
-import { ColorInformation } from '../decoration/color';
+import ColorSwatch, { ColorInformation } from '../decoration/color';
 
 const drawerWidth = 240;
 
@@ -48,12 +48,19 @@ interface LeftSideProps {
   handleRemoveBookmark: (id:number) => void;
   importGraph: (filelist: FileList) => void;
   colorInformation: ColorInformation[];
+  updateColor: (ColorInformation: ColorInformation) => void;
+  activeColor: ColorInformation;
 }
 
 // export default function LeftSide(addGraph) {
-const LeftSide: React.FC<LeftSideProps> = ({ addGraph, updateTool, updateAutoLayoutOption, updateAutoLabelOptions, updateGraphDisplayOptions, bookmarks, openBookmark, handleRemoveBookmark, importGraph, colorInformation }) => {
+const LeftSide: React.FC<LeftSideProps> = ({ addGraph, updateTool, updateAutoLayoutOption, updateAutoLabelOptions, updateGraphDisplayOptions, bookmarks, openBookmark, handleRemoveBookmark, importGraph, colorInformation, updateColor, activeColor }) => {
   const theme = useTheme();
   const [open, setOpen] = React.useState(true);
+  const [localActiveColor, setLocalActiveColor] = React.useState(activeColor);
+  const setActiveColor = (color) => {
+    updateColor(color);
+    setLocalActiveColor(color);
+  }
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -61,7 +68,6 @@ const LeftSide: React.FC<LeftSideProps> = ({ addGraph, updateTool, updateAutoLay
   const handleDrawerClose = () => {
     setOpen(false);
   };
-
   return (
     <div>
         <Accordion>
@@ -234,11 +240,19 @@ const LeftSide: React.FC<LeftSideProps> = ({ addGraph, updateTool, updateAutoLay
             </AccordionSummary>
             <AccordionDetails>
             <Grid container spacing={1} >
-              {(colorInformation.length === 0)?
+              {(colorInformation.length != 0)?
               <React.Fragment>
                 {colorInformation.map((color, index, ColorInformation) => {
-                  
-                  return(<Grid key={color.colorId} size={{md: 4}}> 
+                  return(<Grid key={color.colorId} size={{md: 4}}>
+                      <Button
+                        onClick={()=>setActiveColor(color)}
+                      >
+                      <ColorSwatch 
+                        color={color.colorString}
+                        size={50}
+                        active={(localActiveColor.colorId == color.colorId)}
+                      />
+                      </Button>
                   </Grid>)})}
               </React.Fragment>
               :<div/>
