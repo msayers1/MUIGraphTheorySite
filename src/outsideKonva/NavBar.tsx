@@ -8,6 +8,7 @@ import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
+import Divider from '@mui/material/Divider';
 import { useThemeMode } from "../ThemeContent";
 import InputFileUpload from './importExport/importInput';
 import { algorithms, MenuEntry } from '../ui_handlers/algorithm_control';
@@ -101,7 +102,9 @@ const NavBar: React.FC<NavBarProps> = ({ handleNavBarAction, importGraph}) => {
                     'aria-labelledby': 'basic-button',
                     }}
                 >
-                    {algorithms.map((category, index) => ( category.map((entry) => (
+                    {algorithms.flatMap((category, index) => 
+                        index === algorithms.length - 1 
+                            ? category.map((entry) => (
                                 <MenuItem 
                                     key={entry.menuText} 
                                     onClick={() => handleAlgorithmClose(entry.menuText, entry)}
@@ -109,7 +112,19 @@ const NavBar: React.FC<NavBarProps> = ({ handleNavBarAction, importGraph}) => {
                                     {entry.menuText}
                                 </MenuItem>
                             ))
-                    ))}
+                            : [
+                                ...category.map((entry) => (
+                                    <MenuItem 
+                                        key={entry.menuText} 
+                                        onClick={() => handleAlgorithmClose(entry.menuText, entry)}
+                                    >
+                                        {entry.menuText}
+                                    </MenuItem>
+                                )),
+                                <Divider key={`divider-${index}`} />
+                            ]
+                    )}
+    
                     {/* <MenuItem onClick={() => {handleAlgorithmClose("Kruskal")}}>Kruskal's Minimum Spanning Tree</MenuItem>
                     <MenuItem onClick={() => {handleAlgorithmClose("Prim")}}>Prim's Minimum Spanning Tree</MenuItem>
                     <MenuItem onClick={() => {handleAlgorithmClose("BFS")}}>Breadth First Search</MenuItem>
