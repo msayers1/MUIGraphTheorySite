@@ -103,7 +103,7 @@ export class TabBar {
         // container.appendChild(tabFrag);
         this.tabArray = [... this.tabArray, {id:id, name:`${title}-${id}`, editable:true}]
         this.tabCreatedCallback(id, tabType);
-        console.log('Here');
+        // console.log('Here');
         return id;
     }
 
