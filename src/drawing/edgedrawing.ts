@@ -144,6 +144,7 @@ export default class EdgeDrawing extends Konva.Group {
             const nextColor = generateRandomColor();
             this.color = nextColor;
             this.arrow.stroke(nextColor);
+            this.label.fill(nextColor);
         }
         evt.cancelBubble = true;
     }
@@ -266,7 +267,7 @@ export default class EdgeDrawing extends Konva.Group {
         switch (state)  {
             case DecorationState.DEFAULT:
                 this.arrow.stroke(this.color);
-                this.label && this.label.fill(this.fillColor);
+                this.label && this.label.fill(this.color);
                 break;
             case DecorationState.SELECTED:
                 this.arrow.stroke(SELECTED_COLOR);
