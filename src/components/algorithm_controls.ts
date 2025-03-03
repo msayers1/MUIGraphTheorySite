@@ -190,6 +190,8 @@ export abstract class AlgorithmControls implements StatusSink {
                     this.graphTabs.errorHandler({id: `${Date.now()}-${uuidv4()}`, message: e.message, level: "warning" });
                     // alert(e.message);
                 } else if (e instanceof NoVertexClickedError) {
+                    this.graphTabs.errorHandler({id: `${Date.now()}-${uuidv4()}`, message: "There was an error within the algorithm.", level: "failure" });
+                    console.error(e);
                 } else {
                     this.graphTabs.errorHandler({id: `${Date.now()}-${uuidv4()}`, message: "There was an unexpected problem with the algorithm.", level: "warning" });
                     // alert("There was an unexpected problem with the algorithm.");
