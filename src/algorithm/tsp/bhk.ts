@@ -45,7 +45,7 @@ export class BHK_TSP implements Algorithm<void> {
         return this.decorator;
     }
 
-    *run() {
+    async *run() {
         this.initialize();
         type Path = { steps: number[], cost: number };
         const graph = this.decorator.getGraph() as EuclideanGraph;

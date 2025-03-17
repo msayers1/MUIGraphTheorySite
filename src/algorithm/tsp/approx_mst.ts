@@ -34,7 +34,7 @@ export class TSPApproxMSTBased implements Algorithm<void> {
         return this.decorator;
     }
 
-    *run() {
+    async *run() {
         this.initialize();
         const graph = this.decorator.getGraph() as EuclideanGraph;
         const kruskal = new KruskalMST(this.decorator);

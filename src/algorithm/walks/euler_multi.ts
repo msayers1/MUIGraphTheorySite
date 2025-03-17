@@ -56,8 +56,8 @@ export class MultiFleury {
         return (new Set(Object.values(sets))).size < nComps;
     }
 
-    initialize(graph: MultiGraph) {
-        if (!isSingleComponent(graph)) {
+    async initialize(graph: MultiGraph) {
+        if (!await(isSingleComponent(graph))) {
             throw new AlgorithmError("The graph contains more than one"
                 + " component so it doesn't have an Euler trail or an Euler cycle!");
         }

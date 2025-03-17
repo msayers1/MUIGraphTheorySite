@@ -46,7 +46,7 @@ export class EdmondsKarpAlgorithm implements Algorithm<SourceSinkInput> {
         return flowGraph;
     }
 
-    *run(sourceAndSink: SourceSinkInput) {
+    async *run(sourceAndSink: SourceSinkInput) {
         this.initialize(sourceAndSink);
         yield;
         const graph = this.decorator.getGraph() as Weighted & Graph;

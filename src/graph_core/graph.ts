@@ -2,10 +2,10 @@ import { EuclideanGraph } from "./euclidean_graph";
 import GraphTabs from "../ui_handlers/graphtabs";
 
 type EmptyEdgeData = { };
-interface WeightedEdgeData extends EmptyEdgeData { weight: number };
-interface MultiEdgeData extends EmptyEdgeData { count: number };
+export interface WeightedEdgeData extends EmptyEdgeData { weight: number };
+export interface MultiEdgeData extends EmptyEdgeData { count: number };
 
-type GraphAdjacencies<EdgeData extends EmptyEdgeData> = Map<number, Map<number, EdgeData>>;;
+export type GraphAdjacencies<EdgeData extends EmptyEdgeData> = Map<number, Map<number, EdgeData>>;;
 type UnweightedAdjacencies = GraphAdjacencies<EmptyEdgeData>;
 type WeightedAdjacencies = GraphAdjacencies<WeightedEdgeData>;
 type MultiAdjacencies = GraphAdjacencies<MultiEdgeData>;

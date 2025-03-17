@@ -15,12 +15,12 @@ export class KruskalMST implements Algorithm<void> {
     constructor(private decorator: Decorator) {
     }
 
-    private initialize() {
+    private async initialize() {
         const g = this.decorator.getGraph();
         if (!g.isWeighted() || g.isDirected()) {
             throw new AlgorithmError("Kruskal's algorithm needs a weighted undirected graph!");
         }
-        if (!isSingleComponent(g)) {
+        if (!await(isSingleComponent(g))) {
             throw new AlgorithmError("The graph doesn't have a spanning tree" +
                 " because it has more than one component.");
         }
@@ -64,7 +64,7 @@ export class KruskalMST implements Algorithm<void> {
         return graph.getVertexLabel(vertex) ?? vertex.toString();
     }
 
-    *run(): Generator<void, AlgorithmOutput, void> {
+    async *run(): AsyncGenerator<void, AlgorithmOutput, void> {
         this.initialize();
         const l = this.l.bind(this);
         let totalWeight = 0;

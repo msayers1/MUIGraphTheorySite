@@ -115,13 +115,14 @@ export default class VertexDrawing extends Konva.Group {
         this.externalLabelPlacement = placement;
     }
 
-    setDecorationState(state: DecorationState) {
+    setDecorationState(state: DecorationState, inputColor?:string) {
+        this.color = inputColor?inputColor:this.color;
         this.decorationState = state;
         switch (state)  {
             case DecorationState.DEFAULT:
-                this.circle.stroke(this.color);
-                this.circle.fill(this.fillColor);
-                this.label.fill(this.color);
+                this.circle.stroke('white');
+                this.circle.fill(inputColor);
+                this.label.fill(inputColor);
                 break;
             case DecorationState.SELECTED:
                 this.circle.stroke(SELECTED_COLOR);
@@ -160,7 +161,7 @@ export default class VertexDrawing extends Konva.Group {
                 this.label.fill(color);
                 break;
         }
-    }
+    }    
 
     getDecorationState(): DecorationState {
         return this.decorationState;

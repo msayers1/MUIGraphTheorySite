@@ -7,7 +7,7 @@ export class CountComponents implements Algorithm<void> {
     constructor(private decorator: Decorator) {
     }
 
-    *run(): Generator<void, AlgorithmOutput, void> {
+    async *run(): AsyncGenerator<void, AlgorithmOutput, void> {
         const graph = this.decorator.getGraph();
 
         // Set all vertices and edges to disabled state

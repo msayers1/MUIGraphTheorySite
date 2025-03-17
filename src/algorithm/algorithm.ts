@@ -12,8 +12,13 @@ export interface AlgorithmOutput {
     message: Message;
 }
 
+//Delay to see change of State:
+export async function delayFunction(ms: number): Promise<void> {
+    return new Promise(resolve => setTimeout(resolve, ms));
+};
+
 export interface Algorithm<I> {
-    run(input: I): Generator<void, AlgorithmOutput, void>;
+    run(input: I): AsyncGenerator<void, AlgorithmOutput, void>;
     getFullName(): string;
 }
 
@@ -22,7 +27,7 @@ export class AlgorithmRunner<I> {
     private timer: ReturnType<typeof setTimeout>;
     private state: AlgorithmState;
     private stateChangeCallback: (newState: AlgorithmState) => void;
-    private runnerStep: () => void;
+    private runnerStep: () => Promise<void>;
 
     constructor(protected algorithm: Algorithm<I>) {
         this.delay = 400;
@@ -32,8 +37,8 @@ export class AlgorithmRunner<I> {
     execute(input: I): Promise<AlgorithmOutput> {
         const iterator = this.algorithm.run(input);
         return new Promise((resolve, _) => {
-            this.runnerStep = () => {
-                const it = iterator.next();
+            this.runnerStep = async () => {
+                const it = await iterator.next();
                 if (!it.done) {
                     if (this.state == "running") {
                         this.timer = setTimeout(this.runnerStep, this.delay);
@@ -94,16 +99,19 @@ export class AlgorithmRunner<I> {
     getAlgorithm(): Algorithm<I> {
         return this.algorithm;
     }
+
+
+    
 }
 
 export class HeadlessRunner<I> {
     constructor(private algorithm: Algorithm<I>) {
     }
 
-    run(input: I): AlgorithmOutput {
+    async run(input: I): Promise<AlgorithmOutput> {
         const it = this.algorithm.run(input);
         let itRes: IteratorResult<void, AlgorithmOutput>;
-        while (!(itRes = it.next()).done);
+        while (!(itRes = await it.next()).done);
         return itRes.value;
     }
 }

@@ -58,7 +58,7 @@ export class DijkstrasShortestPath implements Algorithm<VertexInput> {
         }
     }
 
-    *run(startVertex: VertexInput) {
+    async *run(startVertex: VertexInput) {
         this.initialize(startVertex);
         const graph = this.decorator.getGraph() as Weighted & Graph;
         yield;

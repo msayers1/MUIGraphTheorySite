@@ -12,12 +12,12 @@ export class ArticulationPoints implements Algorithm<void> {
     constructor(private decorator: Decorator) {
     }
 
-    private initialize() {
+    private async initialize() {
         const graph = this.decorator.getGraph();
         if (graph.isDirected()) {
             throw new AlgorithmError("Articulation points algorithm only supports undirected graphs!");
         }
-        if (!isSingleComponent(graph)) {
+        if (!await (isSingleComponent(graph))) {
             throw new AlgorithmError("Please provide a graph with a single connected component.");
         }
         this.graph = graph.clone();
@@ -41,7 +41,7 @@ export class ArticulationPoints implements Algorithm<void> {
         return this.decorator;
     }
 
-    *run(): Generator<void, AlgorithmOutput, void> {
+    async *run(): AsyncGenerator<void, AlgorithmOutput, void> {
         this.initialize();
         const dfn: {[v: number]: number} = {};
         const L: {[v: number]: number} = {};

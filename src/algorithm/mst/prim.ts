@@ -17,12 +17,12 @@ export class PrimMST implements Algorithm<VertexInput> {
     constructor(private decorator: Decorator) {
     }
 
-    private initialize(input: VertexInput) {
+    private async initialize(input: VertexInput) {
         const g = this.decorator.getGraph();
         if (!g.isWeighted() || g.isDirected()) {
             throw new AlgorithmError("Prim's algorithm needs a weighted undirected graph!");
         }
-        if (!isSingleComponent(g)) {
+        if (!await(isSingleComponent(g))) {
             throw new AlgorithmError("The graph doesn't have a spanning tree" +
                 " because it has more than one component.");
         }
@@ -66,7 +66,7 @@ export class PrimMST implements Algorithm<VertexInput> {
         }
     }
 
-    *run(input: VertexInput): Generator<void, AlgorithmOutput, void> {
+    async *run(input: VertexInput): AsyncGenerator<void, AlgorithmOutput, void> {
         this.initialize(input);
         while (this.notInTree.size > 0) {
             const edge = this.edgeQ.pop();

@@ -19,7 +19,7 @@ import { TSPApproxMSTBased } from "../algorithm/tsp/approx_mst";
 import { ArticulationPoints } from "../algorithm/decompose/articulation";
 import { EdmondsKarpAlgorithm } from "../algorithm/flow/edmonds_karp";
 import { TSPApproxChristofides } from "../algorithm/tsp/approx_christofides";
-import { ColorAlgorithm } from "../algorithm/color/minimumColor";
+import { ColorAlgorithm } from "../algorithm/color/minimumColorNumber";
 import {  AlgorithmControls, InputlessControls, VertexInputControls,
     SourceSinkInputControls } from "../components/algorithm_controls";
     import { Decorator } from "../decoration/decorator";

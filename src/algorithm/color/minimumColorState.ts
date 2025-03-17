@@ -6,7 +6,7 @@ import { DecorationState } from "../../decoration/decorator";
 
 type VertexAndParent = [number, number];
 
-export class DepthFirstSearch implements Algorithm<VertexInput> {
+export class MinimumColorState implements Algorithm<VertexInput> {
 
     searchTree: WeightedGraph | UnweightedGraph;;
     inTree: Set<number>;

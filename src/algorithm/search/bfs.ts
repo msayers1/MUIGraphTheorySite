@@ -45,7 +45,7 @@ export class BreadthFirstSearch implements Algorithm<VertexInput> {
         }
     }
 
-    *run(startVertex: VertexInput) {
+    async *run(startVertex: VertexInput) {
         this.initialize(startVertex);
         while (this.queue.length > 0) {
             const [v, vparent] = this.queue.shift();

@@ -38,7 +38,7 @@ export type PathDecorationOption = "vertices-only" | "edges-only" | "both";
 export interface Decorator {
     getGraph(): Graph;
     getVertexState(vertexId: number): DecorationState;
-    setVertexState(vertexId: number, state: DecorationState): void;
+    setVertexState(vertexId: number, state: DecorationState, inputColor?: string): void;
     getEdgeState(startVertexId: number, endVertexId: number): DecorationState;
     setEdgeState(startVertexId: number, endVertexId: number, state: DecorationState): void;
     setVertexExternalLabel(vertexId: number, text: string): void;
@@ -88,9 +88,9 @@ export class DefaultDecorator implements Decorator {
         return this.drawing.getVertexDrawings()[vertexId].getDecorationState();
     }
 
-    setVertexState(vertexId: number, state: DecorationState) {
+    setVertexState(vertexId: number, state: DecorationState, inputColor?:string) {
         const vertexDrawings = this.drawing.getVertexDrawings();
-        vertexDrawings[vertexId].setDecorationState(state);
+        vertexDrawings[vertexId].setDecorationState(state, inputColor);
         vertexDrawings[vertexId].draw();
     }
 
