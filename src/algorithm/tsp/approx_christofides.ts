@@ -40,7 +40,7 @@ export class TSPApproxChristofides implements Algorithm<void> {
         return this.decorator;
     }
 
-    async *run() {
+    *run() {
         this.initialize();
         const graph = this.decorator.getGraph() as EuclideanGraph;
         const kruskal = new KruskalMST(this.decorator);

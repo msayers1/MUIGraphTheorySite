@@ -228,10 +228,10 @@ export default function App() {
   }
 
   const importGraph = (fileList: FileList) => {
-    const newId = graphTabs.importExport.importNew(fileList);
+    const newId =  graphTabs.importExport.importNew(fileList);
     setTabArray(graphTabs.tabBar.tabArray);
     if(typeof(newId) == 'number') setTabIndex(newId);
-    console.log(newId);
+    console.log(newId.valueOf());
   }
   const handleTabChange = (newValue: number) => {
     const newTabArray = graphTabs.tabBar.changeTab(newValue);

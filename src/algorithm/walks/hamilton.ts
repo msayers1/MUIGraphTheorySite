@@ -12,12 +12,12 @@ export class BHKHamiltonPath implements Algorithm<void> {
     constructor(private decorator: Decorator) {
     }
 
-    private async initialize() {
+    private initialize() {
         const graph = this.decorator.getGraph();
         if (graph.isDirected()) {
             throw new AlgorithmError("Bellman-Held-Karp algorithm only supports undirected graphs!");
         }
-        if (!await(isSingleComponent(graph))) {
+        if (!(isSingleComponent(graph))) {
             throw new AlgorithmError("The graph contains more than one" +
                 " component so it doesn't have a Hamilton path or a Hamilton circuit!");
         }
@@ -48,7 +48,7 @@ export class BHKHamiltonPath implements Algorithm<void> {
         return this.decorator;
     }
 
-    async *run(): AsyncGenerator<void, AlgorithmOutput, void> {
+    *run(): Generator<void, AlgorithmOutput, void> {
         this.initialize();
         const graph = this.decorator.getGraph();
         const n = graph.getNumberOfVertices();

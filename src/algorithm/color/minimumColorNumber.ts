@@ -1,4 +1,4 @@
-import { Algorithm, AlgorithmOutput, delayFunction } from "../algorithm";
+import { Algorithm, AlgorithmOutput } from "../algorithm";
 import { Decorator, DecorationState } from "../../decoration/decorator";
 import { Graph, UnweightedGraph, WeightedGraph, GraphAdjacencies, WeightedEdgeData, MultiEdgeData} from "../../graph_core/graph";
 import { BreakfastDiningOutlined } from "@mui/icons-material";
@@ -50,7 +50,7 @@ export class ColorAlgorithm implements Algorithm<void> {
 
     
     //*run(): Generator<void, AlgorithmOutput, void> {
-    async *run(): AsyncGenerator<void, AlgorithmOutput, void> {
+    *run(): Generator<void, AlgorithmOutput, void> {
         const graph = this.decorator.getGraph();
         const edgeList = graph.getEdgeList();
         switch(edgeList.length){
@@ -94,15 +94,18 @@ export class ColorAlgorithm implements Algorithm<void> {
             let currentNode = this.queue.values().next().value;
             this.decorator.setVertexState((currentNode + 1), DecorationState.SELECTED);
             this.decorator.setStatusLine(`Reviewing nodes adjacent to ${graph.getVertexLabel(currentNode+1)}.`);
-            if (this.counts[this.queue.values().next().value] <= 0){
-                this.counts[this.queue.values().next().value] = 0
-                this.queue.delete(this.queue.values().next().value)
-                this.decorator.setVertexState((currentNode + 1), DecorationState.DISABLED);
-                this.decorator.setStatusLine(`Finished with node ${graph.getVertexLabel(currentNode+1)}.`);
+            yield;
+            if (this.counts[currentNode] <= 0){
+                this.counts[currentNode] = 0
+                this.queue.delete(currentNode)
+                // this.decorator.setVertexState((currentNode + 1), DecorationState.DISABLED);
+                // this.decorator.setStatusLine(`Finished with node ${graph.getVertexLabel(currentNode+1)}.`);
                 if (this.queue.size > 0){
                     currentNode = this.queue.values().next().value;
+                    this.decorator.setVertexState((currentNode + 1), DecorationState.SELECTED);
                     this.decorator.setStatusLine(`Reviewing nodes adjacent to ${graph.getVertexLabel(currentNode+1)}.`);
                 } else {
+                    yield;
                     break;
                 }
             }
@@ -110,21 +113,32 @@ export class ColorAlgorithm implements Algorithm<void> {
             // console.log(this.queue);
             // console.log(`Queue: ${this.queue}, Value: ${this.queue.values().next().value}, Current Node: ${currentNode}, Current Neighbors: ${currentNeighbors}`);
             for (const adjacentNodeIndex of currentNeighbors){
+                this.decorator.setEdgeState((currentNode + 1), (adjacentNodeIndex+1), DecorationState.CONSIDERING);
+                // this.decorator.setVertexState((adjacentNodeIndex+1), DecorationState.CONSIDERING);
                 this.decorator.setStatusLine(`Reviewing node ${graph.getVertexLabel(adjacentNodeIndex+1)}.`);
+                yield;
                 this.counts[adjacentNodeIndex] -= 1;
                 if (this.counts[currentNode] > 0){
                     this.counts[currentNode] -= 1;
+                    
                 }
+                this.decorator.setStatusLine(`Removing an edge from ${graph.getVertexLabel(adjacentNodeIndex+1)}.`);
+                yield;
 
                 if (!this.queue.has(adjacentNodeIndex) && this.counts[adjacentNodeIndex] > 0){
                     this.queue.add(adjacentNodeIndex);
+                    this.decorator.setStatusLine(`Adding ${graph.getVertexLabel(adjacentNodeIndex+1)} to the queue.`);
+                    yield;
                 }
     			if (this.colorCounts[adjacentNodeIndex] <= this.colorCounts[currentNode]){
 	    			this.colorCounts[adjacentNodeIndex] = 1 + this.colorCounts[currentNode]
+                    this.decorator.setStatusLine(`Increasing the colors for node ${graph.getVertexLabel(adjacentNodeIndex+1)}.`);
+                    yield;
                 }
-            console.log(graph);
-            await delayFunction(2000);
+            yield;
+            
             }
+            yield;
         }
         numberOfColors = this.colorCounts.length > 0 ? this.colorCounts.reduce((min, num) => Math.min(min, num), this.colorCounts[0]) : -1;
         console.log(`Colors: ${this.colors}, Colors Counts: ${this.colorCounts}, min number ${numberOfColors}`);

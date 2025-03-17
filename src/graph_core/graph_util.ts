@@ -4,13 +4,13 @@ import { BreadthFirstSearch } from "../algorithm/search/bfs";
 import { Weighted, Graph, UnweightedGraph, WeightedGraph } from "./graph";
 import { EuclideanGraph } from "./euclidean_graph";
 
-export async function isSingleComponent(graph: Graph): Promise<boolean> {
+export function isSingleComponent(graph: Graph): boolean {
     if (graph instanceof EuclideanGraph) {
         return true;
     }
     const start = graph.getVertexIds().values().next().value;
     const bfs = new BreadthFirstSearch(new HeadlessDecorator(graph));
-    const output = await (new HeadlessRunner(bfs)).run({ vertexId: start });
+    const output = (new HeadlessRunner(bfs)).run({ vertexId: start });
     return output.graph.getVertexIds().size == graph.getVertexIds().size;
 }
 

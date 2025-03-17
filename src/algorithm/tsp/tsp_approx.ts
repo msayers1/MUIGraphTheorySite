@@ -20,7 +20,7 @@ export abstract class TSPApprox implements Algorithm<VertexInput> {
         this.startVertex = input.vertexId;
     }
 
-    abstract run(input: VertexInput): AsyncGenerator<void, AlgorithmOutput, void>;
+    abstract run(input: VertexInput): Generator<void, AlgorithmOutput, void>;
     abstract getFullName(): string;
     abstract getShortName(): string;
     abstract getDecorator(): Decorator;

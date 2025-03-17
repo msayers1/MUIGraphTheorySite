@@ -59,12 +59,12 @@ export class FleuryEulerTrail implements Algorithm<void> {
         return (new Set(Object.values(sets))).size < nComps;
     }
 
-    private async initialize() {
+    private initialize() {
         const graph = this.decorator.getGraph();
         if (graph.isDirected() || graph.isWeighted()) {
             throw new AlgorithmError("Fleury's algorithm only supports undirected unweighted graphs!");
         }
-        if (!await(isSingleComponent(graph))) {
+        if (!(isSingleComponent(graph))) {
             throw new AlgorithmError("The graph contains more than one"
                 + " component so it doesn't have an Euler trail or an Euler cycle!");
         }
@@ -108,7 +108,7 @@ export class FleuryEulerTrail implements Algorithm<void> {
         return this.decorator;
     }
 
-    async *run() {
+    *run() {
         this.initialize();
         let currentVertex = this.startVertex;
         let stop = false;

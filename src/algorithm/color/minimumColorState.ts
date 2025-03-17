@@ -45,7 +45,7 @@ export class MinimumColorState implements Algorithm<VertexInput> {
         }
     }
 
-    async *run(startVertex: VertexInput) {
+    *run(startVertex: VertexInput) {
         this.initialize(startVertex);
         while (this.stack.length > 0) {
             const [v, vparent] = this.stack.pop();

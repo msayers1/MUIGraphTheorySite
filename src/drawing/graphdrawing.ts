@@ -621,7 +621,7 @@ export class GraphDrawing {
 
     enterVertexSelectMode(messageTitle: string, messageBody: string): Promise<number> {
         return new Promise<number>((resolve, reject) => {
-            this.graphTabs.notificationService.showInfo(messageTitle, messageBody);
+            showInfo(messageTitle, messageBody);
             this.vertexSelectMode = true;
             const prevCursor = this.stage.container().style.cursor;
             this.stage.container().style.cursor = 'crosshair';
@@ -637,7 +637,7 @@ export class GraphDrawing {
                     }
                     target = target.parent;
                 }
-                this.graphTabs.notificationService.showWarning("No Vertex", "Did not detect a click on any vertex.");
+                showWarning("No Vertex", "Did not detect a click on any vertex.");
                 reject(new NoVertexClickedError());
             });
         });
