@@ -33,8 +33,8 @@ export default class VertexDrawing extends Konva.Group {
     constructor(x: number, y: number, radius: number,
             private graphDrawing: GraphDrawing, private vertexId: number) {
         super({ x: x, y: y, draggable: true });
-        this.color = 'black';
-        this.fillColor = 'white';
+        this.color = 'white';
+        this.fillColor = 'black';
         this.circle = new Konva.Circle({
             radius: radius,
             fill: this.fillColor,
@@ -87,7 +87,7 @@ export default class VertexDrawing extends Konva.Group {
             const tool = _currentTool();
             if (tool == "color") {
                 const nextColor = generateRandomColor();
-                this.color = nextColor;
+                this.fillColor = nextColor;
                 this.draw();
             }
             this.clickCallbacks.forEach(callback => callback(this));
@@ -116,13 +116,14 @@ export default class VertexDrawing extends Konva.Group {
     }
 
     setDecorationState(state: DecorationState, inputColor?:string) {
-        this.color = inputColor?inputColor:this.color;
+        this.fillColor = inputColor?inputColor:this.fillColor;
         this.decorationState = state;
+        // console.log(`Color: ${this.color}, Inputcolor: ${(inputColor)?"true":"false"}`)
         switch (state)  {
             case DecorationState.DEFAULT:
-                this.circle.stroke('white');
-                this.circle.fill(inputColor);
-                this.label.fill(inputColor);
+                this.circle.stroke(this.color);
+                this.circle.fill(this.fillColor);
+                this.label.fill(this.color);
                 break;
             case DecorationState.SELECTED:
                 this.circle.stroke(SELECTED_COLOR);
