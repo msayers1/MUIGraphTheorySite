@@ -66,18 +66,28 @@ export class PrimMST implements Algorithm<VertexInput> {
         }
     }
 
+    private l(vertex: number) {
+        const graph = this.getDecorator().getGraph();
+        return graph.getVertexLabel(vertex) ?? vertex.toString();
+    }
+
     *run(input: VertexInput): Generator<void, AlgorithmOutput, void> {
         this.initialize(input);
+        const l = this.l.bind(this);
         while (this.notInTree.size > 0) {
             const edge = this.edgeQ.pop();
             this.decorator.setEdgeState(edge[0], edge[1], DecorationState.CONSIDERING);
+            this.decorator.setStatusLine(`Considering edge ${l(edge[0])}, ${l(edge[1])}`);
             // Yield here to let the user see the 'considering' decoration
             yield;
             const [inside, outside, weight] = edge;
             if (!this.inTree.has(outside)) {
                 this.mst.addEdge(inside, outside, weight);
                 this.decorator.setEdgeState(inside, outside, DecorationState.SELECTED);
+                this.decorator.setStatusLine(`Added edge ${l(inside)}, ${l(outside)} to MST`);
+                yield;
                 this.decorator.setVertexState(outside, DecorationState.SELECTED);
+
                 this.notInTree.delete(outside);
                 this.inTree.add(outside);
 
@@ -93,6 +103,7 @@ export class PrimMST implements Algorithm<VertexInput> {
             }
             yield;
         }
+        this.decorator.setStatusLine(`Prim's MST`);
         return {
             graph: this.mst,
             name: "MST",
