@@ -370,8 +370,9 @@ export default function App() {
           </React.Fragment>
           :<div/>
           }
+            {/* <div style={{ display: "inline-block", padding: "0px",width: (parent.innerWidth * .5), height: (parent.innerHeight * .8), border: "2px solid black" }}> */}
             <Stage 
-                    width={window.innerWidth} 
+                    width={window.innerWidth - 180} 
                     height={(window.innerHeight - 320)}
                     draggable={true}
                     ref={stage}
@@ -381,6 +382,7 @@ export default function App() {
             </Layer>
             
           </Stage>
+          {/* </div> */}
           
         </Grid>
           <SaveModal

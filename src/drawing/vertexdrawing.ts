@@ -86,8 +86,10 @@ export default class VertexDrawing extends Konva.Group {
         const clickHandler = () => {
             const tool = _currentTool();
             if (tool == "color") {
-                const nextColor = generateRandomColor();
-                this.fillColor = nextColor;
+                // const nextColor = generateRandomColor();
+                // this.fillColor = nextColor;
+                let activeColor = this.graphDrawing.graphTabs.activeColor.colorString;
+                this.fillColor = activeColor;
                 this.draw();
             }
             this.clickCallbacks.forEach(callback => callback(this));

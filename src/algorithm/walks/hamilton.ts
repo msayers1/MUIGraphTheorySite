@@ -63,7 +63,7 @@ export class BHKHamiltonPath implements Algorithm<void> {
             prevSubsets.get(i).set(endVertex, [endVertex]);
         }
         const allVertices = (1 << n) - 1;
-        console.log(prevSubsets);
+        // console.log(prevSubsets);
         for (let k = 2; k <= n; k++) {
             const k_subsets = combinationBits(n, k);
             const nextSubsets = new Map<number, Map<number, number[]>>();
@@ -111,7 +111,7 @@ export class BHKHamiltonPath implements Algorithm<void> {
                     i++;
                 }
             }
-            console.log(nextSubsets);
+            // console.log(nextSubsets);
             prevSubsets = nextSubsets;
         }
         let hamiltonPath: number[] = null;

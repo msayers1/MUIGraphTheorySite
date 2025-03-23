@@ -1,8 +1,9 @@
-import { Algorithm, AlgorithmOutput } from "../algorithm";
+import { Algorithm, AlgorithmError, AlgorithmOutput } from "../algorithm";
 import { Decorator, DecorationState } from "../../decoration/decorator";
 import { Graph, UnweightedGraph, WeightedGraph, GraphAdjacencies, WeightedEdgeData, MultiEdgeData} from "../../graph_core/graph";
 import { BreakfastDiningOutlined } from "@mui/icons-material";
 import { generateRandomColor } from "../../util";
+import { isSingleComponent } from "../../graph_core/graph_util";
 
 type EdgeData = WeightedEdgeData | MultiEdgeData;
 
@@ -23,6 +24,9 @@ export class ColorAlgorithm implements Algorithm<void> {
 
     private initialize(edgeList: number[][], directed: boolean) {
         const graph = this.decorator.getGraph();
+        if (!(isSingleComponent(graph))) {
+            throw new AlgorithmError("Please provide a graph with a single connected component.");
+        }
         if (graph.isWeighted()) {
             this.colorTree = new WeightedGraph(true);
         } else {

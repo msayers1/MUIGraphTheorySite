@@ -8,6 +8,7 @@ import { DecorationState, DefaultDecorator } from "../decoration/decorator";
 import { EditableText } from "../drawing/editabletext";
 import { ToolName } from "../ui_handlers/tools";
 import { generateRandomColor } from "../util";
+import { act } from "react";
 
 type LabelEditCallback = (edgeDrawing: EdgeDrawing, label: string) => boolean;
 
@@ -141,10 +142,18 @@ export default class EdgeDrawing extends Konva.Group {
         } else if (currentTool == "delete") {
             this.graphDrawing.removeEdge(this.start, this.end);
         } else if (currentTool == "color") {
-            const nextColor = generateRandomColor();
-            this.color = nextColor;
-            this.arrow.stroke(nextColor);
-            this.label.fill(nextColor);
+            // const nextColor = generateRandomColor();
+            // this.color = nextColor;
+            // this.arrow.stroke(nextColor);
+            // if (this.label){
+            //     this.label.fill(nextColor);
+            // }
+            let activeColor = this.graphDrawing.graphTabs.activeColor.colorString;
+            this.color = activeColor;
+            this.arrow.stroke(activeColor);
+            if (this.label){
+                this.label.fill(activeColor);
+            }
         }
         evt.cancelBubble = true;
     }

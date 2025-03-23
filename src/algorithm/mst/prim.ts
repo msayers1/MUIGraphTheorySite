@@ -20,9 +20,12 @@ export class PrimMST implements Algorithm<VertexInput> {
     private initialize(input: VertexInput) {
         const g = this.decorator.getGraph();
         if (!g.isWeighted() || g.isDirected()) {
+            this.decorator.setStatusLine(`Prim's algorithm needs a weighted undirected graph!`);
             throw new AlgorithmError("Prim's algorithm needs a weighted undirected graph!");
         }
         if (!(isSingleComponent(g))) {
+            this.decorator.setStatusLine("The graph doesn't have a spanning tree" +
+                " because it has more than one component.");
             throw new AlgorithmError("The graph doesn't have a spanning tree" +
                 " because it has more than one component.");
         }
@@ -100,7 +103,7 @@ export class PrimMST implements Algorithm<VertexInput> {
                 }
             } else {
                 this.decorator.setEdgeState(inside, outside, DecorationState.DISABLED);
-            }
+            }1
             yield;
         }
         this.decorator.setStatusLine(`Prim's MST`);

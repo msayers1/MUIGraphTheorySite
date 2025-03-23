@@ -6,11 +6,11 @@ import { DecorationState } from "../../decoration/decorator";
 
 type VertexAndParent = [number, number];
 
-export class MinimumColorState implements Algorithm<VertexInput> {
+export class Coloring implements Algorithm<VertexInput> {
 
     searchTree: WeightedGraph | UnweightedGraph;;
     inTree: Set<number>;
-    stack: VertexAndParent[];
+    queue: VertexAndParent[];
 
     constructor(private decorator: Decorator) {
     }
@@ -24,7 +24,7 @@ export class MinimumColorState implements Algorithm<VertexInput> {
         }
         const vertexIds = graph.getVertexIds();
         this.inTree = new Set();
-        this.stack = [[startVertex.vertexId, undefined]];
+        this.queue = [[startVertex.vertexId, undefined]];
         this.inTree.add(startVertex.vertexId);
         this.searchTree.addVertex(startVertex.vertexId,
             graph.getVertexLabel(startVertex.vertexId));
@@ -47,14 +47,14 @@ export class MinimumColorState implements Algorithm<VertexInput> {
 
     *run(startVertex: VertexInput) {
         this.initialize(startVertex);
-        while (this.stack.length > 0) {
-            const [v, vparent] = this.stack.pop();
+        while (this.queue.length > 0) {
+            const [v, vparent] = this.queue.shift();
             const graph = this.decorator.getGraph();
             for (const n of graph.getVertexNeighborIds(v)) {
                 if (this.inTree.has(n)) {
                     continue;
                 }
-                this.stack.push([n, v]);
+                this.queue.push([n, v]);
                 this.decorator.setVertexState(n, DecorationState.CONSIDERING);
                 this.decorator.setEdgeState(v, n, DecorationState.CONSIDERING);
             }
@@ -84,17 +84,17 @@ export class MinimumColorState implements Algorithm<VertexInput> {
         }
         return {
             graph: this.searchTree,
-            name: "DFS Tree",
+            name: "BFS Tree",
             message: null
         }
     }
 
     getFullName() {
-        return "Depth First Search Algorithm";
+        return "Breadth First Search Algorithm";
     }
 
     getShortName() {
-        return "DFS";
+        return "BFS";
     }
 
     getDecorator() {

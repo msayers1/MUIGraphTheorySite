@@ -12,4 +12,11 @@ are a lot of things missing and things that do not work.
 ### Implemented Features
 - Undirected and directed graph creation
 - Weighted graphs
+- Euclidean graphs
 - Tool-based design with tools to delete objects, add/edit and move objects
+- Algorithms
+    - Minimum Spanning Tree Algorithms
+        - Kruskal's Minimum Spanning Tree ( requires undirected weighted graph )
+        - Prim's Minimum Spanning Tree ( requires undirected weighted graph )
+    - Search Algorithms
+        - Breath Search Tree 

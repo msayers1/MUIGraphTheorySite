@@ -121,6 +121,7 @@ export class FleuryEulerTrail implements Algorithm<void> {
             let i = 0;
             for (const n of neighbors) {
                 this.decorator.setEdgeState(currentVertex, n, DecorationState.CONSIDERING);
+                yield;
                 if (!this.isBridge(this.graph, [currentVertex, n]) || i == neighbors.size - 1) {
                     stop = false;
                     this.decorator.setEdgeState(currentVertex, n, DecorationState.SELECTED);
