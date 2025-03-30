@@ -27,6 +27,7 @@ import { IconButton, Box } from '@mui/material';
 import {tabObject} from './components/tabbar';
 import SaveAs from '@mui/icons-material/SaveAs';
 import { StoredDrawingInfo } from './store/graphstore';
+import TrainingModal from './outsideKonva/TrainingModal';
 import SaveModal from './outsideKonva/importExport/saveModal';
 import GenerateGraphModal from './outsideKonva/GenerateModal';
 import {GenerateGraphPackage} from './ui_handlers/graphgenerate';
@@ -38,6 +39,7 @@ import { AlgorithmControlState } from './components/algorithm_controls';
 import { ColorInformation } from './decoration/color';
 import { v4 as uuidv4 } from 'uuid';
 import { ContextExclusionPlugin } from 'webpack';
+
 
 export default function App() {
   const stage = React.useRef(null);
@@ -52,6 +54,7 @@ export default function App() {
   const [clickToAddText, setClickToAddText] = React.useState(false);
   const [algorithmEnabled, setAlgorithmEnabled] = React.useState(true);
   const [algorithmControlState, setAlgorithmControlState] = React.useState<AlgorithmControlState>();
+  const [trainingModal, setTrainingModal] = React.useState(false);
   const [saveModal, setSaveModal] = React.useState(false);
   const [saveModalDefaultName, setSaveModalDefault] = React.useState('');
   const [generateModal, setGenerateModal] = React.useState(false);
@@ -378,6 +381,7 @@ export default function App() {
       <NavBar 
         handleNavBarAction={handleNavBarAction}
         importGraph={importGraph}
+        openTrainingModal={()=>setTrainingModal(true)}
       />
       <Grid container spacing={1} >
         <Grid size={{md: 2}}>
@@ -503,6 +507,10 @@ export default function App() {
             open={saveModal}
             onSave={saveGraph}
 
+          /> 
+          <TrainingModal
+            onClose={()=>{setTrainingModal(false)}}
+            open={trainingModal}
           /> 
           <GenerateGraphModal
           onClose={()=>{setGenerateModal(false)}}

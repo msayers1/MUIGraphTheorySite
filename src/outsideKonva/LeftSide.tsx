@@ -36,7 +36,7 @@ const DrawerHeader = styled('div')(({ theme }) => ({
   justifyContent: 'flex-end',
 }));
 
-// Props for the TabPanel component
+// Props for the Left Side component
 interface LeftSideProps {
   addGraph: (tabType: TabBar.TabType) => void;
   updateTool: (tool: string) => void;

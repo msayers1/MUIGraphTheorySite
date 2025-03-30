@@ -16,11 +16,12 @@ import { algorithms, MenuEntry } from '../ui_handlers/algorithm_control';
 interface NavBarProps {
   handleNavBarAction: (buttonId: string, algorithm: MenuEntry<any>) => void;
   importGraph: (filelist: FileList) => void;
+  openTrainingModal: ()=>void;
 }
 
 
 // export default function NavBar() {
-const NavBar: React.FC<NavBarProps> = ({ handleNavBarAction, importGraph}) => {
+const NavBar: React.FC<NavBarProps> = ({ handleNavBarAction, importGraph, openTrainingModal}) => {
     const { mode, toggleTheme } = useThemeMode();
     const [anchorGraph, setAnchorGraph] = React.useState<null | HTMLElement>(null);
     const openGraph = Boolean(anchorGraph);
@@ -73,6 +74,9 @@ const NavBar: React.FC<NavBarProps> = ({ handleNavBarAction, importGraph}) => {
                 <Typography variant="h6" component="div" sx={{ flexGrow: 1 }} onClick={toggleTheme}>
                 Graph Theory Site
                 </Typography>
+                <Button color="inherit" onClick={openTrainingModal} >
+                    Tutorials
+                </Button>
                 <Button color="inherit" onClick={handleGraphClick} >
                 Graph
                 </Button>

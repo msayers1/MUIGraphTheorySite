@@ -51,7 +51,19 @@ module.exports = {
                 generator: {
                     filename: 'img/[name][ext]',
                 }
-            }
+            },
+            {
+                test: /\.mp4$/,
+                use: [
+                  {
+                    loader: 'file-loader',  // Handles the video files
+                    options: {
+                      name: '[name].[hash].[ext]',  // Output format (use file name and hash for cache-busting)
+                      outputPath: 'videos/',  // Output folder for videos (optional)
+                    },
+                  },
+                ],
+              },
         ],
     },
     resolve: {
