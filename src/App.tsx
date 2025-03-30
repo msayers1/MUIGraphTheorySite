@@ -6,7 +6,6 @@ import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import NavBar from './outsideKonva/NavBar';
 import LeftSide from './outsideKonva/LeftSide';
-import RightSide from './outsideKonva/RightSide';
 import Grid from '@mui/material/Grid2';
 import GraphTabs from "./ui_handlers/graphtabs";
 // import AutoLabelOptions from "./ui_handlers/autolabel_options";
@@ -31,12 +30,13 @@ import { StoredDrawingInfo } from './store/graphstore';
 import SaveModal from './outsideKonva/importExport/saveModal';
 import GenerateGraphModal from './outsideKonva/GenerateModal';
 import {GenerateGraphPackage} from './ui_handlers/graphgenerate';
-import ErrorSnackbar, {ErrorPackage} from './outsideKonva/ErrorSnackbar';
+import ErrorSnackbar,  {AlertSeverity , ErrorPackage} from './outsideKonva/ErrorSnackbar';
 import MessageSnackbar, {MessagePackage} from './outsideKonva/MessageSnackbar';
 import { algorithms, MenuEntry } from './ui_handlers/algorithm_control';
 import AlgorithmControlPanel from './outsideKonva/AlgorithmControlPanel';
 import { AlgorithmControlState } from './components/algorithm_controls';
 import { ColorInformation } from './decoration/color';
+import { v4 as uuidv4 } from 'uuid';
 
 export default function App() {
   const stage = React.useRef(null);
@@ -53,6 +53,7 @@ export default function App() {
   const [saveModal, setSaveModal] = React.useState(false);
   const [saveModalDefaultName, setSaveModalDefault] = React.useState('');
   const [generateModal, setGenerateModal] = React.useState(false);
+  const [errorNumber, setErrorNumber] = React.useState(0);
   const [errorSnackbarOpen, setErrorSnackbarOpen] = React.useState(false);
   const [errorPackage, setErrorPackage] = React.useState<ErrorPackage>({id:0, message:"No message yet", level: "success"});
   const [messageSnackbarOpen, setMessageSnackbarOpen] = React.useState(false);
@@ -125,6 +126,7 @@ export default function App() {
 
   const handleRemoveTab = (tabId: number) => {
     const newTabArray = graphTabs.tabBar.removeById(tabId);
+    console.log(newTabArray);
     setTabArray(newTabArray);
     // graphTabs.tabBar.setTabs((prevTabs) => prevTabs.filter((tab) => tab.id !== tabId));
     // if (selectedTab === tabId && tabs.length > 1) {
@@ -228,10 +230,25 @@ export default function App() {
   }
 
   const importGraph = (fileList: FileList) => {
-    const newId =  graphTabs.importExport.importNew(fileList);
-    setTabArray(graphTabs.tabBar.tabArray);
-    if(typeof(newId) == 'number') setTabIndex(newId);
-    console.log(newId.valueOf());
+    graphTabs.importExport.importNew(fileList).then((newId)=>{
+      setTabArray(graphTabs.tabBar.tabArray);
+      if(typeof(newId) == 'number') {
+        // console.log(`Number ${newId} `);
+        setTabIndex(newId);
+      } else {
+        // console.log(`Not a number ${newId} `);
+        setErrorSnackbarOpen(true);
+        setErrorPackage({id: errorNumber, message:"New Graph Error", level: "failure"as AlertSeverity});
+        setErrorNumber(errorNumber + 1);
+      }
+    }).catch((error)=> {
+      // console.log(`Error: ${error} `);
+      setErrorSnackbarOpen(true);
+      setErrorPackage({id: errorNumber, message:error, level: "failure"as AlertSeverity});
+      setErrorNumber(errorNumber + 1);
+    })
+    
+
   }
   const handleTabChange = (newValue: number) => {
     const newTabArray = graphTabs.tabBar.changeTab(newValue);
