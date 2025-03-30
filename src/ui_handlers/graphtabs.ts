@@ -77,7 +77,7 @@ export default class GraphTabs {
             if (graph.getVertexIds().size > 0 ||  tool != "default") {
                 // $("#clickToAddText").hide();
                 this.callbackClickToAddText(false);
-            } else {
+            } else if (graph.getVertexIds().size == 0){
                 // $("#clickToAddText").show();
                 this.callbackClickToAddText(true);
             }
@@ -124,6 +124,7 @@ export default class GraphTabs {
             this.tabSwitchCallbacks.forEach(cb => cb());
             this.clickToAddUpdater();
             this.tabDrawings[id].setGraphEditCallback(this.clickToAddUpdater);
+            (this.tabDrawings[id].getGraph().getVertexIds().size == 0)?this.callbackClickToAddText(true):this.callbackClickToAddText(false);
         });
         this.tabBar.setTabDeactivatedCallback((id: number) => {
             if(this.tabDrawings[id]){
@@ -233,6 +234,11 @@ export default class GraphTabs {
         // }
     }
 
+    clearStage(id: number) {
+        this.tabDrawings[id].detachStage();
+        this.stage.destroyChildren();
+        this.stage.clear();
+    }
 
     setControlPanelForActiveTab(controlPanel: AlgorithmControls) {
         // TODO properly dispose pre-existing panel

@@ -37,15 +37,17 @@ import AlgorithmControlPanel from './outsideKonva/AlgorithmControlPanel';
 import { AlgorithmControlState } from './components/algorithm_controls';
 import { ColorInformation } from './decoration/color';
 import { v4 as uuidv4 } from 'uuid';
+import { ContextExclusionPlugin } from 'webpack';
 
 export default function App() {
   const stage = React.useRef(null);
-  const [tabIndex, setTabIndex] = React.useState(0);
+  const [tabIndex, setTabIndex] = React.useState(undefined);
+  const [tabId, setTabId] = React.useState(undefined);
   const [tabName, setTabName] = React.useState("");
   const [tabEdit, setTabEdit] = React.useState(false);
   const [graphTabs, setGraphTabs] = React.useState<GraphTabs>();
   const [bookmarks, setBookmarks] = React.useState<StoredDrawingInfo[]>();
-  const [tabArray, setTabArray] = React.useState<[tabObject]>();
+  const [tabArray, setTabArray] = React.useState<tabObject[]|[]>();
   const [noGraph, setNoGraph] = React.useState(true);
   const [clickToAddText, setClickToAddText] = React.useState(false);
   const [algorithmEnabled, setAlgorithmEnabled] = React.useState(true);
@@ -79,7 +81,7 @@ export default function App() {
     displayNewGraph(tabType);
     setNoGraph(false);
     setClickToAddText(true);
-    setTabArray(graphTabs.tabBar.tabArray);
+
     // console.log(tabArray);
     // setGraphs([...graphs, newGraph]); // Create a new array with existing graphs and the new graph
   };
@@ -87,7 +89,17 @@ export default function App() {
     // const tabbar: TabBar.TabBar = document.querySelector("tab-bar");
     const newId = graphTabs.tabBar.addTabElement("New Graph", tabType);
     graphTabs.tabBar.setActiveById(newId);
-    setTabIndex(newId);
+    console.log(typeof(graphTabs.tabBar.tabArray));
+    setTabArray(graphTabs.tabBar.tabArray);
+    setTabId(newId);
+    const newTabIndex = graphTabs.tabBar.tabArray.findIndex((tab:tabObject) => tab.id === newId);
+    if (newTabIndex != -1){
+      setTabIndex(newTabIndex);
+    } else if (graphTabs.tabBar.tabArray.length == 0){
+      setTabIndex(undefined);
+    } else {
+      throwError("No Index found");
+    }
     // console.log(graphTabs);
   }
   function errorHandler (errorPackage: ErrorPackage) {
@@ -124,19 +136,11 @@ export default function App() {
     graphTabs.bookmarkedGraphs.removeBookmark(id);
   }
 
-  const handleRemoveTab = (tabId: number) => {
-    const newTabArray = graphTabs.tabBar.removeById(tabId);
-    console.log(newTabArray);
-    setTabArray(newTabArray);
-    // graphTabs.tabBar.setTabs((prevTabs) => prevTabs.filter((tab) => tab.id !== tabId));
-    // if (selectedTab === tabId && tabs.length > 1) {
-    //   const remainingTabs = tabs.filter((tab) => tab.id !== tabId);
-    //   setSelectedTab(remainingTabs[0].id);
-    // }
-  };
+
   const saveNewLabel = (tabId: number) => {
     const updatedTabObject = {id:tabId, name:tabName, editable:false};
     const tabIndex = tabArray.findIndex((tab:tabObject) => tab.id === tabId);
+    
     // console.log(tabArray);
     const newTabArray = tabArray;
     newTabArray[tabIndex] = updatedTabObject;
@@ -221,7 +225,15 @@ export default function App() {
   const openBookmark = (item: StoredDrawingInfo) => {
     const newId = graphTabs.bookmarkedGraphs.retrieveBookmark(item);
     setTabArray(graphTabs.tabBar.tabArray);
-    setTabIndex(newId);
+    setTabId(newId);
+    const newTabIndex = tabArray.findIndex((tab:tabObject) => tab.id === newId);
+    if (newTabIndex != -1){
+      setTabIndex(newTabIndex);
+    } else if (graphTabs.tabBar.tabArray.length == 0){
+      setTabIndex(undefined);
+    } else {
+      throwError("No Index found");
+    }
     if(algorithmControlState != undefined){
       const algorithmControlState = graphTabs.algortihmControl.controls.getAlgorithmControlState();
       setAlgorithmControlState(algorithmControlState);
@@ -234,18 +246,27 @@ export default function App() {
       setTabArray(graphTabs.tabBar.tabArray);
       if(typeof(newId) == 'number') {
         // console.log(`Number ${newId} `);
-        setTabIndex(newId);
+        setTabId(newId);
+        const newTabIndex = tabArray.findIndex((tab:tabObject) => tab.id === newId);
+        if (newTabIndex != -1){
+          setTabIndex(newTabIndex);
+        } else if (graphTabs.tabBar.tabArray.length == 0){
+          setTabIndex(undefined);
+        } else {
+          throwError("No Index found");
+        }
       } else {
         // console.log(`Not a number ${newId} `);
         setErrorSnackbarOpen(true);
         setErrorPackage({id: errorNumber, message:"New Graph Error", level: "failure"as AlertSeverity});
         setErrorNumber(errorNumber + 1);
       }
-    }).catch((error)=> {
+    }).catch((error:unknown)=> {
+      throwError(error);
       // console.log(`Error: ${error} `);
-      setErrorSnackbarOpen(true);
-      setErrorPackage({id: errorNumber, message:error, level: "failure"as AlertSeverity});
-      setErrorNumber(errorNumber + 1);
+      // setErrorSnackbarOpen(true);
+      // setErrorPackage({id: errorNumber, message:error, level: "failure"as AlertSeverity});
+      // setErrorNumber(errorNumber + 1);
     })
     
 
@@ -253,12 +274,72 @@ export default function App() {
   const handleTabChange = (newValue: number) => {
     const newTabArray = graphTabs.tabBar.changeTab(newValue);
     setTabArray(newTabArray);
-    setTabIndex(newValue);
+    setTabId(newValue);
+    const newTabIndex = newTabArray.findIndex((tab:tabObject) => tab.id === newValue);
+    if (newTabIndex != -1){
+      setTabIndex(newTabIndex);
+    } else if (graphTabs.tabBar.tabArray.length == 0){
+      setTabIndex(undefined);
+    } else {
+      throwError("No Index found");
+    }
     if(algorithmControlState != undefined){
       const algorithmControlState = graphTabs.algortihmControl.controls.getAlgorithmControlState();
       setAlgorithmControlState(algorithmControlState);
     }
     // console.log(graphTabs);
+  };
+
+  const handleRemoveTab = (tabId: number) => {
+    const [newTabArray, newActiveIndex] = graphTabs.tabBar.removeById(tabId);
+    console.log(typeof(newTabArray));
+    setTabArray(newTabArray);
+    if(newTabArray.length === 0){
+      graphTabs.clearStage(tabId);
+      return;
+    }
+    if(newActiveIndex === -1){
+      throwError("Index out of range.");
+      return;
+    }
+    // console.log(newActiveIndex);
+    if(newActiveIndex != undefined && newActiveIndex < newTabArray.length) {
+      setTabIndex(newActiveIndex);
+      const newTabId = newTabArray[newActiveIndex].id;
+      setTabId(newTabId);
+        // const newTabIndex = newTabArray.findIndex((tab:tabObject) => tab.id === newActiveIndex);
+        // if (newTabIndex != -1){
+        //   setTabIndex(newTabIndex);
+        // } else if (graphTabs.tabBar.tabArray.length == 0){
+        //   setTabIndex(undefined);
+        // } else {
+        //   throwError("No Index found");
+        // }
+    } else if (newActiveIndex > newTabArray.length) {
+      throwError("Index out of range.");
+    } else {
+      graphTabs.clearStage(tabId);
+    }
+    if(algorithmControlState != undefined){
+      const algorithmControlState = graphTabs.algortihmControl.controls.getAlgorithmControlState();
+      setAlgorithmControlState(algorithmControlState);
+    }
+  };
+
+  const throwError = (error:unknown|string) => {
+    if (error instanceof Error) {
+      setErrorSnackbarOpen(true);
+      setErrorPackage({id: errorNumber, message:error.message, level: "failure"as AlertSeverity});
+      setErrorNumber(errorNumber + 1);
+    } else if (typeof(error) == 'string'){
+      setErrorSnackbarOpen(true);
+      setErrorPackage({id: errorNumber, message:error, level: "failure"as AlertSeverity});
+      setErrorNumber(errorNumber + 1);
+    } else {
+      setErrorSnackbarOpen(true);
+      setErrorPackage({id: errorNumber, message:"There was an error with the Error Handling.", level: "failure"as AlertSeverity});
+      setErrorNumber(errorNumber + 1);
+    }
   };
 
   const saveGraph = (fileName: string) => {
@@ -270,7 +351,15 @@ export default function App() {
     const newId = graphTabs.graphGenerate.GraphGenerate(formSubmission);
     // const newTabArray = graphTabs.tabBar.changeTab(newId);
     setTabArray(graphTabs.tabBar.tabArray);
-    setTabIndex(newId);
+    setTabId(newId);
+    const newTabIndex = graphTabs.tabBar.tabArray.findIndex((tab:tabObject) => tab.id === newId);
+    if (newTabIndex != -1){
+      setTabIndex(newTabIndex);
+    } else if (graphTabs.tabBar.tabArray.length == 0){
+      setTabIndex(undefined);
+    } else {
+      throwError("No Index found");
+    }
     setGenerateModal(false);
   }
 
@@ -282,6 +371,8 @@ export default function App() {
     setMessageSnackbarOpen(false);
   }
 
+  // if(typeof(graphTabs) != "undefined") console.log(`Zero Length: ${graphTabs.tabBar.tabArray.length === 0}`);
+  console.log(`Active tab id: ${tabId}, Index: ${tabIndex}, tab array: ${tabArray}, type ${typeof(tabArray)}`)
   return (
     <React.Fragment>
       <NavBar 
@@ -308,54 +399,57 @@ export default function App() {
         <Grid size={{md: 8}}>
           {(typeof(graphTabs) != "undefined")?
           <React.Fragment>
-            {graphTabs.tabBar.tabArray.map((tab) => (
-              (tabEdit && tabIndex == tab.id)?
-                <Button
-                          variant="contained"
-                          key={tab.id}
-                          value={tab.id}
-                          onClick={()=>{(tabIndex == tab.id )?turnOnTabEdit(tab.name):handleTabChange(tab.id)}}
-                          endIcon={<div
-                            onClick={(event) => {
-                              event.stopPropagation(); // Prevent triggering the tab change
-                              saveNewLabel(tab.id);
-                            }}
+            {(graphTabs.tabBar.tabArray.length != 0)?graphTabs.tabBar.tabArray.map((tab) => 
+                (tabEdit && tabId == tab.id)?
+                 <Button
+                            variant="contained"
+                            key={tab.id}
+                            value={tab.id}
+                            onClick={()=>{(tabId == tab.id )?turnOnTabEdit(tab.name):handleTabChange(tab.id)}}
+                            endIcon={<div
+                              onClick={(event) => {
+                                event.stopPropagation(); // Prevent triggering the tab change
+                                saveNewLabel(tab.id);
+                              }}
+                            >
+                              <SaveAs fontSize="small" />
+                            </div>} 
                           >
-                            <SaveAs fontSize="small" />
-                          </div>} 
-                        >
-                            <TextField  
-                              onKeyDown={(event: React.KeyboardEvent<HTMLInputElement>) => {
-                                if (event.key === 'Enter') {
-                                  // console.log('Enter key pressed with value:', event);
-                                  saveNewLabel(tab.id);
-                                  // Add your logic here, e.g., submitting the form or calling a function
-                                }
-                              }} 
-                              onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-                                setTabName(event.target.value);
-                              }} 
-                              label="label" 
-                              value={tabName} 
-                              variant="standard" 
-                            />
-                          </Button>
-                          :<Button
-                              variant={(tabIndex == tab.id)? "contained":"outlined"}
-                              key={tab.id}
-                              value={tab.id}
-                              onClick={()=>{(tabIndex == tab.id )?turnOnTabEdit(tab.name):handleTabChange(tab.id)}}
-                              endIcon={<div
-                                onClick={(event) => {
-                                  event.stopPropagation(); // Prevent triggering the tab change
-                                  handleRemoveTab(tab.id);
-                                }}
-                          >
-                            <HighlightOff fontSize="small" />
-                          </div>} 
-                        >{tab.name}
-                          </Button>
-            ))}
+                              <TextField  
+                                onKeyDown={(event: React.KeyboardEvent<HTMLInputElement>) => {
+                                  if (event.key === 'Enter') {
+                                    // console.log('Enter key pressed with value:', event);
+                                    saveNewLabel(tab.id);
+                                    // Add your logic here, e.g., submitting the form or calling a function
+                                  }
+                                }} 
+                                onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                                  setTabName(event.target.value);
+                                }} 
+                                label="ID" 
+                                value={tabName} 
+                                variant="standard" 
+                              />
+                            </Button>
+                  :
+                  <Button
+                    variant={(tabId == tab.id)? "contained":"outlined"}
+                    key={tab.id}
+                    value={tab.id}
+                    onClick={()=>{(tabId == tab.id )?turnOnTabEdit(tab.name):handleTabChange(tab.id)}}
+                    endIcon={<div
+                      onClick={(event) => {
+                        event.stopPropagation(); // Prevent triggering the tab change
+                        handleRemoveTab(tab.id);
+                      }}
+                      >
+                        <HighlightOff fontSize="small" />
+                      </div>} 
+                  >{tab.name}</Button>
+                    ):
+                (<Typography>No graph open. Please click the one of the new Graphs to create a graph.</Typography>)
+            
+            }
 
 
             {/* {graphTabs.tabBar.tabArray.map((tab, index) => (
@@ -364,8 +458,8 @@ export default function App() {
                           variant="contained"
                           key={tab.id}
                           value={tab.id}
-                          onClick={()=>{(tabIndex == tab.id )?turnOnTabEdit(tab.name):handleTabChange(tab.id)}}
-                          endIcon={(tabEdit && tabIndex == tab.id)?<div
+                          onClick={()=>{(tabId == tab.id )?turnOnTabEdit(tab.name):handleTabChange(tab.id)}}
+                          endIcon={(tabEdit && tabId == tab.id)?<div
                             onClick={(event) => {
                               event.stopPropagation(); // Prevent triggering the tab change
                               saveNewLabel(tab.id);
@@ -377,17 +471,18 @@ export default function App() {
                               handleRemoveTab(tab.id);
                             }}
                           >
-                            {(tabEdit && tabIndex == tab.id)?<SaveAs fontSize="small" />:<HighlightOff fontSize="small" />}
+                            {(tabEdit && tabId == tab.id)?<SaveAs fontSize="small" />:<HighlightOff fontSize="small" />}
                           </div>} 
-                        >{(tabEdit && tabIndex == tab.id)?<TextField   onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                        >{(tabEdit && tabId == tab.id)?<TextField   onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
                           setTabName(event.target.value);
                         }} label="label" value={tabName} variant="standard" />:tab.name}
                           </Button>
               ))} */}
           </React.Fragment>
-          :<div/>
+          :<Typography>Loading!</Typography>
           }
             {/* <div style={{ display: "inline-block", padding: "0px",width: (parent.innerWidth * .5), height: (parent.innerHeight * .8), border: "2px solid black" }}> */}
+            {clickToAddText?<Typography>Click to add a vertex. Connect vertices by clicking them one after the other.</Typography>:<div/>}
             <Stage 
                     width={window.innerWidth - 180} 
                     height={(window.innerHeight - 320)}

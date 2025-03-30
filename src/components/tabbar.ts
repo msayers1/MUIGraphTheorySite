@@ -16,7 +16,7 @@ export class TabBar {
     private tabDeactivatedCallback: TabEventCallback;
     private tabClosedCallback: TabEventCallback;
     private tabCreatedCallback: TabCreatedCallback;
-    tabArray;
+    tabArray: tabObject[]|[];
 
     constructor() {
         // super();
@@ -29,7 +29,6 @@ export class TabBar {
         this.prevActiveId = undefined;
         this.activeId = undefined;
         this.tabArray = [];
-
     }
 
     setTabDeactivatedCallback(tabDeactivatedCallback: TabEventCallback) {
@@ -101,9 +100,10 @@ export class TabBar {
         // });
         // const container = this.querySelector("#tabbar");
         // container.appendChild(tabFrag);
+        console.log(`Before tab array ${this.tabArray} : type ${typeof(this.tabArray)}`);
         this.tabArray = [... this.tabArray, {id:id, name:`${title}-${id}`, editable:true}]
         this.tabCreatedCallback(id, tabType);
-        // console.log('Here');
+        console.log(`Here tab array ${this.tabArray} : type ${typeof(this.tabArray)}`);
         return id;
     }
 
@@ -141,6 +141,9 @@ export class TabBar {
         // a.removeClass("bg-secondary");
         this.makeTitleEditable(id);
         this.tabActivatedCallback?.(id);
+        // console.log(`Tabchange Id: ${id}, prevID = ${this.prevActiveId} (${this.getActiveTabId()})`);
+        this.activeId = id;
+        
         return(this.tabArray);
     }
 
@@ -161,42 +164,64 @@ export class TabBar {
         return this.tabArray[this.activeId].name;
     }
 
-    removeById(id: number) {
+    removeById(id: number): [tabObject[], number|undefined] {
         // $("#tabbar").children(`li[data-id=${id}]`).remove();
         const tabIndexToRemove = this.tabArray.findIndex((tab:tabObject) => tab.id === id);
         if (tabIndexToRemove === -1) return; // If the tab is not found
         // Remove the tab from the array
         this.tabDeactivatedCallback(id);
         const updatedTabs = this.tabArray.filter((tab:tabObject) => tab.id !== id);
+        let nextActiveTab = this.getActiveTabId();
+        let nextActiveIndex = updatedTabs.findIndex((tab:tabObject) => nextActiveTab === tab.id);
         this.tabArray = updatedTabs;
+        // console.log(`Active Tab: id ${this.activeId}, is active: ${id === this.activeId} array length ${this.tabArray.length}, first If ${(this.tabArray.length > 2)}, 2nd if ${(this.tabArray.length > 1)}, 3rd If ${(id === this.prevActiveId)}, 2nd if ${(this.tabArray.length > 2)}`);
         if (id === this.activeId) {
             // If there are remaining tabs, set the first tab as the active one
-            if (this.tabArray.length > 2) {
-                const nextActiveTab = updatedTabs[Math.min(tabIndexToRemove, updatedTabs.length - 2)].id;
-                this.activeId = nextActiveTab;
-                this.prevActiveId = updatedTabs[Math.min(tabIndexToRemove + 1, updatedTabs.length - 1)].id;
+            if (this.tabArray.length > 1) {
+                nextActiveTab = this.prevActiveId
+                nextActiveIndex = this.tabArray.findIndex((tab:tabObject) => nextActiveTab === tab.id);
+                // nextActiveIndex = Math.min(tabIndexToRemove, updatedTabs.length - 1)
+                // nextActiveTab = updatedTabs[nextActiveIndex].id;
+                this.activeId = nextActiveIndex;
+                this.makeTitleEditable(nextActiveTab);
+                this.tabActivatedCallback?.(nextActiveTab);
+                let newPrevActiveIndex = Math.min(tabIndexToRemove + 1, updatedTabs.length - 1)
+                newPrevActiveIndex = (newPrevActiveIndex == nextActiveIndex?nextActiveIndex - 1:newPrevActiveIndex)
+                this.prevActiveId = updatedTabs[newPrevActiveIndex].id;
             } else if (this.tabArray.length > 1) {
-                const nextActiveTab = updatedTabs[Math.min(tabIndexToRemove, updatedTabs.length - 1)].id;
-                this.activeId = nextActiveTab;
+                nextActiveIndex = Math.min(tabIndexToRemove, updatedTabs.length - 1)
+                const nextActiveTab = updatedTabs[nextActiveIndex].id;
+                this.activeId = nextActiveIndex;
+                this.makeTitleEditable(nextActiveTab);
+                this.tabActivatedCallback?.(nextActiveTab);
                 this.prevActiveId = undefined;
             } else {
             // No more tabs available, reset active ID to an empty string or handle as needed
             this.activeId = undefined;
+            nextActiveTab = undefined;
             this.prevActiveId = undefined;
             }
-        } else if (id === this.prevActiveId) {   // If the removed tab was the active tab, update prevActiveId
-        
-            // If there are remaining tabs, set the first tab as the active one
-            if (this.tabArray.length > 2) {
-            const nextActiveTab = updatedTabs[Math.min(tabIndexToRemove, updatedTabs.length - 2)].id;
-            this.prevActiveId = nextActiveTab;
-            } else {
-            // No more tabs available, reset active ID to an empty string or handle as needed
-            this.prevActiveId = undefined;
-            console.log(`I think I was here, ${this.activeId}`);
-            }
+        } else if (id === this.prevActiveId && this.tabArray.length < 2) {
+            // console.log(`There is no more previous Ids: ${this.tabArray} `)
+            this.prevActiveId = undefined
         }
-        return(updatedTabs);
+        // else if (id === this.prevActiveId) {   // If the removed tab was the active tab, update prevActiveId
+        
+        //     // If there are remaining tabs, set the first tab as the active one
+        //     if (this.tabArray.length > 2) {
+        //     // nextActiveTab = updatedTabs[Math.min(tabIndexToRemove, updatedTabs.length - 2)].id;
+        //     // this.makeTitleEditable(nextActiveTab);
+        //     // this.tabActivatedCallback?.(nextActiveTab);
+        //     // this.activeId = nextActiveTab;    
+        //     this.prevActiveId = ;
+        //     } else {
+        //     // No more tabs available, reset active ID to an empty string or handle as needed
+        //     this.prevActiveId = undefined;
+        //     console.log(`I think I was here, ${this.activeId}`);
+        //     }
+        // }
+        console.log(typeof(this.tabArray));
+        return([updatedTabs, nextActiveIndex]);
     }
 
     private getNextId(): number {
