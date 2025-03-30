@@ -54,25 +54,23 @@ interface LeftSideProps {
 
 // export default function LeftSide(addGraph) {
 const LeftSide: React.FC<LeftSideProps> = ({ addGraph, updateTool, updateAutoLayoutOption, updateAutoLabelOptions, updateGraphDisplayOptions, bookmarks, openBookmark, handleRemoveBookmark, importGraph, colorInformation, updateColor, activeColor }) => {
-  const theme = useTheme();
-  const [open, setOpen] = React.useState(true);
+  const [expanded, setExpanded] = React.useState<string | false>("panel1"); // Default to open "panel1"
   const [localActiveColor, setLocalActiveColor] = React.useState(activeColor);
   const setActiveColor = (color) => {
     updateColor(color);
     setLocalActiveColor(color);
   }
 
-  const handleDrawerOpen = () => {
-    setOpen(true);
+  const handleChange = (panel: string) => (_: React.SyntheticEvent, isExpanded: boolean) => {
+    setExpanded(isExpanded ? panel : false);
   };
-  const handleDrawerClose = () => {
-    setOpen(false);
-  };
+
   return (
     <div>
-        <Accordion>
+        <Accordion  expanded={expanded === "panel1"}  onChange={handleChange("panel1")}>
             <AccordionSummary
             expandIcon={<ExpandMoreIcon />}
+
             >
             <Typography component="span">New Graphs</Typography>
             </AccordionSummary>
