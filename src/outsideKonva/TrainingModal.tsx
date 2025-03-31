@@ -31,17 +31,30 @@ const videos = videoFiles.keys().reduce((acc: { [key: string]: string }, filePat
 }, {});
 
 const videoNames = videoFiles.keys();
-const formattedVideoNames = videoNames.map(videoName => 
-    videoName
+// const formattedVideoNames = videoNames.map(videoName => 
+//     videoName
+//       .replace(/^.\//, '') // Remove "./" at the beginning
+//       .replace(/\.mp4$/, '') // Remove ".mp4" at the end
+//       .replace(/([a-z])([A-Z])/g, '$1 $2') // Add space before capital letters (except the first one)
+// );
+
+// Modified array containing both original and modified names
+const formattedVideoNames = videoNames.map(videoName => {
+    const modifiedName = videoName
       .replace(/^.\//, '') // Remove "./" at the beginning
       .replace(/\.mp4$/, '') // Remove ".mp4" at the end
-      .replace(/([a-z])([A-Z])/g, '$1 $2') // Add space before capital letters (except the first one)
-);
+      .replace(/([a-z])([A-Z])/g, '$1 $2'); // Add space before capital letters (except the first one)
+  
+    return {
+      original: videoName,
+      modified: modifiedName
+    };
+  });
 
 const TrainingModal: React.FC<TrainingModalProps> = ({ onClose, open }) => {
     const videoRef = useRef<VideoRef | null>(null);
     const [ videoFiles, setVideoFiles] = React.useState(undefined);
-    const [ selectedVideo, setSelectedVideo] = React.useState('New Euclidean');
+    const [ selectedVideo, setSelectedVideo] = React.useState('ChristofidesTSPExample');
     console.log(videoFiles);
 
     const handleChange = (event)=> {
@@ -57,8 +70,8 @@ const TrainingModal: React.FC<TrainingModalProps> = ({ onClose, open }) => {
                 <DialogContent>
                     <Select value={selectedVideo} onChange={handleChange} fullWidth>
                         {formattedVideoNames.map((videoName, index) => (
-                            <MenuItem key={index} value={videoName}>
-                                {videoName}
+                            <MenuItem key={index} value={videoName.original}>
+                                {videoName.modified}
                             </MenuItem>
                         ))}
                     </Select><br/>

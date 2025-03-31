@@ -58,7 +58,7 @@ module.exports = {
                   {
                     loader: 'file-loader',  // Handles the video files
                     options: {
-                      name: '[name].[hash].[ext]',  // Output format (use file name and hash for cache-busting)
+                      name: '[name].[ext]',  // Output format (use file name and hash for cache-busting) .[hash] taken out in between
                       outputPath: 'videos/',  // Output folder for videos (optional)
                     },
                   },

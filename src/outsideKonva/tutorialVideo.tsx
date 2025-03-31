@@ -1,5 +1,5 @@
 import React, { useState, useImperativeHandle, forwardRef, useRef } from 'react';
-
+import videoSrc from '../videos/NewEuclidean.mp4';
 declare var require: {
     context(path: string, deep?: boolean, filter?: RegExp): any;
   };
@@ -56,7 +56,7 @@ const VideoComponent = forwardRef<VideoRef ,TutorialVideoProps> (({selectedVideo
     console.log(videoFiles['NewEuclidean']);
     return (
       <video width="100%" height="360" controls>
-        <source src={`${selectedVideo}.mp4`} type="video/mp4" />
+        <source src={`./videos/${selectedVideo}.mp4`} type="video/mp4" />
         Your browser does not support the video tag.
       </video>
   );
