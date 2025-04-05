@@ -11,6 +11,11 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
+import PlayArrowIcon from "@mui/icons-material/PlayArrow";
+import PauseIcon from "@mui/icons-material/Pause";
+import SkipNextIcon from "@mui/icons-material/SkipNext";
+import SkipPreviousIcon from "@mui/icons-material/SkipPrevious";
+import StopIcon from "@mui/icons-material/Stop";
 
 interface TrainingModalProps {
   onClose: () => void;
@@ -53,35 +58,43 @@ const formattedVideoNames = videoNames.map(videoName => {
 
 const TrainingModal: React.FC<TrainingModalProps> = ({ onClose, open }) => {
     const videoRef = useRef<VideoRef | null>(null);
-    const [ videoFiles, setVideoFiles] = React.useState(undefined);
-    const [ selectedVideo, setSelectedVideo] = React.useState('ChristofidesTSPExample');
-    console.log(videoFiles);
+    const [ selectedVideo, setSelectedVideo] = React.useState('./ChristofidesTSPExample.mp4');
+    const [ playing, setPlaying] = React.useState(false);
 
     const handleChange = (event)=> {
-        console.log(event);
         const video = event.target.value;
         setSelectedVideo(video);
     }
-    console.log(`Information: ${videoRef} - ${(videoRef != null)} ${selectedVideo}`)
+    const handlePlayPause = () => {
+        if(playing == false){
+            videoRef.current?.play();
+            setPlaying(true);
+        } else {
+            videoRef.current?.pause();
+            setPlaying(false);
+        }
+    }
     if(videoRef != null){
         return (
             <Dialog open={open} onClose={onClose} fullWidth maxWidth="md">
                 <DialogTitle>Training Videos</DialogTitle>
                 <DialogContent>
-                    <Select value={selectedVideo} onChange={handleChange} fullWidth>
+                    <Select name='Selected Video' value={selectedVideo} onChange={handleChange} fullWidth>
                         {formattedVideoNames.map((videoName, index) => (
                             <MenuItem key={index} value={videoName.original}>
                                 {videoName.modified}
                             </MenuItem>
                         ))}
                     </Select><br/>
-                    <TutorialVideo ref={videoRef} selectedVideo={selectedVideo} />
+                    <TutorialVideo ref={videoRef} selectedVideo={selectedVideo} onVideoStateChange={setPlaying} />
                 </DialogContent>
                 <DialogActions>
-                    <button onClick={() => videoRef.current?.play()}>Play</button>
-                    <button onClick={() => videoRef.current?.pause()}>Pause</button>
-                    <button onClick={() => videoRef.current?.seekTo(10)}>Seek to 10s</button>
-                    <button onClick={() => onClose()}>Close</button> 
+                    <div style={{ display: "flex", justifyContent: "center", gap: "8px" }}>
+                        <Button variant="contained" startIcon={<SkipPreviousIcon />} onClick={() => videoRef.current?.seekBack(.1)}>Seek back</Button>
+                        <Button variant="contained" startIcon={playing?<PauseIcon />:<PlayArrowIcon />} onClick={handlePlayPause}>{playing?'Pause':'Play'} </Button>
+                        <Button variant="contained" endIcon={<SkipNextIcon />} onClick={() => videoRef.current?.seekTo(.1)}>Seek forward</Button>
+                        <Button variant="contained" onClick={() => onClose()}>Close</Button> 
+                    </div>
                 </DialogActions>
             </Dialog>
         );
@@ -90,7 +103,7 @@ const TrainingModal: React.FC<TrainingModalProps> = ({ onClose, open }) => {
             <DialogTitle>Training Videos</DialogTitle>
             <DialogContent>
                 <Typography>Loading!</Typography>
-                <TutorialVideo ref={videoRef} selectedVideo={selectedVideo} />            
+                <TutorialVideo ref={videoRef} selectedVideo={selectedVideo} onVideoStateChange={setPlaying} />            
             </DialogContent>
             <DialogActions>
 

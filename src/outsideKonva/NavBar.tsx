@@ -12,16 +12,17 @@ import Divider from '@mui/material/Divider';
 import { useThemeMode } from "../ThemeContent";
 import InputFileUpload from './importExport/importInput';
 import { algorithms, MenuEntry } from '../ui_handlers/algorithm_control';
-// Props for the TabPanel component
+// Props for the Navigation Bar component
 interface NavBarProps {
   handleNavBarAction: (buttonId: string, algorithm: MenuEntry<any>) => void;
   importGraph: (filelist: FileList) => void;
   openTrainingModal: ()=>void;
+  view: string;
 }
 
 
 // export default function NavBar() {
-const NavBar: React.FC<NavBarProps> = ({ handleNavBarAction, importGraph, openTrainingModal}) => {
+const NavBar: React.FC<NavBarProps> = ({ handleNavBarAction, importGraph, openTrainingModal, view}) => {
     const { mode, toggleTheme } = useThemeMode();
     const [anchorGraph, setAnchorGraph] = React.useState<null | HTMLElement>(null);
     const openGraph = Boolean(anchorGraph);
@@ -74,77 +75,71 @@ const NavBar: React.FC<NavBarProps> = ({ handleNavBarAction, importGraph, openTr
                 <Typography variant="h6" component="div" sx={{ flexGrow: 1 }} onClick={toggleTheme}>
                 Graph Theory Site
                 </Typography>
+                {view == 'graph' && <Button color="inherit" onClick={()=> handleNavBarAction('instructions', null)} >
+                    Instructions
+                </Button>}
+                {view == 'instructions' && <Button color="inherit" onClick={()=> handleNavBarAction('graph', null)} >
+                    Graph
+                </Button>}
                 <Button color="inherit" onClick={openTrainingModal} >
-                    Tutorials
+                    Tutorial Videos
                 </Button>
-                <Button color="inherit" onClick={handleGraphClick} >
-                Graph
-                </Button>
-                <Menu
-                    id="basic-menu"
-                    anchorEl={anchorGraph}
-                    open={openGraph}
-                    onClose={handleGraphClose}
-                    MenuListProps={{
-                    'aria-labelledby': 'basic-button',
-                    }}
-                >
-                    <MenuItem onClick={() => {handleGraphClose("Save")}}>Save</MenuItem>
-                    <MenuItem component="label" tabIndex={-1}>Open
-                        <InputFileUpload openGraph={(filelist) => {handleGraphClose("Open");importGraph(filelist);}} />
-                    </MenuItem>
-                    <MenuItem onClick={() => {handleGraphClose("Bookmark")}}>Bookmark</MenuItem>
-                    <MenuItem onClick={() => {handleGraphClose("Generate")}}>Generate</MenuItem>
-                </Menu>
-                <Button color="inherit" onClick={handleAlgorithmClick} >Algorithms</Button>
-                <Menu
-                    id="basic-menu"
-                    anchorEl={anchorAlgorithm}
-                    open={openAlgorithm}
-                    onClose={() => setAnchorAlgorithm(null)}
-                    MenuListProps={{
-                    'aria-labelledby': 'basic-button',
-                    }}
-                >
-                    {algorithms.flatMap((category, index) => 
-                        index === algorithms.length - 1 
-                            ? category.map((entry) => (
-                                <MenuItem 
-                                    key={entry.menuText} 
-                                    onClick={() => handleAlgorithmClose(entry.menuText, entry)}
-                                >
-                                    {entry.menuText}
-                                </MenuItem>
-                            ))
-                            : [
-                                ...category.map((entry) => (
+                {view == 'graph' && 
+                <React.Fragment>
+                    <Button color="inherit" onClick={handleGraphClick} >
+                    Graph
+                    </Button>
+                    <Menu
+                        id="basic-menu"
+                        anchorEl={anchorGraph}
+                        open={openGraph}
+                        onClose={handleGraphClose}
+                        MenuListProps={{
+                        'aria-labelledby': 'basic-button',
+                        }}
+                    >
+                        <MenuItem onClick={() => {handleGraphClose("Save")}}>Save</MenuItem>
+                        <MenuItem component="label" tabIndex={-1}>Open
+                            <InputFileUpload openGraph={(filelist) => {handleGraphClose("Open");importGraph(filelist);}} />
+                        </MenuItem>
+                        <MenuItem onClick={() => {handleGraphClose("Bookmark")}}>Bookmark</MenuItem>
+                        <MenuItem onClick={() => {handleGraphClose("Generate")}}>Generate</MenuItem>
+                    </Menu>
+                    <Button color="inherit" onClick={handleAlgorithmClick} >Algorithms</Button>
+                    <Menu
+                        id="basic-menu"
+                        anchorEl={anchorAlgorithm}
+                        open={openAlgorithm}
+                        onClose={() => setAnchorAlgorithm(null)}
+                        MenuListProps={{
+                        'aria-labelledby': 'basic-button',
+                        }}
+                    >
+                        {algorithms.flatMap((category, index) => 
+                            index === algorithms.length - 1 
+                                ? category.map((entry) => (
                                     <MenuItem 
                                         key={entry.menuText} 
                                         onClick={() => handleAlgorithmClose(entry.menuText, entry)}
                                     >
                                         {entry.menuText}
                                     </MenuItem>
-                                )),
-                                <Divider key={`divider-${index}`} />
-                            ]
-                    )}
-    
-                    {/* <MenuItem onClick={() => {handleAlgorithmClose("Kruskal")}}>Kruskal's Minimum Spanning Tree</MenuItem>
-                    <MenuItem onClick={() => {handleAlgorithmClose("Prim")}}>Prim's Minimum Spanning Tree</MenuItem>
-                    <MenuItem onClick={() => {handleAlgorithmClose("BFS")}}>Breadth First Search</MenuItem>
-                    <MenuItem onClick={() => {handleAlgorithmClose("DFS")}}>Depth First Search</MenuItem>
-                    <MenuItem onClick={() => {handleAlgorithmClose("Dijkstra")}}>Dijkstra's Shortest Path</MenuItem>
-                    <MenuItem onClick={() => { handleAlgorithmClose("Fleury") }}>Fleury's Euler Trail</MenuItem>
-                    <MenuItem onClick={() => { handleAlgorithmClose("Hamilton") }}>Bellman-Held-Karp Hamilton Path</MenuItem>
-                    <MenuItem onClick={() => { handleAlgorithmClose("Articulation") }}>Articulation Points</MenuItem>
-                    <MenuItem onClick={() => { handleAlgorithmClose("BHK_TSP") }}>Bellman-Held-Karp TSP</MenuItem>
-                    <MenuItem onClick={() => { handleAlgorithmClose("TSP_NearestNeighbor") }}>Nearest Neighbor TSP (Approximation)</MenuItem>
-                    <MenuItem onClick={() => { handleAlgorithmClose("TSP_NearestInsert") }}>Nearest Insert TSP (Approximation)</MenuItem>
-                    <MenuItem onClick={() => { handleAlgorithmClose("TSP_CheapestInsert") }}>Cheapest Insert TSP (Approximation)</MenuItem>
-                    <MenuItem onClick={() => { handleAlgorithmClose("TSP_MSTBased") }}>MST-Based TSP (Approximation)</MenuItem>
-                    <MenuItem onClick={() => { handleAlgorithmClose("TSP_Christofides") }}>Christofides TSP (Approximation)</MenuItem>
-                    <MenuItem onClick={() => { handleAlgorithmClose("EdmondsKarp") }}>Edmonds-Karp Network Flow</MenuItem> */}
-                </Menu>
+                                ))
+                                : [
+                                    ...category.map((entry) => (
+                                        <MenuItem 
+                                            key={entry.menuText} 
+                                            onClick={() => handleAlgorithmClose(entry.menuText, entry)}
+                                        >
+                                            {entry.menuText}
+                                        </MenuItem>
+                                    )),
+                                    <Divider key={`divider-${index}`} />
+                                ]
+                        )}
+                    
+                    </Menu>
+                </React.Fragment>}
             </Toolbar>
         </AppBar>
   );

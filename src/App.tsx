@@ -39,10 +39,11 @@ import { AlgorithmControlState } from './components/algorithm_controls';
 import { ColorInformation } from './decoration/color';
 import { v4 as uuidv4 } from 'uuid';
 import { ContextExclusionPlugin } from 'webpack';
-
+import InstructionsView from './outsideKonva/instructions/InstructionsView';
 
 export default function App() {
   const stage = React.useRef(null);
+  const [view, setView] = React.useState('graph');
   const [tabIndex, setTabIndex] = React.useState(undefined);
   const [tabId, setTabId] = React.useState(undefined);
   const [tabName, setTabName] = React.useState("");
@@ -207,19 +208,25 @@ export default function App() {
       return;
     }
         switch(buttonId) {
-            case "Save":
-              const saveModalDefaultName = graphTabs.importExport.exportCurrent();
-              setSaveModalDefault(saveModalDefaultName);
-              setSaveModal(true);
+          case "instructions":
+            setView('instructions');
             break;
-            case "Open":
-              //Handled by a InputFileUpload (VisuallyHiddenInput) in importExport/importinput.tsx
+          case "graph":
+            setView('graph');
             break;
-            case "Bookmark":
-              const bookmarks = graphTabs.bookmarkedGraphs.bookmark(graphTabs);
+          case "Save":
+            const saveModalDefaultName = graphTabs.importExport.exportCurrent();
+            setSaveModalDefault(saveModalDefaultName);
+            setSaveModal(true);
             break;
-            case "Generate":
-              setGenerateModal(true);
+          case "Open":
+            //Handled by a InputFileUpload (VisuallyHiddenInput) in importExport/importinput.tsx
+            break;
+          case "Bookmark":
+            const bookmarks = graphTabs.bookmarkedGraphs.bookmark(graphTabs);
+            break;
+          case "Generate":
+            setGenerateModal(true);
             break;
         }
         // console.log(buttonId);
@@ -375,117 +382,105 @@ export default function App() {
   }
 
   // if(typeof(graphTabs) != "undefined") console.log(`Zero Length: ${graphTabs.tabBar.tabArray.length === 0}`);
-  console.log(`Active tab id: ${tabId}, Index: ${tabIndex}, tab array: ${tabArray}, type ${typeof(tabArray)}`)
+  // console.log(`Active tab id: ${tabId}, Index: ${tabIndex}, tab array: ${tabArray}, type ${typeof(tabArray)}`)
   return (
     <React.Fragment>
       <NavBar 
         handleNavBarAction={handleNavBarAction}
         importGraph={importGraph}
         openTrainingModal={()=>setTrainingModal(true)}
+        view={view}
       />
-      <Grid container spacing={1} >
-        <Grid size={{md: 2}}>
-          <LeftSide
-            addGraph={addGraph}
-            updateTool={updateTool}
-            updateAutoLayoutOption={updateAutoLayoutOption}
-            updateAutoLabelOptions={updateAutoLabelOptions}
-            updateGraphDisplayOptions={updateGraphDisplayOptions}
-            bookmarks={bookmarks}
-            openBookmark={openBookmark}
-            handleRemoveBookmark={handleRemoveBookmark}
-            importGraph={importGraph}
-            colorInformation={(typeof(graphTabs) != "undefined")?graphTabs.colorInformation:[]}
-            updateColor={(typeof(graphTabs) != "undefined")?(color)=>graphTabs.updateColor(color):(color)=>null}
-            activeColor={(typeof(graphTabs) != "undefined")?graphTabs.activeColor:{colorId:0,colorString:"#000000"}}
-             />
-        </Grid>
-        <Grid size={{md: 8}}>
-          {(typeof(graphTabs) != "undefined")?
-          <React.Fragment>
-            {(graphTabs.tabBar.tabArray.length != 0)?graphTabs.tabBar.tabArray.map((tab) => 
-                (tabEdit && tabId == tab.id)?
-                 <Button
-                            variant="contained"
-                            key={tab.id}
-                            value={tab.id}
-                            onClick={()=>{(tabId == tab.id )?turnOnTabEdit(tab.name):handleTabChange(tab.id)}}
-                            endIcon={<div
-                              onClick={(event) => {
-                                event.stopPropagation(); // Prevent triggering the tab change
-                                saveNewLabel(tab.id);
-                              }}
-                            >
-                              <SaveAs fontSize="small" />
-                            </div>} 
-                          >
-                              <TextField  
-                                onKeyDown={(event: React.KeyboardEvent<HTMLInputElement>) => {
-                                  if (event.key === 'Enter') {
-                                    // console.log('Enter key pressed with value:', event);
-                                    saveNewLabel(tab.id);
-                                    // Add your logic here, e.g., submitting the form or calling a function
-                                  }
-                                }} 
-                                onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-                                  setTabName(event.target.value);
-                                }} 
-                                label="ID" 
-                                value={tabName} 
-                                variant="standard" 
-                              />
-                            </Button>
-                  :
+      {view === 'instructions' &&
+        <React.Fragment>
+          <InstructionsView />
+          <Stage 
+            width={0} 
+            height={0}
+            draggable={true}
+            ref={stage}
+          >
+            <Layer> 
+              
+            </Layer>              
+          </Stage>
+        </React.Fragment>
+      }
+      {view === 'graph' && 
+        <React.Fragment>
+          <Grid container spacing={1} >
+            <Grid size={{md: 2}}>
+              <LeftSide
+                addGraph={addGraph}
+                updateTool={updateTool}
+                updateAutoLayoutOption={updateAutoLayoutOption}
+                updateAutoLabelOptions={updateAutoLabelOptions}
+                updateGraphDisplayOptions={updateGraphDisplayOptions}
+                bookmarks={bookmarks}
+                openBookmark={openBookmark}
+                handleRemoveBookmark={handleRemoveBookmark}
+                importGraph={importGraph}
+                colorInformation={(typeof(graphTabs) != "undefined")?graphTabs.colorInformation:[]}
+                updateColor={(typeof(graphTabs) != "undefined")?(color)=>graphTabs.updateColor(color):(color)=>null}
+                activeColor={(typeof(graphTabs) != "undefined")?graphTabs.activeColor:{colorId:0,colorString:"#000000"}}
+                />
+            </Grid>
+            {(typeof(graphTabs) != "undefined")?
+            <React.Fragment>
+              {(graphTabs.tabBar.tabArray.length != 0)?graphTabs.tabBar.tabArray.map((tab) => 
+                  (tabEdit && tabId == tab.id)?
                   <Button
-                    variant={(tabId == tab.id)? "contained":"outlined"}
-                    key={tab.id}
-                    value={tab.id}
-                    onClick={()=>{(tabId == tab.id )?turnOnTabEdit(tab.name):handleTabChange(tab.id)}}
-                    endIcon={<div
-                      onClick={(event) => {
-                        event.stopPropagation(); // Prevent triggering the tab change
-                        handleRemoveTab(tab.id);
-                      }}
-                      >
-                        <HighlightOff fontSize="small" />
-                      </div>} 
-                  >{tab.name}</Button>
-                    ):
-                (<Typography>No graph open. Please click the one of the new Graphs to create a graph.</Typography>)
-            
+                              variant="contained"
+                              key={tab.id}
+                              value={tab.id}
+                              onClick={()=>{(tabId == tab.id )?turnOnTabEdit(tab.name):handleTabChange(tab.id)}}
+                              endIcon={<div
+                                onClick={(event) => {
+                                  event.stopPropagation(); // Prevent triggering the tab change
+                                  saveNewLabel(tab.id);
+                                }}
+                              >
+                                <SaveAs fontSize="small" />
+                              </div>} 
+                            >
+                                <TextField  
+                                  onKeyDown={(event: React.KeyboardEvent<HTMLInputElement>) => {
+                                    if (event.key === 'Enter') {
+                                      // console.log('Enter key pressed with value:', event);
+                                      saveNewLabel(tab.id);
+                                      // Add your logic here, e.g., submitting the form or calling a function
+                                    }
+                                  }} 
+                                  onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                                    setTabName(event.target.value);
+                                  }} 
+                                  label="ID" 
+                                  value={tabName} 
+                                  variant="standard" 
+                                />
+                              </Button>
+                    :
+                    <Button
+                      variant={(tabId == tab.id)? "contained":"outlined"}
+                      key={tab.id}
+                      value={tab.id}
+                      onClick={()=>{(tabId == tab.id )?turnOnTabEdit(tab.name):handleTabChange(tab.id)}}
+                      endIcon={<div
+                        onClick={(event) => {
+                          event.stopPropagation(); // Prevent triggering the tab change
+                          handleRemoveTab(tab.id);
+                        }}
+                        >
+                          <HighlightOff fontSize="small" />
+                        </div>} 
+                    >{tab.name}</Button>
+                      ):
+                  (<Typography>No graph open. Please click the one of the new Graphs to create a graph.</Typography>)
+              
+              }
+            </React.Fragment>
+            :<Typography>Loading!</Typography>
             }
-
-
-            {/* {graphTabs.tabBar.tabArray.map((tab, index) => (
-              // <Tab key={tab.id} label={tab.name} id={`tab-${index}`}  ><Button><HighlightOff/></Button></Tab>
-              <Button
-                          variant="contained"
-                          key={tab.id}
-                          value={tab.id}
-                          onClick={()=>{(tabId == tab.id )?turnOnTabEdit(tab.name):handleTabChange(tab.id)}}
-                          endIcon={(tabEdit && tabId == tab.id)?<div
-                            onClick={(event) => {
-                              event.stopPropagation(); // Prevent triggering the tab change
-                              saveNewLabel(tab.id);
-                            }}
-                            />
-                            :<div
-                            onClick={(event) => {
-                              event.stopPropagation(); // Prevent triggering the tab change
-                              handleRemoveTab(tab.id);
-                            }}
-                          >
-                            {(tabEdit && tabId == tab.id)?<SaveAs fontSize="small" />:<HighlightOff fontSize="small" />}
-                          </div>} 
-                        >{(tabEdit && tabId == tab.id)?<TextField   onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-                          setTabName(event.target.value);
-                        }} label="label" value={tabName} variant="standard" />:tab.name}
-                          </Button>
-              ))} */}
-          </React.Fragment>
-          :<Typography>Loading!</Typography>
-          }
-            {/* <div style={{ display: "inline-block", padding: "0px",width: (parent.innerWidth * .5), height: (parent.innerHeight * .8), border: "2px solid black" }}> */}
             {clickToAddText?<Typography>Click to add a vertex. Connect vertices by clicking them one after the other.</Typography>:<div/>}
             <Stage 
                     width={window.innerWidth - 180} 
@@ -493,14 +488,11 @@ export default function App() {
                     draggable={true}
                     ref={stage}
                     >
-            <Layer> 
-            
-            </Layer>
-            
-          </Stage>
-          {/* </div> */}
-          
-        </Grid>
+              <Layer> 
+              
+              </Layer>              
+            </Stage>
+          </Grid>
           <SaveModal
             onClose={()=>{setSaveModal(false)}}
             saveModalDefaultName={saveModalDefaultName}
@@ -508,10 +500,7 @@ export default function App() {
             onSave={saveGraph}
 
           /> 
-          <TrainingModal
-            onClose={()=>{setTrainingModal(false)}}
-            open={trainingModal}
-          /> 
+          
           <GenerateGraphModal
           onClose={()=>{setGenerateModal(false)}}
           open={generateModal}
@@ -527,15 +516,19 @@ export default function App() {
             open={messageSnackbarOpen}
             messagePackage={messagePackage}
             />
-      </Grid>
-      {algorithmEnabled && <AlgorithmControlPanel 
-                                      algorithmControlState={algorithmControlState}
-                                      handleControlClick={handleControlClick}
-                                      adjustSpeed={adjustSpeed}
-                                      />
-        }
       
-
+          {algorithmEnabled && <AlgorithmControlPanel 
+                                        algorithmControlState={algorithmControlState}
+                                        handleControlClick={handleControlClick}
+                                        adjustSpeed={adjustSpeed}
+                                        />
+          }
+        </React.Fragment>
+      }
+        <TrainingModal
+            onClose={()=>{setTrainingModal(false)}}
+            open={trainingModal}
+          /> 
     </React.Fragment>
   );
 }
