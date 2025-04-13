@@ -180,6 +180,7 @@ export default function App() {
           const saveModalDefaultName = graphTabs.importExport.exportCurrent();
           setSaveModalDefault(saveModalDefaultName);
           setSaveModal(true);
+          break;
         case "play":
           graphTabs.algortihmControl.controls.playAlgorithm();
           break;
