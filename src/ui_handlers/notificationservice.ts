@@ -54,11 +54,11 @@ export default class NotificationService {
     }
 
     showWarning(title: string, text: string) {
-        showMessage({ level: "warning", text: text, title: title});
+        this.showMessage({ level: "warning", text: text, title: title});
     }
     
     showInfo(title: string, text: string) {
-        showMessage({ level: "info", text: text, title: title});
+        this.showMessage({ level: "info", text: text, title: title});
     }
     
     showStatus(text: string, fadeDelay: number) {
