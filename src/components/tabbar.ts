@@ -100,10 +100,10 @@ export class TabBar {
         // });
         // const container = this.querySelector("#tabbar");
         // container.appendChild(tabFrag);
-        console.log(`Before tab array ${this.tabArray} : type ${typeof(this.tabArray)}`);
+        // console.log(`Before tab array ${this.tabArray} : type ${typeof(this.tabArray)}`);
         this.tabArray = [... this.tabArray, {id:id, name:`${title}-${id}`, editable:true}]
         this.tabCreatedCallback(id, tabType);
-        console.log(`Here tab array ${this.tabArray} : type ${typeof(this.tabArray)}`);
+        // console.log(`Here tab array ${this.tabArray} : type ${typeof(this.tabArray)}`);
         return id;
     }
 
