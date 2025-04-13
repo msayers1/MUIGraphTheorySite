@@ -99,11 +99,9 @@ export default function App() {
     const newTabIndex = graphTabs.tabBar.tabArray.findIndex((tab:tabObject) => tab.id === newId);
     if (newTabIndex != -1){
       setTabIndex(newTabIndex);
-    } else if (graphTabs.tabBar.tabArray.length == 0){
-      setTabIndex(undefined);
     } else {
-      throwError("No Index found");
-    }
+      setTabIndex(0);
+    } 
     // console.log(graphTabs);
   }
   function errorHandler (errorPackage: ErrorPackage) {
@@ -240,10 +238,8 @@ export default function App() {
     const newTabIndex = tabArray.findIndex((tab:tabObject) => tab.id === newId);
     if (newTabIndex != -1){
       setTabIndex(newTabIndex);
-    } else if (graphTabs.tabBar.tabArray.length == 0){
-      setTabIndex(undefined);
     } else {
-      throwError("No Index found");
+      setTabIndex(0);
     }
     if(algorithmControlState != undefined){
       const algorithmControlState = graphTabs.algortihmControl.controls.getAlgorithmControlState();
@@ -258,14 +254,12 @@ export default function App() {
       if(typeof(newId) == 'number') {
         // console.log(`Number ${newId} `);
         setTabId(newId);
-        const newTabIndex = tabArray.findIndex((tab:tabObject) => tab.id === newId);
+        const newTabIndex = graphTabs.tabBar.tabArray.findIndex((tab:tabObject) => tab.id === newId);
         if (newTabIndex != -1){
           setTabIndex(newTabIndex);
-        } else if (graphTabs.tabBar.tabArray.length == 0){
-          setTabIndex(undefined);
         } else {
-          throwError("No Index found");
-        }
+          setTabIndex(0);
+        } 
       } else {
         // console.log(`Not a number ${newId} `);
         setErrorSnackbarOpen(true);
@@ -289,11 +283,9 @@ export default function App() {
     const newTabIndex = newTabArray.findIndex((tab:tabObject) => tab.id === newValue);
     if (newTabIndex != -1){
       setTabIndex(newTabIndex);
-    } else if (graphTabs.tabBar.tabArray.length == 0){
-      setTabIndex(undefined);
     } else {
-      throwError("No Index found");
-    }
+      setTabIndex(0);
+    } 
     if(algorithmControlState != undefined){
       const algorithmControlState = graphTabs.algortihmControl.controls.getAlgorithmControlState();
       setAlgorithmControlState(algorithmControlState);
@@ -318,14 +310,6 @@ export default function App() {
       setTabIndex(newActiveIndex);
       const newTabId = newTabArray[newActiveIndex].id;
       setTabId(newTabId);
-        // const newTabIndex = newTabArray.findIndex((tab:tabObject) => tab.id === newActiveIndex);
-        // if (newTabIndex != -1){
-        //   setTabIndex(newTabIndex);
-        // } else if (graphTabs.tabBar.tabArray.length == 0){
-        //   setTabIndex(undefined);
-        // } else {
-        //   throwError("No Index found");
-        // }
     } else if (newActiveIndex > newTabArray.length) {
       throwError("Index out of range.");
     } else {
@@ -338,6 +322,7 @@ export default function App() {
   };
 
   const throwError = (error:unknown|string) => {
+    console.log(error);
     if (error instanceof Error) {
       setErrorSnackbarOpen(true);
       setErrorPackage({id: errorNumber, message:error.message, level: "failure"as AlertSeverity});
@@ -366,11 +351,9 @@ export default function App() {
     const newTabIndex = graphTabs.tabBar.tabArray.findIndex((tab:tabObject) => tab.id === newId);
     if (newTabIndex != -1){
       setTabIndex(newTabIndex);
-    } else if (graphTabs.tabBar.tabArray.length == 0){
-      setTabIndex(undefined);
     } else {
-      throwError("No Index found");
-    }
+      setTabIndex(0);
+    } 
     setGenerateModal(false);
   }
 
