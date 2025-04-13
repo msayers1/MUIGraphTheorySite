@@ -425,73 +425,81 @@ export default function App() {
                 activeColor={(typeof(graphTabs) != "undefined")?graphTabs.activeColor:{colorId:0,colorString:"#000000"}}
                 />
             </Grid>
-            {(typeof(graphTabs) != "undefined")?
-            <React.Fragment>
-              {(graphTabs.tabBar.tabArray.length != 0)?graphTabs.tabBar.tabArray.map((tab) => 
-                  (tabEdit && tabId == tab.id)?
-                  <Button
-                              variant="contained"
-                              key={tab.id}
-                              value={tab.id}
-                              onClick={()=>{(tabId == tab.id )?turnOnTabEdit(tab.name):handleTabChange(tab.id)}}
-                              endIcon={<div
-                                onClick={(event) => {
-                                  event.stopPropagation(); // Prevent triggering the tab change
-                                  saveNewLabel(tab.id);
-                                }}
-                              >
-                                <SaveAs fontSize="small" />
-                              </div>} 
-                            >
-                                <TextField  
-                                  onKeyDown={(event: React.KeyboardEvent<HTMLInputElement>) => {
-                                    if (event.key === 'Enter') {
-                                      // console.log('Enter key pressed with value:', event);
-                                      saveNewLabel(tab.id);
-                                      // Add your logic here, e.g., submitting the form or calling a function
-                                    }
-                                  }} 
-                                  onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-                                    setTabName(event.target.value);
-                                  }} 
-                                  label="ID" 
-                                  value={tabName} 
-                                  variant="standard" 
-                                />
-                              </Button>
-                    :
+            <Grid size={{md: 10}}>
+              {(typeof(graphTabs) != "undefined")?
+              <React.Fragment>
+                {(graphTabs.tabBar.tabArray.length != 0)?graphTabs.tabBar.tabArray.map((tab) => 
+                    (tabEdit && tabId == tab.id)?
                     <Button
-                      variant={(tabId == tab.id)? "contained":"outlined"}
-                      key={tab.id}
-                      value={tab.id}
-                      onClick={()=>{(tabId == tab.id )?turnOnTabEdit(tab.name):handleTabChange(tab.id)}}
-                      endIcon={<div
-                        onClick={(event) => {
-                          event.stopPropagation(); // Prevent triggering the tab change
-                          handleRemoveTab(tab.id);
-                        }}
-                        >
-                          <HighlightOff fontSize="small" />
-                        </div>} 
-                    >{tab.name}</Button>
-                      ):
-                  (<Typography>No graph open. Please click the one of the new Graphs to create a graph.</Typography>)
-              
+                                variant="contained"
+                                key={tab.id}
+                                value={tab.id}
+                                onClick={()=>{(tabId == tab.id )?turnOnTabEdit(tab.name):handleTabChange(tab.id)}}
+                                endIcon={<div
+                                  onClick={(event) => {
+                                    event.stopPropagation(); // Prevent triggering the tab change
+                                    saveNewLabel(tab.id);
+                                  }}
+                                >
+                                  <SaveAs fontSize="small" />
+                                </div>} 
+                              >
+                                  <TextField  
+                                    onKeyDown={(event: React.KeyboardEvent<HTMLInputElement>) => {
+                                      if (event.key === 'Enter') {
+                                        // console.log('Enter key pressed with value:', event);
+                                        saveNewLabel(tab.id);
+                                        // Add your logic here, e.g., submitting the form or calling a function
+                                      }
+                                    }} 
+                                    onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                                      setTabName(event.target.value);
+                                    }} 
+                                    label="ID" 
+                                    value={tabName} 
+                                    variant="standard" 
+                                  />
+                                </Button>
+                      :
+                      <Button
+                        variant={(tabId == tab.id)? "contained":"outlined"}
+                        key={tab.id}
+                        value={tab.id}
+                        onClick={()=>{(tabId == tab.id )?turnOnTabEdit(tab.name):handleTabChange(tab.id)}}
+                        endIcon={<div
+                          onClick={(event) => {
+                            event.stopPropagation(); // Prevent triggering the tab change
+                            handleRemoveTab(tab.id);
+                          }}
+                          >
+                            <HighlightOff fontSize="small" />
+                          </div>} 
+                      >{tab.name}</Button>
+                        ):
+                    (<Typography>No graph open. Please click the one of the new Graphs to create a graph.</Typography>)
+                
+                }
+              </React.Fragment>
+              :<Typography>Loading!</Typography>
               }
-            </React.Fragment>
-            :<Typography>Loading!</Typography>
-            }
-            {clickToAddText?<Typography>Click to add a vertex. Connect vertices by clicking them one after the other.</Typography>:<div/>}
-            <Stage 
-                    width={window.innerWidth - 180} 
-                    height={(window.innerHeight - 320)}
-                    draggable={true}
-                    ref={stage}
-                    >
-              <Layer> 
-              
-              </Layer>              
-            </Stage>
+              {clickToAddText?<Typography>Click to add a vertex. Connect vertices by clicking them one after the other.</Typography>:<div/>}
+              <Stage 
+                      width={window.innerWidth - 180} 
+                      height={(window.innerHeight - 320)}
+                      draggable={true}
+                      ref={stage}
+                      >
+                <Layer> 
+                
+                </Layer>              
+              </Stage>
+              {algorithmEnabled && <AlgorithmControlPanel 
+                                        algorithmControlState={algorithmControlState}
+                                        handleControlClick={handleControlClick}
+                                        adjustSpeed={adjustSpeed}
+                                        />
+          }
+            </Grid>
           </Grid>
           <SaveModal
             onClose={()=>{setSaveModal(false)}}
@@ -517,12 +525,7 @@ export default function App() {
             messagePackage={messagePackage}
             />
       
-          {algorithmEnabled && <AlgorithmControlPanel 
-                                        algorithmControlState={algorithmControlState}
-                                        handleControlClick={handleControlClick}
-                                        adjustSpeed={adjustSpeed}
-                                        />
-          }
+          
         </React.Fragment>
       }
         <TrainingModal
