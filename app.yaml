@@ -4,6 +4,8 @@ runtime: nodejs22 # Use the appropriate Node.js runtime version
 env: standard
 
 handlers:
+  - name: List package contents
+    run: ls -la
   # Serve static files from the dist/ directory
   - url: /
     static_files: dist/index.html
@@ -15,6 +17,10 @@ handlers:
   - url: /
     static_dir: img
     upload: img
+  
+  - url: /
+    static_dir: videos
+    upload: videos
 
 automatic_scaling: # Optional: Configure scaling behavior
   target_cpu_utilization: 0.65
