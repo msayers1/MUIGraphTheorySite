@@ -26,7 +26,7 @@ declare var require: {
     context(path: string, deep?: boolean, filter?: RegExp): any;
   };
 // Importing all MP4 videos from the `videos` folder using require.context
-const videoFiles = require.context('../../videos', false, /\.mp4$/);
+const videoFiles = require.context('../videos', false, /\.mp4$/);
 
 // Create an object mapping filenames to the video paths
 const videos = videoFiles.keys().reduce((acc: { [key: string]: string }, filePath: string) => {

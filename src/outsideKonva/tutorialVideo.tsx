@@ -1,31 +1,8 @@
 import React, { useState, useEffect, useImperativeHandle, forwardRef, useRef } from 'react';
-import videoSrc from '../videos/NewEuclidean.mp4';
+
 declare var require: {
     context(path: string, deep?: boolean, filter?: RegExp): any;
   };
-// Importing all MP4 videos from the `videos` folder using require.context
-const videoFiles = require.context('../../videos', false, /\.mp4$/);
-
-// Create an object mapping filenames to the video paths
-const videos = videoFiles.keys().reduce((acc: { [key: string]: string }, filePath: string) => {
-    const filename = filePath.replace('./', '').replace('.mp4', '');
-    acc[filename] = videoFiles(filePath);
-    return acc;
-}, {});
-
-
-
-
-const videoNames = videoFiles.keys();
-const formattedVideoNames = videoNames.map(videoName => 
-    videoName
-      .replace(/^.\//, '') // Remove "./" at the beginning
-      .replace(/\.mp4$/, '') // Remove ".mp4" at the end
-      .replace(/([a-z])([A-Z])/g, '$1 $2') // Add space before capital letters (except the first one)
-  );
-
-  // Dynamically import all videos in the folder
-// const videoFiles = import.meta.resolve("/path/to/videos/*.mp4");
 
 // Define what functions the parent can call
 export interface VideoRef {
