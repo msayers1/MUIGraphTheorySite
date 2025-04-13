@@ -7,7 +7,7 @@ import { GraphDrawing } from "../drawing/graphdrawing";
 import { Graph } from "../graph_core/graph";
 import { VertexInput, NoVertexClickedError, SourceSinkInput } from "../commontypes";
 import { Decorator, StatusSink } from "../decoration/decorator";
-import { showMessage } from "../ui_handlers/notificationservice";
+// import { showMessage } from "../ui_handlers/notificationservice";
 // import { showStatus } from "../ui_handlers/notificationservice";
 import { v4 as uuidv4 } from 'uuid';
 
@@ -362,6 +362,7 @@ export abstract class AlgorithmControls implements StatusSink {
         this.statusText = text;
         this.setMessage(text, 50);
         // showStatus(text, 50);
+        this.graphTabs.notificationService.showStatus(text, 50)
     }
 
     setStatusWithFade(text:string, fadeDelay:number): void {
@@ -372,11 +373,13 @@ export abstract class AlgorithmControls implements StatusSink {
     onAttach() {
         this.setMessage(this.statusText, 0);
         // showStatus(this.statusText, 0);
+        this.graphTabs.notificationService.showStatus(this.statusText, 0)
     }
 
     onDetach() {
         this.setMessage('', 0);
         // showStatus('', 0);
+        this.graphTabs.notificationService.showStatus('', 0)
     }
 }
 
@@ -424,9 +427,12 @@ export class VertexInputControls extends AlgorithmControls {
     async executeAlgorithm(): Promise<AlgorithmOutput> {
         const title = "Select Vertex";
         const body = "Please click on a vertex to start from";
-        return this.graphDrawing.enterVertexSelectMode(title, body).then(s =>
-            this.getRunner().execute({ vertexId: s })
-        );
+        return this.graphDrawing.enterVertexSelectMode(title, body)
+            .then(s => this.getRunner().execute({ vertexId: s }))
+            .catch((error) =>{
+                this.getRunner().stop();
+                return Promise.reject(error)
+            });
     }
 
     getRunner(): AlgorithmRunner<VertexInput> {
@@ -459,7 +465,10 @@ export class SourceSinkInputControls extends AlgorithmControls {
         });
         return Promise.all([source, sink]).then(([sourceId, sinkId]) => (
             this.getRunner().execute({ sourceId: sourceId, sinkId: sinkId })
-        ));
+        )).catch((error) =>{
+            this.getRunner().stop();
+            return Promise.reject(error)
+        });
     }
 
     getRunner(): AlgorithmRunner<SourceSinkInput> {

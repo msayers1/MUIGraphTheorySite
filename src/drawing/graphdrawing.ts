@@ -10,7 +10,8 @@ import { getLetterFromInteger, getTwoLevelKeyList } from "../util";
 import { Vector2, Util, Point, NoVertexClickedError } from "../commontypes";
 import { Decorator, DefaultDecorator, EuclideanDecorator, StatusSink } from "../decoration/decorator";
 import { Tools } from "../ui_handlers/tools";
-import { showInfo, showWarning } from "../ui_handlers/notificationservice";
+// Moved to Notification Service
+// import { showInfo, showWarning } from "../ui_handlers/notificationservice";
 import { getNumStringForLabels } from "../util";
 import GraphTabs from "../ui_handlers/graphtabs";
 
@@ -583,7 +584,7 @@ export class GraphDrawing {
         }
         if (isNaN(weight)) {
             console.warn("Cannot set a non-numeric weight!");
-            showWarning("Warning", "Weight must be numeric!");
+            this.graphTabs.notificationService.showWarning("Warning", "Weight must be numeric!");
             return false;
         }
         (this.graph as Graphs.Graph & Graphs.Weighted).setEdgeWeight(startId,
@@ -621,7 +622,7 @@ export class GraphDrawing {
 
     enterVertexSelectMode(messageTitle: string, messageBody: string): Promise<number> {
         return new Promise<number>((resolve, reject) => {
-            showInfo(messageTitle, messageBody);
+            this.graphTabs.notificationService.showInfo(messageTitle, messageBody);
             this.vertexSelectMode = true;
             const prevCursor = this.stage.container().style.cursor;
             this.stage.container().style.cursor = 'crosshair';
@@ -637,7 +638,7 @@ export class GraphDrawing {
                     }
                     target = target.parent;
                 }
-                showWarning("No Vertex", "Did not detect a click on any vertex.");
+                this.graphTabs.notificationService.showWarning("No Vertex", "Did not detect a click on any vertex.");
                 reject(new NoVertexClickedError());
             });
         });
