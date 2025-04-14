@@ -155,7 +155,7 @@ export class BHKHamiltonPath implements Algorithm<void> {
             };
         } else {
             output.message = {
-                level: "failure",
+                level: "error",
                 title: "Bellman-Held-Karp Algorithm",
                 text: "No Hamilton Path or Circuit Found!",
             };

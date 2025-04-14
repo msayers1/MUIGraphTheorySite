@@ -35,7 +35,7 @@ const ErrorSnackbar: React.FC<ErrorSnackbarProps> = ({ onClose, open, errorPacka
         key={`${errorPackage.id}_${errorPackage.level}`}
 
       >
-        <Alert severity={errorPackage.level}>{errorPackage.message}</Alert>
+        <Alert severity={errorPackage.level?errorPackage.level:'error'}>{errorPackage.message}</Alert>
       </Snackbar>
   );
 };

@@ -18,7 +18,7 @@ import { ErrorPackage } from '../outsideKonva/ErrorSnackbar';
 import { MessagePackage } from '../outsideKonva/MessageSnackbar';
 import AlgorithmControl from './algorithm_control';
 import { ColorInformation } from '../decoration/color';
-import NotificationService, { StatusPackage } from './notificationservice';
+import NotificationService, { StatusPackage, MessageLevel} from './notificationservice';
 export type ErrorHandler = (ErrorPackage) => void;
 export type MessageHandler = (MessagePackage) => void;
 
@@ -115,6 +115,10 @@ export default class GraphTabs {
             }
         });
         this.tabBar.setTabActivatedCallback((id: number) => {
+            console.log(`Active ID: ${id} PrevActive ID: ${this.tabBar.getLastTabId()} `);
+            if(id == undefined){
+                this.notificationService.showMessage({ level: 'error' as MessageLevel, text: "Error occured with Id. Code 412", title: "Error"});
+            }
             // console.log(`Set Tab Active in GraphTabs ${id}`);
             this.stage.removeChildren();
             this.stage.clear();
@@ -127,6 +131,10 @@ export default class GraphTabs {
             (this.tabDrawings[id].getGraph().getVertexIds().size == 0)?this.callbackClickToAddText(true):this.callbackClickToAddText(false);
         });
         this.tabBar.setTabDeactivatedCallback((id: number) => {
+            if(id == undefined){
+                this.notificationService.showMessage({ level: 'error' as MessageLevel, text: "Error occured with Id. Code 413", title: "Error"});
+                return;
+            }
             if(this.tabDrawings[id]){
                 this.tabDrawings[id].detachStage();
                 // $("#clickToAddText").hide();
@@ -138,6 +146,10 @@ export default class GraphTabs {
             }
         });
         this.tabBar.setTabClosedCallback((id: number) => {
+            if(id == undefined){
+                this.notificationService.showMessage({ level: 'error' as MessageLevel, text: "Error occured with Id. Code 414", title: "Error"});
+                return;
+            }
             delete this.tabDrawings[id];
             $(this.controlPanels[id]).remove();
             delete this.controlPanels[id];

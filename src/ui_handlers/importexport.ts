@@ -75,12 +75,14 @@ export default class ImportExport {
             const drawing = GraphDrawing.fromJsonString(this.graphTabs, text);
             const newId = this.importGraphCallback(drawing,
                 ImportExport.stripJsonExtension(fileList[0].name));
+            this.graphTabs.tabBar.setActiveById(typeof(newId)=='number'?newId:0);
             return(newId);
         }).catch(e => {
             console.error(e);
             this.graphTabs.errorHandler({id: `${Date.now()}-${uuidv4()}`, message: "Error when reading file!", level: "warning" })
             // alert("Error when reading file!");
-        });;
+        });
+        
         return newId;
     }
     // importNew() {

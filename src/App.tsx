@@ -93,7 +93,6 @@ export default function App() {
     // const tabbar: TabBar.TabBar = document.querySelector("tab-bar");
     const newId = graphTabs.tabBar.addTabElement("New Graph", tabType);
     graphTabs.tabBar.setActiveById(newId);
-    console.log(typeof(graphTabs.tabBar.tabArray));
     setTabArray(graphTabs.tabBar.tabArray);
     setTabId(newId);
     const newTabIndex = graphTabs.tabBar.tabArray.findIndex((tab:tabObject) => tab.id === newId);
@@ -263,14 +262,14 @@ export default function App() {
       } else {
         // console.log(`Not a number ${newId} `);
         setErrorSnackbarOpen(true);
-        setErrorPackage({id: errorNumber, message:"New Graph Error", level: "failure"as AlertSeverity});
+        setErrorPackage({id: errorNumber, message:"New Graph Error", level: "error"as AlertSeverity});
         setErrorNumber(errorNumber + 1);
       }
     }).catch((error:unknown)=> {
       throwError(error);
       // console.log(`Error: ${error} `);
       // setErrorSnackbarOpen(true);
-      // setErrorPackage({id: errorNumber, message:error, level: "failure"as AlertSeverity});
+      // setErrorPackage({id: errorNumber, message:error, level: "error"as AlertSeverity});
       // setErrorNumber(errorNumber + 1);
     })
     
@@ -295,14 +294,14 @@ export default function App() {
 
   const handleRemoveTab = (tabId: number) => {
     const [newTabArray, newActiveIndex] = graphTabs.tabBar.removeById(tabId);
-    console.log(typeof(newTabArray));
     setTabArray(newTabArray);
     if(newTabArray.length === 0){
       graphTabs.clearStage(tabId);
       return;
     }
     if(newActiveIndex === -1){
-      throwError("Index out of range.");
+      setTabIndex(0);
+      // throwError("Index out of range.");
       return;
     }
     // console.log(newActiveIndex);
@@ -325,15 +324,15 @@ export default function App() {
     console.log(error);
     if (error instanceof Error) {
       setErrorSnackbarOpen(true);
-      setErrorPackage({id: errorNumber, message:error.message, level: "failure"as AlertSeverity});
+      setErrorPackage({id: errorNumber, message:error.message, level: "error"as AlertSeverity});
       setErrorNumber(errorNumber + 1);
     } else if (typeof(error) == 'string'){
       setErrorSnackbarOpen(true);
-      setErrorPackage({id: errorNumber, message:error, level: "failure"as AlertSeverity});
+      setErrorPackage({id: errorNumber, message:error, level: "error"as AlertSeverity});
       setErrorNumber(errorNumber + 1);
     } else {
       setErrorSnackbarOpen(true);
-      setErrorPackage({id: errorNumber, message:"There was an error with the Error Handling.", level: "failure"as AlertSeverity});
+      setErrorPackage({id: errorNumber, message:"There was an error with the Error Handling.", level: "error"as AlertSeverity});
       setErrorNumber(errorNumber + 1);
     }
   };

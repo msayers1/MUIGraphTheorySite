@@ -160,6 +160,7 @@ export class TabBar {
     }
 
     getActiveTabTitle(): string {
+        console.log(`Active Id: ${this.activeId} Array: ${this.tabArray}`);
         // return $("#tabbar").find("a.active").children("span").html();
         return this.tabArray[this.activeId].name;
     }
@@ -180,6 +181,9 @@ export class TabBar {
             if (this.tabArray.length > 1) {
                 nextActiveTab = this.prevActiveId
                 nextActiveIndex = this.tabArray.findIndex((tab:tabObject) => nextActiveTab === tab.id);
+                if(nextActiveIndex === -1){
+                    nextActiveIndex = 0;
+                }
                 // nextActiveIndex = Math.min(tabIndexToRemove, updatedTabs.length - 1)
                 // nextActiveTab = updatedTabs[nextActiveIndex].id;
                 this.activeId = nextActiveIndex;
@@ -187,8 +191,9 @@ export class TabBar {
                 this.tabActivatedCallback?.(nextActiveTab);
                 let newPrevActiveIndex = Math.min(tabIndexToRemove + 1, updatedTabs.length - 1)
                 newPrevActiveIndex = (newPrevActiveIndex == nextActiveIndex?nextActiveIndex - 1:newPrevActiveIndex)
+                
                 this.prevActiveId = updatedTabs[newPrevActiveIndex].id;
-            } else if (this.tabArray.length > 1) {
+            } else if (this.tabArray.length > 0) {
                 nextActiveIndex = Math.min(tabIndexToRemove, updatedTabs.length - 1)
                 const nextActiveTab = updatedTabs[nextActiveIndex].id;
                 this.activeId = nextActiveIndex;
@@ -220,7 +225,7 @@ export class TabBar {
         //     console.log(`I think I was here, ${this.activeId}`);
         //     }
         // }
-        console.log(typeof(this.tabArray));
+        this.setActiveById(nextActiveIndex);
         return([updatedTabs, nextActiveIndex]);
     }
 
