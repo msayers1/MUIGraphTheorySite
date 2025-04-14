@@ -15,7 +15,8 @@
     "react-dom": "latest",
     "react-konva": "^19.0.2",
     "typescript": "latest",
-    "uuid": "^11.0.5"
+    "uuid": "^11.0.5",
+    "wrangler": "^4.10.0"
   },
   "scripts": {
     "start": "cross-env NODE_ENV=development webpack serve --open",
