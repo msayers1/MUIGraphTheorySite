@@ -297,11 +297,13 @@ export default function App() {
 
   const handleRemoveTab = (tabId: number) => {
     const [newTabArray, newActiveIndex] = graphTabs.tabBar.removeById(tabId);
-    setTabArray(newTabArray);
+    console.log(graphTabs.tabBar.tabArray.length);
     if(newTabArray.length === 0){
       graphTabs.clearStage(tabId);
+      setTabArray(null);
       return;
     }
+    setTabArray(newTabArray);
     if(newActiveIndex === -1){
       setTabIndex(0);
       // throwError("Index out of range.");

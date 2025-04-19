@@ -172,10 +172,15 @@ export class TabBar {
         // Remove the tab from the array
         this.tabDeactivatedCallback(id);
         const updatedTabs = this.tabArray.filter((tab:tabObject) => tab.id !== id);
+        this.tabArray = updatedTabs;
+        // console.log(updatedTabs.length);
+        if(updatedTabs.length == 0){
+            return([updatedTabs, undefined]);
+        }
         let nextActiveTab = this.getActiveTabId();
         let nextActiveIndex = updatedTabs.findIndex((tab:tabObject) => nextActiveTab === tab.id);
-        this.tabArray = updatedTabs;
-        // console.log(`Active Tab: id ${this.activeId}, is active: ${id === this.activeId} array length ${this.tabArray.length}, first If ${(this.tabArray.length > 2)}, 2nd if ${(this.tabArray.length > 1)}, 3rd If ${(id === this.prevActiveId)}, 2nd if ${(this.tabArray.length > 2)}`);
+        
+        console.log(`Active Tab: id ${this.activeId}, is active: ${id === this.activeId} array length ${this.tabArray.length}, first If ${(this.tabArray.length > 2)}, 2nd if ${(this.tabArray.length > 1)}, 3rd If ${(id === this.prevActiveId)}, 2nd if ${(this.tabArray.length > 2)}`);
         if (id === this.activeId) {
             // If there are remaining tabs, set the first tab as the active one
             if (this.tabArray.length > 1) {

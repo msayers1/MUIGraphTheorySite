@@ -115,9 +115,10 @@ export default class GraphTabs {
             }
         });
         this.tabBar.setTabActivatedCallback((id: number) => {
-            console.log(`Active ID: ${id} PrevActive ID: ${this.tabBar.getLastTabId()} `);
-            if(id == undefined){
+            console.log(`Active ID: ${id} PrevActive ID: ${this.tabBar.getLastTabId()} boolean: ${(id == undefined || id == -1 || !(id in this.tabDrawings))} booleanA: ${id == undefined} BooleanB: ${id == -1} Boolean C: ${!(id in this.tabDrawings)}`);
+            if(id == undefined || id == -1 || !(id in this.tabDrawings)){
                 this.notificationService.showMessage({ level: 'error' as MessageLevel, text: "Error occured with Id. Code 412", title: "Error"});
+                return;
             }
             // console.log(`Set Tab Active in GraphTabs ${id}`);
             this.stage.removeChildren();
@@ -131,7 +132,7 @@ export default class GraphTabs {
             (this.tabDrawings[id].getGraph().getVertexIds().size == 0)?this.callbackClickToAddText(true):this.callbackClickToAddText(false);
         });
         this.tabBar.setTabDeactivatedCallback((id: number) => {
-            if(id == undefined){
+            if(id == undefined || id == -1 || !(id in this.tabDrawings)){
                 this.notificationService.showMessage({ level: 'error' as MessageLevel, text: "Error occured with Id. Code 413", title: "Error"});
                 return;
             }
@@ -146,7 +147,7 @@ export default class GraphTabs {
             }
         });
         this.tabBar.setTabClosedCallback((id: number) => {
-            if(id == undefined){
+            if(id == undefined || id == -1 || !(id in this.tabDrawings)){
                 this.notificationService.showMessage({ level: 'error' as MessageLevel, text: "Error occured with Id. Code 414", title: "Error"});
                 return;
             }
