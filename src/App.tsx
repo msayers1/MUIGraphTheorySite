@@ -66,6 +66,7 @@ export default function App() {
   const [messagePackage, setMessagePackage] = React.useState<MessagePackage>({id:'N/A', message:"No message yet", level: "success"});
   const [activeTool, setActiveTool] = React.useState('default');
   const [activeAutoLayoutOption, setAutoLayoutOption] = React.useState<AutoLabelScheme>("123");
+  const [instructionsNavStatus, setInstructionNavStatus] = React.useState(false);
   const updateTool = (tool: string) => {
     // console.log(tool);
     graphTabs.tools.clickTool(tool);
@@ -209,6 +210,9 @@ export default function App() {
       return;
     }
         switch(buttonId) {
+          case "toggleInsturctionNav":
+            setInstructionNavStatus(!instructionsNavStatus);
+            break;
           case "instructions":
             setView('instructions');
             break;
@@ -381,7 +385,10 @@ export default function App() {
       />
       {view === 'instructions' &&
         <React.Fragment>
-          <InstructionsView />
+          <InstructionsView 
+            setInstructionNavStatus={setInstructionNavStatus}
+            instructionsNavStatus={instructionsNavStatus}
+          />
           <Stage 
             width={0} 
             height={0}

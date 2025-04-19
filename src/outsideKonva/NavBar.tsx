@@ -63,15 +63,16 @@ const NavBar: React.FC<NavBarProps> = ({ handleNavBarAction, importGraph, openTr
 
         <AppBar position="static">
             <Toolbar>
-                {/* <IconButton
+                {view == 'instructions' && <IconButton
                 size="large"
                 edge="start"
                 color="inherit"
                 aria-label="menu"
                 sx={{ mr: 2 }}
+                onClick={()=>handleNavBarAction('toggleInsturctionNav', null)}
                 >
                 <MenuIcon />
-                </IconButton> */}
+                </IconButton>}
                 <Typography variant="h6" component="div" sx={{ flexGrow: 1 }} onClick={toggleTheme}>
                 Graph Theory Site
                 </Typography>

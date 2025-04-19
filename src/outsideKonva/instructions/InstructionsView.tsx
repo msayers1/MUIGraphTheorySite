@@ -2,35 +2,54 @@ import { Typography } from '@mui/material';
 import * as React from 'react';
 import SideNav from './SideNav';
 import GraphicalUserInterfaceComponent from './GUI';
+import MiscComponent from './Misc';
+import AlgorithmsComponent from './Algorithms';
 
 
-export default function InstructionsView() {
 
-    const [sideNavOpen, setSideNavOpen] = React.useState(false);   
+
+
+
+interface InstructionsViewProps {
+    setInstructionNavStatus: React.Dispatch<React.SetStateAction<boolean>>;
+  instructionsNavStatus: boolean;
+}
+
+
+// export default function NavBar() {
+const InstructionsView: React.FC<InstructionsViewProps> = ({ setInstructionNavStatus, instructionsNavStatus}) => {
+
+
+    const [selectedInstruction, setSelectedInstruction] = React.useState('GUI');   
 
     function onNavClick (navItem: string) {
         console.log(navItem);
-        setSideNavOpen(false);
+        setSelectedInstruction(navItem);
+        setInstructionNavStatus(!instructionsNavStatus);
         // Jump to a section
     }
 
-    function openNav (){
-        setSideNavOpen(true);
-    }
+    // function openNav (){
+    //     setSideNavOpen(true);
+    // }
   
     // List of strings for the side navigation buttons
-    const menuItems = ['GUI', 'Algrotihms', 'Services', 'Contact'];
+    const menuItems = ['GUI', 'Algrotihms', 'Misc'];
 
     return(
         <React.Fragment>       
             <SideNav 
                 menuItems={menuItems}
                 onItemSelect={onNavClick}
-                open={sideNavOpen}
+                open={instructionsNavStatus}
                 />
-            <GraphicalUserInterfaceComponent 
-                openNav={openNav}
-                />
+            {(selectedInstruction == 'GUI') && <GraphicalUserInterfaceComponent 
+                />}
+            {(selectedInstruction == 'Algrotihms') && <AlgorithmsComponent 
+                />}
+            {(selectedInstruction == 'Misc') && <MiscComponent 
+                />}
         </React.Fragment>
     )
-}
+} 
+export default InstructionsView;
