@@ -50,10 +50,12 @@ interface LeftSideProps {
   colorInformation: ColorInformation[];
   updateColor: (ColorInformation: ColorInformation) => void;
   activeColor: ColorInformation;
+  activeTool: string;
+  autoLabelOption: AutoLabelScheme;
 }
 
 // export default function LeftSide(addGraph) {
-const LeftSide: React.FC<LeftSideProps> = ({ addGraph, updateTool, updateAutoLayoutOption, updateAutoLabelOptions, updateGraphDisplayOptions, bookmarks, openBookmark, handleRemoveBookmark, importGraph, colorInformation, updateColor, activeColor }) => {
+const LeftSide: React.FC<LeftSideProps> = ({ addGraph, updateTool, updateAutoLayoutOption, updateAutoLabelOptions, updateGraphDisplayOptions, bookmarks, openBookmark, handleRemoveBookmark, importGraph, colorInformation, updateColor, activeColor, activeTool, autoLabelOption }) => {
   const [expanded, setExpanded] = React.useState<string | false>("panel1"); // Default to open "panel1"
   const [localActiveColor, setLocalActiveColor] = React.useState(activeColor);
   const setActiveColor = (color) => {
@@ -119,22 +121,22 @@ const LeftSide: React.FC<LeftSideProps> = ({ addGraph, updateTool, updateAutoLay
             <AccordionDetails>
               <Grid container spacing={1} >
                 <Grid size={{md: 12}}>
-                  <Button onClick={() => {updateTool("default")}}>
+                  <Button onClick={() => {updateTool("default")}} variant={activeTool == "default"?"contained":"text"}>
                     <NearMe /> Add/Move
                   </Button>
                 </Grid>
                 <Grid size={{md: 12}}>
-                  <Button onClick={() => {updateTool("delete")}}>
+                  <Button onClick={() => {updateTool("delete")}} variant={activeTool == "delete"?"contained":"text"}>
                     <Clear /> Delete
                   </Button>
                 </Grid>
                 <Grid size={{md: 12}}>
-                  <Button onClick={() => {updateTool("text")}}>
+                  <Button onClick={() => {updateTool("text")}} variant={activeTool == "text"?"contained":"text"}>
                     <Keyboard /> Text
                   </Button>
                 </Grid>
                 <Grid size={{md: 12}}>
-                  <Button onClick={() => {updateTool("color")}}>
+                  <Button onClick={() => {updateTool("color")}}  variant={activeTool == "color"?"contained":"text"}>
                     <ColorLensIcon /> Color
                   </Button>
                 </Grid>
@@ -194,6 +196,7 @@ const LeftSide: React.FC<LeftSideProps> = ({ addGraph, updateTool, updateAutoLay
             <AccordionDetails>
               <AutoLabelOptions 
                 updateAutoLabelOptions={updateAutoLabelOptions}
+                autoLabelOption={autoLabelOption}
               />
             </AccordionDetails>
           </Accordion>

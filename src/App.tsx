@@ -64,10 +64,12 @@ export default function App() {
   const [errorPackage, setErrorPackage] = React.useState<ErrorPackage>({id:0, message:"No message yet", level: "success"});
   const [messageSnackbarOpen, setMessageSnackbarOpen] = React.useState(false);
   const [messagePackage, setMessagePackage] = React.useState<MessagePackage>({id:'N/A', message:"No message yet", level: "success"});
-  
+  const [activeTool, setActiveTool] = React.useState('default');
+  const [activeAutoLayoutOption, setAutoLayoutOption] = React.useState<AutoLabelScheme>("123");
   const updateTool = (tool: string) => {
     // console.log(tool);
     graphTabs.tools.clickTool(tool);
+    setActiveTool(tool)
   };
 
   const updateAutoLayoutOption = (option: LayoutName) => {
@@ -75,6 +77,7 @@ export default function App() {
   }
   const updateAutoLabelOptions = (option: AutoLabelScheme) => {
     graphTabs.getActiveGraphDrawing()?.setAutoLabelScheme(option as AutoLabelScheme);
+    setAutoLayoutOption(option)
   }
   const updateGraphDisplayOptions = (vertexSize:number, weightFontSize:number) => {
     // console.log(`The vertex Size or Vertex Radius value is ${vertexSize}, and the weight font size is ${weightFontSize}.`);
@@ -406,6 +409,8 @@ export default function App() {
                 colorInformation={(typeof(graphTabs) != "undefined")?graphTabs.colorInformation:[]}
                 updateColor={(typeof(graphTabs) != "undefined")?(color)=>graphTabs.updateColor(color):(color)=>null}
                 activeColor={(typeof(graphTabs) != "undefined")?graphTabs.activeColor:{colorId:0,colorString:"#000000"}}
+                activeTool={activeTool}
+                autoLabelOption={activeAutoLayoutOption}
                 />
             </Grid>
             <Grid size={{md: 10}}>

@@ -8,10 +8,11 @@ import { AutoLabelScheme } from '../drawing/graphdrawing';
 // Props for the TabPanel component
 interface AuotLabelOptionsProps {
     updateAutoLabelOptions: (option: AutoLabelScheme) => void;
+    autoLabelOption: AutoLabelScheme;
 }
 
 
-const AuotLabelOptions: React.FC<AuotLabelOptionsProps> = ({ updateAutoLabelOptions }) => {
+const AuotLabelOptions: React.FC<AuotLabelOptionsProps> = ({ updateAutoLabelOptions, autoLabelOption }) => {
   return (
     
       <RadioGroup
@@ -19,7 +20,7 @@ const AuotLabelOptions: React.FC<AuotLabelOptionsProps> = ({ updateAutoLabelOpti
             updateAutoLabelOptions(value);
         }}
         aria-labelledby="demo-radio-buttons-group-label"
-        defaultValue="number"
+        defaultValue="123"
         name="radio-buttons-group"
       >
         <FormControlLabel value="123" control={<Radio />} label="1,2,3..." />
