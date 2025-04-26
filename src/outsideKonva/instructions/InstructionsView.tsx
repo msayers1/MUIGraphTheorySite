@@ -4,6 +4,7 @@ import SideNav from './SideNav';
 import GraphicalUserInterfaceComponent from './GUI';
 import MiscComponent from './Misc';
 import AlgorithmsComponent from './Algorithms';
+import About from './About';
 
 
 
@@ -20,7 +21,7 @@ interface InstructionsViewProps {
 const InstructionsView: React.FC<InstructionsViewProps> = ({ setInstructionNavStatus, instructionsNavStatus}) => {
 
 
-    const [selectedInstruction, setSelectedInstruction] = React.useState('GUI');   
+    const [selectedInstruction, setSelectedInstruction] = React.useState('About');   
 
     function onNavClick (navItem: string) {
         console.log(navItem);
@@ -34,7 +35,7 @@ const InstructionsView: React.FC<InstructionsViewProps> = ({ setInstructionNavSt
     // }
   
     // List of strings for the side navigation buttons
-    const menuItems = ['GUI', 'Algrotihms', 'Misc'];
+    const menuItems = ['About', 'GUI', 'Algrotihms', 'Misc'];
 
     return(
         <React.Fragment>       
@@ -43,6 +44,8 @@ const InstructionsView: React.FC<InstructionsViewProps> = ({ setInstructionNavSt
                 onItemSelect={onNavClick}
                 open={instructionsNavStatus}
                 />
+            {(selectedInstruction == 'About') && <About 
+                />}
             {(selectedInstruction == 'GUI') && <GraphicalUserInterfaceComponent 
                 />}
             {(selectedInstruction == 'Algrotihms') && <AlgorithmsComponent 

@@ -40,6 +40,7 @@ import { ColorInformation } from './decoration/color';
 import { v4 as uuidv4 } from 'uuid';
 import { ContextExclusionPlugin } from 'webpack';
 import InstructionsView from './outsideKonva/instructions/InstructionsView';
+import AboutModal from './outsideKonva/AboutModal';
 
 export default function App() {
   const stage = React.useRef(null);
@@ -67,6 +68,7 @@ export default function App() {
   const [activeTool, setActiveTool] = React.useState('default');
   const [activeAutoLayoutOption, setAutoLayoutOption] = React.useState<AutoLabelScheme>("123");
   const [instructionsNavStatus, setInstructionNavStatus] = React.useState(false);
+  const [aboutModal, setAboutModal] = React.useState(true);
   const updateTool = (tool: string) => {
     // console.log(tool);
     graphTabs.tools.clickTool(tool);
@@ -210,6 +212,14 @@ export default function App() {
       return;
     }
         switch(buttonId) {
+          case "home":
+            if (view == 'graph'){
+              setAboutModal(true);
+            }else{
+              setView('graph');
+            }  
+              
+            break;
           case "toggleInsturctionNav":
             setInstructionNavStatus(!instructionsNavStatus);
             break;
@@ -528,6 +538,10 @@ export default function App() {
         <TrainingModal
             onClose={()=>{setTrainingModal(false)}}
             open={trainingModal}
+          /> 
+        <AboutModal
+            onClose={()=>{setAboutModal(false)}}
+            open={aboutModal}
           /> 
     </React.Fragment>
   );

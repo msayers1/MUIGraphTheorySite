@@ -73,9 +73,12 @@ const NavBar: React.FC<NavBarProps> = ({ handleNavBarAction, importGraph, openTr
                 >
                 <MenuIcon />
                 </IconButton>}
-                <Typography variant="h6" component="div" sx={{ flexGrow: 1 }} onClick={toggleTheme}>
-                Graph Theory Site
+                <Typography variant="h6" component="div" sx={{ flexGrow: 1 }} onClick={()=>handleNavBarAction('home', null)}>
+                Graph Theory Playground
                 </Typography>
+                <Button color="inherit" onClick={toggleTheme} >
+                    {mode}
+                </Button>
                 {view == 'graph' && <Button color="inherit" onClick={()=> handleNavBarAction('instructions', null)} >
                     Instructions
                 </Button>}
